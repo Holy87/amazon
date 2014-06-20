@@ -139,6 +139,7 @@ public class DBConnection {
    }
    
    public static void creaOrdine () {
-       //Mah. forse bisogna fare altro...
+       //Mache
+       //Porca vacca
    }
 }
