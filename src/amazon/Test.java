@@ -7,7 +7,7 @@
 package amazon;
 
 /**
- *
+ * Provo senza un commit
  * @author Claudio Renza
  */
 public class Test {
