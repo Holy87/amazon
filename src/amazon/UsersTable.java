@@ -14,8 +14,7 @@ import javax.swing.*;
  */
 public class UsersTable extends javax.swing.JTable implements UsaLookup {
 
-    ModelloTabella modello = new ModelloTabella(); //modello della tabellat
-    
+    DBTableModel modello = new DBTableModel();     
     public UsersTable() {
         super();
         setModel(modello);
