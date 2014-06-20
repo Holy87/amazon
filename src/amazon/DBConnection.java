@@ -176,6 +176,13 @@ public class DBConnection {
        totalPrice.close();
        
        //Immissione corriere casuale
+       PreparedStatement showDelivery;
+       ResultSet choiceDelivery;
+       showDelivery = conn.prepareStatement("SELECT CORRIERE_ID FROM MOD_SPEDIZIONE WHERE COSTOSPED=?");
+       showDelivery.setString(1, delivery);
+       choiceDelivery = showDelivery.executeQuery();
+       //ROWCOUNT
+       
        /*SELECT *
         FROM MOD_SPEDIZIONE
         WHERE COSTOSPED=delivery
