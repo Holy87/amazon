@@ -18,14 +18,14 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Francesco
  */
-public class ModelloTabella extends AbstractTableModel {
+public class DBTableModel extends AbstractTableModel {
     private ResultSet rs; //resultset su cui si basa il modello
     
-    public ModelloTabella() {
+    public DBTableModel() {
         super();
     }
     
-    public ModelloTabella(ResultSet r) {
+    public DBTableModel(ResultSet r) {
       super();
       rs = r;
     }
@@ -69,7 +69,13 @@ public class ModelloTabella extends AbstractTableModel {
             return 0;
         }
     }
-
+    
+    /**
+     * Restituisce un Object relativo alla riga e colonna della tabella
+     * @param rowIndex numero di riga
+     * @param columnIndex numero di colonna
+     * @return valore di ritorno di tipo Object
+     */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         int currentPosition;
@@ -85,6 +91,11 @@ public class ModelloTabella extends AbstractTableModel {
             return null;
         }
         return ob;
+    }
+    
+    @Override
+    public void setValueAt(Object aValue, int row, int column) {
+        //devo metterci qua qualcosa
     }
     
     @Override
@@ -113,5 +124,7 @@ public class ModelloTabella extends AbstractTableModel {
    public boolean isCellEditable(int row, int col) {
       return false;
    }
+   
+   
     
 }
