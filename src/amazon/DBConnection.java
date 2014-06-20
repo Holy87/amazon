@@ -137,4 +137,8 @@ public class DBConnection {
       }
       return ret;
    }
+   
+   public static void creaOrdine () {
+       //Mah
+   }
 }
