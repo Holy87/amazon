@@ -210,7 +210,7 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void setTable ()
     {
-        ModelloTabella modTab = new ModelloTabella();
+        DBTableModel modTab = new DBTableModel();
         usersTable.setModel(modTab);
       usersTable.getSelectionModel().setSelectionMode(
               ListSelectionModel.SINGLE_SELECTION);
