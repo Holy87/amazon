@@ -138,8 +138,51 @@ public class DBConnection {
       return ret;
    }
    
-   public static void creaOrdine (int idUtente, int costospedin, int scontocomplin) {
+   public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto, String delivery) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       int idOrder = 0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
- 
+       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=NULL)), ?, ?)");
+       pstmt.setInt(1, idUtente);
+       pstmt.setInt(2, idUtente);
+       pstmt.setInt(3, costospedin);
+       pstmt.setInt(4, scontocomplin);
+       
+       pstmt.executeUpdate();
+       pstmt.close();
+       
+       //Query per visualizzare l'ultimo record inserito
+       PreparedStatement lastorder;
+       lastorder = conn.prepareStatement("SELECT ORDINE_ID FROM UTENTI WHERE ROWNUM <=1 ORDER BY UTENTE_ID DESC;");
+       rs = pstmt.executeQuery();
+       rs.next();
+       idOrder = rs.getInt(1);
+       lastorder.close();
+       
+       //Aggiornamento di COMPARTICOLI
+       PreparedStatement updateCompArticoli;
+       updateCompArticoli = conn.prepareStatement("UPDATE COMPARTICOLI SET ORDINE_ID=? WHERE (UTENTE_ID=? AND ORDINE_ID=NULL);");
+       updateCompArticoli.setInt(1, idOrder);
+       updateCompArticoli.setInt(2, idUtente);
+       updateCompArticoli.executeUpdate();
+       updateCompArticoli.close();
+       
+       //Calcolo di PREZZO TOTALE
+       PreparedStatement totalPrice;
+       totalPrice = conn.prepareStatement("UPDATE ORDINI SET PREZZOTOTALE=(PREZZONETTO+COSTOSPED)-SCONTOCOMPL WHERE (ORDINE_ID=?);");
+       totalPrice.setInt(1, idOrder);
+       totalPrice.executeUpdate();
+       totalPrice.close();
+       
+       //Immissione corriere casuale
+       /*SELECT *
+        FROM MOD_SPEDIZIONE
+        WHERE COSTOSPED=delivery
+
+        WHILE (NEXT && I <= RANDOM)
+        X=CORRIERE_ID
+        I++*/
+       
    }
 }
