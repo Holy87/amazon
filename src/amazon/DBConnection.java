@@ -138,8 +138,8 @@ public class DBConnection {
       return ret;
    }
    
-   public static void creaOrdine () {
-       //Mache
-       //Porca vacca
+   public static void creaOrdine (int idUtente, int costospedin, int scontocomplin) {
+       
+ 
    }
 }
