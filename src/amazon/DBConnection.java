@@ -138,10 +138,11 @@ public class DBConnection {
       return ret;
    }
    
-   public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto, String delivery) throws SQLException {
+   public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
        int idOrder = 0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int countCourier = 0;
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=NULL)), ?, ?)");
        pstmt.setInt(1, idUtente);
@@ -175,21 +176,35 @@ public class DBConnection {
        totalPrice.executeUpdate();
        totalPrice.close();
        
-       //Immissione corriere casuale
-       PreparedStatement showDelivery;
+       //Immissione corriere casuale (provare ad usare un solo tipo Statement)
+       PreparedStatement countDelivery; //conta quanti corrieri hanno quel tipo di spedizione
+       countDelivery = conn.prepareStatement("SELECT COUNT(*) AS NUMCORRIERI FROM MOD_SPEDIZIONE WHERE COSTOSPED=?;");
+       countDelivery.setInt(1, costospedin);
+       ResultSet numDelivery = countDelivery.executeQuery();
+       numDelivery.next();
+       countCourier = numDelivery.getInt(1);
+       countDelivery.close();
+       
+       PreparedStatement showDelivery; //sceglie il corriere da uno casuale;
        ResultSet choiceDelivery;
        showDelivery = conn.prepareStatement("SELECT CORRIERE_ID FROM MOD_SPEDIZIONE WHERE COSTOSPED=?");
-       showDelivery.setString(1, delivery);
+       showDelivery.setInt(1, costospedin);
        choiceDelivery = showDelivery.executeQuery();
-       //ROWCOUNT
+       int randCourier = (int) (Math.random() * countCourier);
+       int i = 0; //indice contatore del while
+       int idCourier;
        
-       /*SELECT *
-        FROM MOD_SPEDIZIONE
-        WHERE COSTOSPED=delivery
-
-        WHILE (NEXT && I <= RANDOM)
-        X=CORRIERE_ID
-        I++*/
+       while (choiceDelivery.next() && i <= randCourier) {
+           idCourier = choiceDelivery.getInt(1);
+           i++;
+       }
+       showDelivery.close();
+       
+       //Inserimento spedizioni
+       PreparedStatement insertDelivery;
+       insertDelivery = conn.prepareStatement("INSERT INTO SPEDIZIONI(CORRIERE_ID, ORDINE_ID, CONTACT_ID, TRACKING_ID, DATACONSEGNA) VALUES (?, ?, ?, ?, ?);");
+       //Parlarne con Claudio per l'inserimento dei dati
+       insertDelivery.close();
        
    }
 }
