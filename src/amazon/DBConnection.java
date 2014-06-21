@@ -141,8 +141,8 @@ public class DBConnection {
    public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       int idOrder = 0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
-       int countCourier = 0;
+       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int countCourier;
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=NULL)), ?, ?)");
        pstmt.setInt(1, idUtente);
@@ -190,9 +190,9 @@ public class DBConnection {
        showDelivery = conn.prepareStatement("SELECT CORRIERE_ID FROM MOD_SPEDIZIONE WHERE COSTOSPED=?");
        showDelivery.setInt(1, costospedin);
        choiceDelivery = showDelivery.executeQuery();
-       int randCourier = (int) (Math.random() * countCourier);
+       int randCourier = (int) ((Math.random() * countCourier) + 1);
        int i = 0; //indice contatore del while
-       int idCourier;
+       int idCourier = 0;
        
        while (choiceDelivery.next() && i <= randCourier) {
            idCourier = choiceDelivery.getInt(1);
@@ -202,8 +202,10 @@ public class DBConnection {
        
        //Inserimento spedizioni
        PreparedStatement insertDelivery;
-       insertDelivery = conn.prepareStatement("INSERT INTO SPEDIZIONI(CORRIERE_ID, ORDINE_ID, CONTACT_ID, TRACKING_ID, DATACONSEGNA) VALUES (?, ?, ?, ?, ?);");
-       //Parlarne con Claudio per l'inserimento dei dati
+       insertDelivery = conn.prepareStatement("INSERT INTO SPEDIZIONI(CORRIERE_ID, ORDINE_ID, CONTACT_ID, DATACONSEGNA) VALUES (?, ?, ?, SYSDATE);");
+       insertDelivery.setInt(1, idCourier);
+       insertDelivery.setInt(2, idOrder);
+       insertDelivery.setInt(3, idContatto);
        insertDelivery.close();
        
    }
