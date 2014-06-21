@@ -202,10 +202,17 @@ public class DBConnection {
        
        //Inserimento spedizioni
        PreparedStatement insertDelivery;
-       insertDelivery = conn.prepareStatement("INSERT INTO SPEDIZIONI(CORRIERE_ID, ORDINE_ID, CONTACT_ID, DATACONSEGNA) VALUES (?, ?, ?, SYSDATE);");
+       insertDelivery = conn.prepareStatement("INSERT INTO SPEDIZIONI(CORRIERE_ID, ORDINE_ID, CONTACT_ID, DATACONSEGNA) VALUES (?, ?, ?, ?);");
        insertDelivery.setInt(1, idCourier);
        insertDelivery.setInt(2, idOrder);
        insertDelivery.setInt(3, idContatto);
+       if (costospedin == 8)
+            insertDelivery.setString(4, "SYSDATE + 1");
+       else if (costospedin == 4)
+            insertDelivery.setString(4, "SYSDATE + 3");
+       else
+            insertDelivery.setString(4, "SYSDATE + 5");
+       
        insertDelivery.close();
        
    }
