@@ -82,27 +82,6 @@ public class DBConnection {
     public static boolean connected() {
         return conn != null;
     }
-    /**
-     * DEPRECATA: NON PIU UTILIZZATA
-     * @return
-     * @throws SQLException 
-     */
-    public static List getAuthors() throws SQLException {
-        List autori = new LinkedList();
-        if (conn != null) {
-            Statement stmt = conn.createStatement();
-            ResultSet rset = stmt.executeQuery("SELECT * FROM AUTORI");
-            while (rset.next()) {
-                Author autore = new Author();
-                autore.setId(rset.getInt(1));
-                autore.setName(rset.getString(2));
-                autore.setSurname(rset.getString(3));
-                autori.add(autore);
-            } 
-            
-        }
-        return autori;
-    }
     
     /**
     * Effettua una query e restituisce il primo valore.

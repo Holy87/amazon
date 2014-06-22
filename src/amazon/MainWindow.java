@@ -235,29 +235,26 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
-    private void setTable ()
+    private void setTable()
     {
-      usersTable.getSelectionModel().setSelectionMode(
-              ListSelectionModel.SINGLE_SELECTION);
-      usersTable.addMouseListener(new java.awt.event.MouseAdapter() {
-
-         public void mouseReleased(java.awt.event.MouseEvent evt) {
+      usersTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      usersTable.addMouseListener(new java.awt.event.MouseAdapter()
+      {
+          public void mouseReleased(java.awt.event.MouseEvent evt) {
             //       selezioneTabellaCambiata();
          }
       });
 
-      usersTable.getSelectionModel().addListSelectionListener(
-              new javax.swing.event.ListSelectionListener() {
-
-                 public void valueChanged(
-                         javax.swing.event.ListSelectionEvent e) {
-                    selezioneTabellaCambiata();
-                 }
-
-            private void selezioneTabellaCambiata() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-              });
+      usersTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() 
+      {
+          public void valueChanged(javax.swing.event.ListSelectionEvent e) 
+          {
+              selezioneTabellaCambiata();
+          }
+          
+          private void selezioneTabellaCambiata() {throw new UnsupportedOperationException("Not supported yet.");
+          }
+      });
       aggiornaTabellaUtenti();
    }
     
