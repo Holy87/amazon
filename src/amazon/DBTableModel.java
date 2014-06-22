@@ -53,7 +53,7 @@ public class DBTableModel extends AbstractTableModel {
             return last;
         }
         catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage(), null, ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Errore2: " + ex.getMessage(), null, ERROR_MESSAGE);
             return 0;
         }
     }
@@ -65,7 +65,7 @@ public class DBTableModel extends AbstractTableModel {
         try {
             return rs.getMetaData().getColumnCount();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage(), null, ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Errore3: " + ex.getMessage(), null, ERROR_MESSAGE);
             return 0;
         }
     }
@@ -85,10 +85,10 @@ public class DBTableModel extends AbstractTableModel {
         try {
             currentPosition = rs.getRow();
             rs.absolute(rowIndex);
-            ob = rs.getObject(currentPosition);
+            ob = rs.getObject(columnIndex);
+            rs.absolute(currentPosition);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage(), null, ERROR_MESSAGE);
-            return null;
+            //JOptionPane.showMessageDialog(null, "Errore4: " + ex.getMessage(), null, ERROR_MESSAGE);
         }
         return ob;
     }
@@ -108,7 +108,7 @@ public class DBTableModel extends AbstractTableModel {
         try {
             res = rs.getMetaData().getColumnName(col);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage(), null, ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Errore5: " + ex.getMessage(), null, ERROR_MESSAGE);
             return "";
         }
         return res;

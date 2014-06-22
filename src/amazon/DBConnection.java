@@ -6,9 +6,16 @@
 
 package amazon;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -17,8 +24,7 @@ import oracle.jdbc.pool.*;
 public class DBConnection {
     private static OracleDataSource ods;
     public static Connection conn = null;
-    private static DatabaseMetaData meta;
-    private static String tempUser, tempPass, tempDomain, tempPort;
+    public static String tempUser, tempPass, tempHost, tempPort, tempSchema;
     /**
     * Indica che il frame si trova nello stato di inserimento di un nuovo record
     * o dei parametri di ricerca.
@@ -46,21 +52,22 @@ public class DBConnection {
      * @param passwd password da immettere per il collegamento
      * Avvia la connessione con il server
      */
-    public static void StartConnection(String usernm, String passwd, String domain, String port) throws SQLException {
-        tempUser = usernm;
-        tempPass = passwd;
-        tempDomain = domain;
-        tempPort = port;
-        ods = new oracle.jdbc.pool.OracleDataSource();
-        ods.setURL("jdbc:oracle:thin:@//"+domain+":"+port+"/xe");//143.225.117.238:1521/xe");
+    public static void StartConnection() throws SQLException {
+        ods = new OracleDataSource();
+        ods.setDriverType("thin");
+        ods.setServerName(tempHost);
+        ods.setPortNumber(Integer.parseInt(tempPort));
+        ods.setUser(tempUser);
+        ods.setPassword(tempPass);
+        ods.setDatabaseName("xe");
+        //ods.setURL("jdbc:oracle:thin:@//"+domain+":"+port+"/xe");//143.225.117.238:1521/xe");
         //Stampa Versione Driver
-        conn = ods.getConnection(usernm, passwd);
-        meta = conn.getMetaData();
+        conn = ods.getConnection();
     }
     
     public static void reConnect() throws SQLException {
         if (conn != null){
-            StartConnection(tempUser, tempPass, tempDomain, tempPort);
+            StartConnection();
         }
     }
     
@@ -75,7 +82,11 @@ public class DBConnection {
     public static boolean connected() {
         return conn != null;
     }
-    
+    /**
+     * DEPRECATA: NON PIU UTILIZZATA
+     * @return
+     * @throws SQLException 
+     */
     public static List getAuthors() throws SQLException {
         List autori = new LinkedList();
         if (conn != null) {
@@ -136,6 +147,23 @@ public class DBConnection {
       } catch (SQLException e) {
       }
       return ret;
+   }
+   
+   /**
+    * Restituisce un ResultSet di una query specificata in imput da stringa.
+    * @param query
+    * @return
+    * @throws SQLException 
+    */
+   public static ResultSet eseguiQuery(String query) throws SQLException
+   {
+       Statement pstmt;
+       pstmt = conn.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+
+       ResultSet rs = pstmt.executeQuery(query);
+       return rs;
    }
    
    public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto) throws SQLException {

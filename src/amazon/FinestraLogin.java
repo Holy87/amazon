@@ -158,12 +158,12 @@ public class FinestraLogin extends javax.swing.JDialog {
 
     private void startConnection(){
         setVisible(false);
-        String username = jTextField1.getText();
-        String passwrd = String.valueOf(jPasswordField1.getPassword());
-        String domain = jTextField2.getText();
-        String port = jTextField3.getText();
+        DBConnection.tempUser = jTextField1.getText();
+        DBConnection.tempPass = String.valueOf(jPasswordField1.getPassword());
+        DBConnection.tempHost = jTextField2.getText();
+        DBConnection.tempPort = jTextField3.getText();
         try {
-            DBConnection.StartConnection(username, passwrd, domain, port);
+            DBConnection.StartConnection();
             JOptionPane.showMessageDialog(rootPane, "Connessione eseguita correttamente.", null, INFORMATION_MESSAGE);
             close();
         }

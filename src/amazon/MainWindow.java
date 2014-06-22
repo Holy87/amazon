@@ -6,9 +6,10 @@
 
 package amazon;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -20,7 +21,6 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author Francesco
  */
 public class MainWindow extends javax.swing.JFrame {
-
     /**
      * Creates new form MainWindow
      */
@@ -28,9 +28,18 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         jTabbedPane1.setVisible(false);
         //List<Author> autori = new LinkedList<>()
+        modUtenti = new DBTableModel();
+        usersTable.setModel(modUtenti);
+        
+        
+        
         
     }
 
+    private DBTableModel modUtenti, modAutori;
+    private ResultSet rs;
+    private int pos = -1;
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,6 +53,7 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         usersTable = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -70,20 +80,33 @@ public class MainWindow extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(usersTable);
 
+        jButton2.setText("Aggiorna");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(710, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 865, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -98,12 +121,12 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(865, Short.MAX_VALUE))
+                .addContainerGap(901, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(509, Short.MAX_VALUE)
+                .addContainerGap(511, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -195,6 +218,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        aggiornaTabellaUtenti();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -210,8 +237,6 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void setTable ()
     {
-        DBTableModel modTab = new DBTableModel();
-        usersTable.setModel(modTab);
       usersTable.getSelectionModel().setSelectionMode(
               ListSelectionModel.SINGLE_SELECTION);
       usersTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -233,11 +258,36 @@ public class MainWindow extends javax.swing.JFrame {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
               });
+      aggiornaTabellaUtenti();
    }
     
     private void checkState(){
         checkState(DBConnection.connected());
     }
+    
+    private void aggiornaTabellaUtenti()
+    {
+        try {
+            rs = DBConnection.eseguiQuery("SELECT * FROM UTENTI");
+            modUtenti.setResultSet(rs);
+            rs.absolute(pos);
+            mostraDati();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Errore1: " + ex.toString(), null, ERROR_MESSAGE);
+        }
+        
+    }
+    
+    void mostraDati() {
+      try {
+         pos = rs.getRow();
+         usersTable.getSelectionModel().setSelectionInterval(pos-1,pos-1);
+         usersTable.setRowSelectionInterval(pos - 1, pos - 1);
+      } catch (SQLException e) {
+         //mostraErrori(e);
+      }
+   }
+    
     /**
      * @param args the command line arguments
      */
@@ -293,6 +343,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
