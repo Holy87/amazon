@@ -223,4 +223,43 @@ public class DBConnection {
        insertDelivery.close();
        
    }
+   
+   //Creazione di un nuovo utente
+   public static void creaUtente(String nome, String cognome, String mail, String password, String cellulare) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("INSERT INTO UTENTI(NOME, COGNOME, EMAIL, PSW, NUMCELLULARE) VALUES(?, ?, ?, ?, ?)");
+       pstmt.setString(1, nome);
+       pstmt.setString(2, cognome);
+       pstmt.setString(3, mail);
+       pstmt.setString(4, password);
+       pstmt.setString(5, cellulare);
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaUtente(String id, String nome, String cognome, String mail, String password, String cellulare) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE UTENTI SET NOME = ?, COGNOME = ?, EMAIL = ?, PSW = ?, NUMCELLULARE = ? WHERE UTENTE_ID = ?");
+       pstmt.setString(1, nome);
+       pstmt.setString(2, cognome);
+       pstmt.setString(3, mail);
+       pstmt.setString(4, password);
+       pstmt.setString(5, cellulare);
+       pstmt.setString(6, id);
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void eliminaUtente(String id) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("DELETE FROM UTENTI WHERE UTENTE_ID = ?");
+       pstmt.setString(1, id);
+       
+       pstmt.executeUpdate();
+   }
 }
