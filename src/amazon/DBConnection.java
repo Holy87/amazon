@@ -262,4 +262,27 @@ public class DBConnection {
        
        pstmt.executeUpdate();
    }
+   
+   public static void creaAutore(String nome, String cognome) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("INSERT INTO UTENTI(NOME, COGNOME) VALUES(?, ?)");
+       pstmt.setString(1, nome);
+       pstmt.setString(2, cognome);
+
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaAutore(String id, String nome, String cognome) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE UTENTI SET NOME = ?, COGNOME = ? WHERE AUTORE_ID = ?");
+       pstmt.setString(1, nome);
+       pstmt.setString(2, cognome);
+       
+       pstmt.executeUpdate();
+   }
 }
