@@ -135,6 +135,13 @@ public final class TabOggetti extends javax.swing.JPanel {
         
     }
     
+    public void aggiornaTabellaConQuery() {
+        if (ultimaRicerca == null)
+            aggiornaTabella();
+        else
+            aggiornaTabella(ultimaRicerca);
+    }
+    
     /**
      * Aggiorna i dati della tabella secondo una query
      * @param query stringa da inserire come query
@@ -197,7 +204,6 @@ public final class TabOggetti extends javax.swing.JPanel {
         int num = 0;
         while(itr.hasNext()){
             String colonna = (String)itr.next();
-            System.out.println(colonna);
             switch ((char)tab.get(num)) {
                 case 'i': try {
                         int in = Integer.parseInt(query);
@@ -266,7 +272,7 @@ public final class TabOggetti extends javax.swing.JPanel {
        if (risposta == 0) {
            try {
                 DBConnection.eliminaRecord(id, getTableName(), modelloTabella.getDBID());
-                aggiornaTabella();
+                aggiornaTabellaConQuery();
                 
            } catch (SQLException e) {
                mostraErrore(e);
@@ -300,7 +306,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      */
     private void nuovoRecord()
     {
-        finestraEdit.show(ADDN, null);
+        finestraEdit.show(ADDN, null, this);
     }
     
     /**
@@ -308,7 +314,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      */
     private void modificaRecord()
     {
-        finestraEdit.show(EDIT, getDataCollection());
+        finestraEdit.show(EDIT, getDataCollection(), this);
     }
     
     private List getDataCollection()
@@ -495,13 +501,13 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(1, 1, 1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton)
-                    .addComponent(serviceButton1))
+                    .addComponent(serviceButton1)
+                    .addComponent(searchBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -20,6 +20,7 @@ public abstract class EditForm extends javax.swing.JDialog {
     protected final int ADDN = 2;
     protected int mode;
     protected List dati;
+    protected TabOggetti scheda;
 
     /**
      * Creates new form EditForm
@@ -32,8 +33,9 @@ public abstract class EditForm extends javax.swing.JDialog {
         //initComponents();
     }
     
-    public void show(int mode, List dati)
+    public void show(int mode, List dati, TabOggetti scheda)
     {
+        this.scheda = scheda;
         this.mode = mode;
         if (mode == EDIT)
         {
@@ -62,6 +64,7 @@ public abstract class EditForm extends javax.swing.JDialog {
     
     protected void chiudiFinestra() {
         setVisible(false);
+        scheda.aggiornaTabellaConQuery();
     }
     
     
