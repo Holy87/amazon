@@ -66,12 +66,12 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="tNome7" alignment="0" pref="220" max="32767" attributes="0"/>
-                          <Component id="tNome3" alignment="0" max="32767" attributes="0"/>
-                          <Component id="tNome" alignment="0" max="32767" attributes="0"/>
-                          <Component id="tNome4" alignment="0" max="32767" attributes="0"/>
-                          <Component id="tNome5" alignment="0" max="32767" attributes="0"/>
-                          <Component id="tNome6" alignment="0" max="32767" attributes="0"/>
+                          <Component id="tISBN" alignment="0" pref="220" max="32767" attributes="0"/>
+                          <Component id="tDescrizione" alignment="0" max="32767" attributes="0"/>
+                          <Component id="tGenere" alignment="0" max="32767" attributes="0"/>
+                          <Component id="tNPagine" alignment="0" max="32767" attributes="0"/>
+                          <Component id="tPesoSped" alignment="0" max="32767" attributes="0"/>
+                          <Component id="tDataUscita" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -81,8 +81,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="tNome2" max="32767" attributes="0"/>
-                          <Component id="tNome1" max="32767" attributes="0"/>
+                          <Component id="tNEdizione" max="32767" attributes="0"/>
+                          <Component id="tNomeLibro" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -96,42 +96,42 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tNome1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tNomeLibro" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="tNome2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tNEdizione" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tNome7" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tISBN" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="tNome3" alignment="3" min="-2" pref="90" max="-2" attributes="0"/>
+                  <Component id="tDescrizione" alignment="3" min="-2" pref="90" max="-2" attributes="0"/>
                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tNome" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tGenere" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tNome4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tNPagine" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tNome5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tPesoSped" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tNome6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tDataUscita" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="28" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -153,7 +153,7 @@
         <Property name="text" type="java.lang.String" value="N. Edizione"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome">
+    <Component class="javax.swing.JTextField" name="tGenere">
     </Component>
     <Component class="javax.swing.JButton" name="bEsc">
       <Properties>
@@ -171,11 +171,11 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bOkActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome1">
+    <Component class="javax.swing.JTextField" name="tNomeLibro">
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome2">
+    <Component class="javax.swing.JTextField" name="tNEdizione">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tNome2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tNEdizioneActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -188,7 +188,7 @@
         <Property name="text" type="java.lang.String" value="Descrizione"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome3">
+    <Component class="javax.swing.JTextField" name="tDescrizione">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
@@ -210,13 +210,13 @@
         <Property name="text" type="java.lang.String" value="Data Uscita"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome4">
+    <Component class="javax.swing.JTextField" name="tNPagine">
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome5">
+    <Component class="javax.swing.JTextField" name="tPesoSped">
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome6">
+    <Component class="javax.swing.JTextField" name="tDataUscita">
     </Component>
-    <Component class="javax.swing.JTextField" name="tNome7">
+    <Component class="javax.swing.JTextField" name="tISBN">
     </Component>
   </SubComponents>
 </Form>

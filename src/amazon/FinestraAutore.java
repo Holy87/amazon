@@ -12,14 +12,14 @@ import java.sql.SQLException;
  *
  * @author Francesco
  */
-public class FinestraAutori extends EditForm {
+public class FinestraAutore extends EditForm {
 
     /**
      * Creates new form FinestraUtente
      * @param parent
      * @param modal
      */
-    public FinestraAutori(java.awt.Frame parent, boolean modal) {
+    public FinestraAutore(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }

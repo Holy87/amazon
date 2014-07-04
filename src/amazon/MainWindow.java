@@ -31,17 +31,27 @@ public class MainWindow extends javax.swing.JFrame {
     private int utenteID;
     private String nomeUtente;
     
+    private FinestraAutore finestraAutore;
+    
+    private FinestraLibro finestraLibro;
+    
+    
     
     private void initCustomComponents() {
         jTabbedPane1.setVisible(false);
         finestraUtente = new FinestraUtente(this, false);
         tabUtenti.impostaInterfaccia("UTENTI", finestraUtente, this);
-
+        finestraAutore = new FinestraAutore(this, false);
+        tabAutori.impostaInterfaccia("AUTORI", finestraAutore, this);
+        finestraLibro = new FinestraLibro(this, false);
+        tabLibri.impostaInterfaccia("LIBRI", finestraLibro, this);
     }
     
     private void connettiTutto()
     {
         tabUtenti.connectTable();
+        tabAutori.connectTable();
+        tabLibri.connectTable();
     }
     
     public void impostaUtente(int id, String nome) {
@@ -66,7 +76,12 @@ public class MainWindow extends javax.swing.JFrame {
         tabUtenti = new amazon.TabOggetti();
         jLabel1 = new javax.swing.JLabel();
         lUtente = new javax.swing.JLabel();
-        tabOggetti1 = new amazon.TabOggetti();
+        tabAutori = new amazon.TabOggetti();
+        tabEditori = new amazon.TabOggetti();
+        tabLibri = new amazon.TabOggetti();
+        tabVenditori = new amazon.TabOggetti();
+        tabOggetti2 = new amazon.TabOggetti();
+        tabOggetti3 = new amazon.TabOggetti();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -110,7 +125,10 @@ public class MainWindow extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Utenti", jPanel1);
-        jTabbedPane1.addTab("Autori", tabOggetti1);
+        jTabbedPane1.addTab("Autori", tabAutori);
+        jTabbedPane1.addTab("Editori", tabEditori);
+        jTabbedPane1.addTab("Libri", tabLibri);
+        jTabbedPane1.addTab("Venditori", tabVenditori);
 
         jMenu1.setText("File");
 
@@ -315,7 +333,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
-    private amazon.TabOggetti tabOggetti1;
+    private amazon.TabOggetti tabAutori;
+    private amazon.TabOggetti tabEditori;
+    private amazon.TabOggetti tabLibri;
+    private amazon.TabOggetti tabOggetti2;
+    private amazon.TabOggetti tabOggetti3;
     private amazon.TabOggetti tabUtenti;
+    private amazon.TabOggetti tabVenditori;
     // End of variables declaration//GEN-END:variables
 }
