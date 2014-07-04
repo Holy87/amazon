@@ -12,6 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,6 +47,8 @@ public class DBConnection {
     * <i>SELECT</i>.
     */
    final static public int CONTESTO_ESEGUI_QUERY = 1;
+   
+   private static Hashtable<String, LinkedList> tabelle;
     
     /**
      * 
@@ -63,7 +68,17 @@ public class DBConnection {
         //ods.setURL("jdbc:oracle:thin:@//"+domain+":"+port+"/xe");//143.225.117.238:1521/xe");
         //Stampa Versione Driver
         conn = ods.getConnection();
+        
+        createTables();
     }
+    
+    private static void createTables() {
+        ListaTipi tipi = new ListaTipi();
+        tabelle = tipi.getTipi();
+    }
+    
+    
+    
     
     public static void reConnect() throws SQLException {
         if (conn != null){
@@ -254,12 +269,10 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   public static void eliminaUtente(String id) throws SQLException {
+   public static void eliminaRecord(String id, String tabella, String nomeColonna) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       
-       pstmt = conn.prepareStatement("DELETE FROM UTENTI WHERE UTENTE_ID = ?");
+       pstmt = conn.prepareStatement("DELETE FROM " + tabella + " WHERE " + nomeColonna + " = ?");
        pstmt.setString(1, id);
-       
        pstmt.executeUpdate();
    }
 }

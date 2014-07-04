@@ -6,11 +6,14 @@
 
 package amazon;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
@@ -37,8 +40,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     private ResultSet rs;
     private DBTableModel modelloTabella;
     private int cursore = 1;
-    private String ultimaRicerca;
     private List colonne; //lista delle colonne della tabella
+    PreparedStatement ultimaRicerca;
     private final int EDIT = 1;
     private final int ADDN = 2;
     private EditForm finestraEdit;
@@ -121,18 +124,26 @@ public final class TabOggetti extends javax.swing.JPanel {
      */
     public void aggiornaTabella()
     {
-        aggiornaTabella("SELECT * FROM " + getTableName());        
+        try {
+            rs = DBConnection.eseguiQuery("SELECT * FROM " + getTableName());
+            modelloTabella.setRS(rs);
+            rs.absolute(cursore);
+            mostraDati();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        
     }
     
     /**
      * Aggiorna i dati della tabella secondo una query
      * @param query stringa da inserire come query
      */
-    private void aggiornaTabella(String query)
+    private void aggiornaTabella(PreparedStatement pstmt)
     {
-        ultimaRicerca = query;
+        ultimaRicerca = pstmt;
         try {
-            rs = DBConnection.eseguiQuery(query);
+            rs = pstmt.executeQuery();
             modelloTabella.setResultSet(rs);
             rs.absolute(cursore);
             mostraDati();
@@ -151,6 +162,8 @@ public final class TabOggetti extends javax.swing.JPanel {
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
       } catch (SQLException ex) {
           mostraErrore(ex);
+      } catch (java.lang.IllegalArgumentException ex) {
+          //nulla
       }
     }
     
@@ -177,19 +190,62 @@ public final class TabOggetti extends javax.swing.JPanel {
      * Il % prima e dopo una stringa commette un LIKE
      */
     private void eseguiQuerySuTabella(String query){
+        LinkedList tab = new ListaTipi().getTipi().get(getTableName());
+        LinkedList tab2 = new LinkedList();
         String preQuery = "SELECT * FROM " + getTableName() + " WHERE ";
         Iterator itr = colonne.iterator();
+        int num = 0;
         while(itr.hasNext()){
             String colonna = (String)itr.next();
-            if (colonna.indexOf("%") > 0)
-                preQuery += colonna + " LIKE " + query;
-            else
-                preQuery += colonna + " = " + query;
-        preQuery += " OR ";
+            System.out.println(colonna);
+            switch ((char)tab.get(num)) {
+                case 'i': try {
+                        int in = Integer.parseInt(query);
+                        preQuery += colonna + " = ? OR ";
+                        tab2.add('i');
+                } catch (Exception e) {
+                    //nulla
+                }
+                    break;
+                case 's': if (query.contains("%"))
+                        preQuery += colonna + " LIKE ? OR ";
+                    else
+                        preQuery += colonna + " = ? OR ";
+                    tab2.add('s');
+                    break;
+                case 'f': try {
+                    Float.parseFloat(query);
+                    preQuery += " = ? OR ";
+                    tab2.add('f');
+                } catch (Exception e) {
+                    //nulla
+                }
+                    break;
+            }
+            
+            num ++;
         }
         preQuery = preQuery.substring(0, preQuery.length()-4);
-        System.out.println(preQuery);
-        aggiornaTabella(preQuery);
+        try {
+            PreparedStatement pstmt = DBConnection.conn.prepareStatement(
+                    preQuery,
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            for (int i = 0; i < tab2.size(); i++) {
+                switch ((char)tab2.get(i)) {
+                    case 'i': pstmt.setInt(i+1, Integer.parseInt(query.replace('%', ' ')));
+                        break;
+                    case 's': pstmt.setString(i+1, query);
+                        break;
+                    case 'f': pstmt.setFloat(i+1, Float.parseFloat(query.replace('%', ' ')));
+                        break;
+                }
+            }
+            aggiornaTabella(pstmt);
+            
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }
     
     /**
@@ -209,8 +265,8 @@ public final class TabOggetti extends javax.swing.JPanel {
        int risposta = JOptionPane.showConfirmDialog(mainWindow, "Sei sicuro di voler eliminare il record?", "Eliminazione record", YES_NO_OPTION);
        if (risposta == 0) {
            try {
-                DBConnection.eliminaUtente(id);
-                aggiornaTabella(ultimaRicerca);
+                DBConnection.eliminaRecord(id, getTableName(), modelloTabella.getDBID());
+                aggiornaTabella();
                 
            } catch (SQLException e) {
                mostraErrore(e);
@@ -245,7 +301,6 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void nuovoRecord()
     {
         finestraEdit.show(ADDN, null);
-        aggiornaTabella(ultimaRicerca);
     }
     
     /**
@@ -253,9 +308,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      */
     private void modificaRecord()
     {
-        System.out.println(getDataCollection().size());
         finestraEdit.show(EDIT, getDataCollection());
-        aggiornaTabella(ultimaRicerca);
     }
     
     private List getDataCollection()
@@ -264,6 +317,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         for (int i = 0; i < modelloTabella.getColumnCount(); i++)
         {
             dati.add((String)modelloTabella.getValueAt(cursore-1, i).toString());
+            System.out.println(modelloTabella.getColumnClass(cursore).toString());
         }
         return dati;
     }
@@ -337,6 +391,11 @@ public final class TabOggetti extends javax.swing.JPanel {
 
         searchBox.setToolTipText("Scrivi la query di ricerca");
         searchBox.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        searchBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBoxActionPerformed(evt);
+            }
+        });
         searchBox.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 searchBoxKeyTyped(evt);
@@ -344,6 +403,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         });
 
         searchButton.setText("Cerca");
+        searchButton.setEnabled(false);
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchButtonActionPerformed(evt);
@@ -440,8 +500,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addComponent(searchBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton)
                     .addComponent(serviceButton1))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -515,6 +575,10 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void serviceButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serviceButton1ActionPerformed
         pulsanteDiServizio();
     }//GEN-LAST:event_serviceButton1ActionPerformed
+
+    private void searchBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBoxActionPerformed
+        searchButtonActionPerformed(evt);
+    }//GEN-LAST:event_searchBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
