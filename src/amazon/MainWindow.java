@@ -31,17 +31,27 @@ public class MainWindow extends javax.swing.JFrame {
     private int utenteID;
     private String nomeUtente;
     
+    private FinestraAutore finestraAutore;
+    
+    private FinestraLibro finestraLibro;
+    
+    
     
     private void initCustomComponents() {
         jTabbedPane1.setVisible(false);
         finestraUtente = new FinestraUtente(this, false);
         tabUtenti.impostaInterfaccia("UTENTI", finestraUtente, this);
-
+        finestraAutore = new FinestraAutore(this, false);
+        tabAutori.impostaInterfaccia("AUTORI", finestraAutore, this);
+        finestraLibro = new FinestraLibro(this, false);
+        tabLibri.impostaInterfaccia("LIBRI", finestraLibro, this);
     }
     
     private void connettiTutto()
     {
         tabUtenti.connectTable();
+        tabAutori.connectTable();
+        tabLibri.connectTable();
     }
     
     public void impostaUtente(int id, String nome) {
@@ -66,6 +76,12 @@ public class MainWindow extends javax.swing.JFrame {
         tabUtenti = new amazon.TabOggetti();
         jLabel1 = new javax.swing.JLabel();
         lUtente = new javax.swing.JLabel();
+        tabAutori = new amazon.TabOggetti();
+        tabEditori = new amazon.TabOggetti();
+        tabLibri = new amazon.TabOggetti();
+        tabVenditori = new amazon.TabOggetti();
+        tabOggetti2 = new amazon.TabOggetti();
+        tabOggetti3 = new amazon.TabOggetti();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -91,7 +107,7 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
+            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -109,6 +125,10 @@ public class MainWindow extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Utenti", jPanel1);
+        jTabbedPane1.addTab("Autori", tabAutori);
+        jTabbedPane1.addTab("Editori", tabEditori);
+        jTabbedPane1.addTab("Libri", tabLibri);
+        jTabbedPane1.addTab("Venditori", tabVenditori);
 
         jMenu1.setText("File");
 
@@ -177,7 +197,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 802, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -313,6 +333,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
+    private amazon.TabOggetti tabAutori;
+    private amazon.TabOggetti tabEditori;
+    private amazon.TabOggetti tabLibri;
+    private amazon.TabOggetti tabOggetti2;
+    private amazon.TabOggetti tabOggetti3;
     private amazon.TabOggetti tabUtenti;
+    private amazon.TabOggetti tabVenditori;
     // End of variables declaration//GEN-END:variables
 }

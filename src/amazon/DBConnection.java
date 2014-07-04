@@ -275,4 +275,67 @@ public class DBConnection {
        pstmt.setString(1, id);
        pstmt.executeUpdate();
    }
+   
+   public static void creaAutore(String nome, String cognome) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("INSERT INTO AUTORI(AUT_NOME, AUT_COGNOME) VALUES(?, ?)");
+       pstmt.setString(1, nome);
+       pstmt.setString(2, cognome);
+
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaAutore(String id, String nome, String cognome) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE AUTORI SET AUT_NOME = ?, AUT_COGNOME = ? WHERE AUTORE_ID = ?");
+       pstmt.setString(1, nome);
+       pstmt.setString(2, cognome);
+       pstmt.setString(3, id);
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void creaLibro(String nomeLibro, int nEdizione, int isbn, String descrizione, String genere, int nPagine, int pesoSped, String dataUscita) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("INSERT INTO LIBRI(PROD_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+       pstmt.setString(1, nomeLibro);
+       pstmt.setInt(2, nEdizione);
+       pstmt.setInt(3, isbn);
+       pstmt.setString(4, descrizione);
+       pstmt.setString(5, genere);
+       pstmt.setInt(6, nPagine);
+       pstmt.setInt(7, pesoSped);
+       pstmt.setString(8, dataUscita);
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaLibro(int id, String nomeLibro, int nEdizione, int isbn, String descrizione, String genere, int nPagine, int pesoSped, String dataUscita) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET PROD_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE PROD_ID = ?");
+       pstmt.setString(1, nomeLibro);
+       pstmt.setInt(2, nEdizione);
+       pstmt.setInt(3, isbn);
+       pstmt.setString(4, descrizione);
+       pstmt.setString(5, genere);
+       pstmt.setInt(6, nPagine);
+       pstmt.setInt(7, pesoSped);
+       pstmt.setString(8, dataUscita);
+       pstmt.setInt(9, id);
+       
+       pstmt.executeUpdate();
+   }
 }
+
+   
