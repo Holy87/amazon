@@ -300,39 +300,41 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   public static void creaLibro(String nomeLibro, int nEdizione, int isbn, String descrizione, String genere, int nPagine, int pesoSped, String dataUscita) throws SQLException
+   public static void creaLibro(String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
        
-       pstmt = conn.prepareStatement("INSERT INTO LIBRI(PROD_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+       //Quando si crea un libro bisogna aggiungere: COD_AUTORE, EDITORE, LINGUA, PREZZO
+       
+       pstmt = conn.prepareStatement("INSERT INTO LIBRI(LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
        pstmt.setString(1, nomeLibro);
-       pstmt.setInt(2, nEdizione);
-       pstmt.setInt(3, isbn);
+       pstmt.setString(2, nEdizione);
+       pstmt.setString(3, isbn);
        pstmt.setString(4, descrizione);
        pstmt.setString(5, genere);
-       pstmt.setInt(6, nPagine);
-       pstmt.setInt(7, pesoSped);
+       pstmt.setString(6, nPagine);
+       pstmt.setString(7, pesoSped);
        pstmt.setString(8, dataUscita);
        
        pstmt.executeUpdate();
    }
    
-   public static void aggiornaLibro(int id, String nomeLibro, int nEdizione, int isbn, String descrizione, String genere, int nPagine, int pesoSped, String dataUscita) throws SQLException
+   public static void aggiornaLibro(String id, String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET PROD_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE PROD_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE PROD_ID = ?");
        pstmt.setString(1, nomeLibro);
-       pstmt.setInt(2, nEdizione);
-       pstmt.setInt(3, isbn);
+       pstmt.setString(2, nEdizione);
+       pstmt.setString(3, isbn);
        pstmt.setString(4, descrizione);
        pstmt.setString(5, genere);
-       pstmt.setInt(6, nPagine);
-       pstmt.setInt(7, pesoSped);
+       pstmt.setString(6, nPagine);
+       pstmt.setString(7, pesoSped);
        pstmt.setString(8, dataUscita);
-       pstmt.setInt(9, id);
+       pstmt.setString(9, id);
        
        pstmt.executeUpdate();
    }
