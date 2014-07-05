@@ -75,7 +75,7 @@ public class ListaTipi {
         tabella.put("AUTORI", autori);
         tabella.put("CORRIERI", corrieri);
         tabella.put("EDITORI", editori);
-        tabella.put("MAGAZZINO_LIBRI", magazzinoLibri);
+        tabella.put("LIBRI", magazzinoLibri);
         
     }
 }

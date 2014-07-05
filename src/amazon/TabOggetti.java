@@ -324,14 +324,13 @@ public final class TabOggetti extends javax.swing.JPanel {
         for (int i = 0; i < modelloTabella.getColumnCount(); i++)
         {
             dati.add((String)modelloTabella.getValueAt(cursore-1, i).toString());
-            System.out.println(modelloTabella.getColumnClass(cursore).toString());
         }
         return dati;
     }
     
     private void pulsanteDiServizio()
     {
-        
+        //non serve a nulla
     }
     
     @SuppressWarnings("unchecked")

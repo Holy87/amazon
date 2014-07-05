@@ -50,6 +50,7 @@ public class FinestraUtente extends EditForm {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modifica Utente");
+        setLocationByPlatform(true);
 
         jLabel1.setText("ID");
 
@@ -196,12 +197,13 @@ public class FinestraUtente extends EditForm {
     
     private void eseguiOk()
     {
-        chiudiFinestra();
+        setVisible(false);
         try {
             if (mode == ADDN)
                 DBConnection.creaUtente(tNome.getText(), tCognome.getText(), tMail.getText(), tPass.getText(), tCell.getText());
             else
                 DBConnection.aggiornaUtente(tID.getText(), tNome.getText(), tCognome.getText(), tMail.getText(), tPass.getText(), tCell.getText());
+            chiudiFinestra();
         }
         catch(SQLException ex){
             mostraErrore(ex);
