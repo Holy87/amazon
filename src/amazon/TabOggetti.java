@@ -80,8 +80,21 @@ public final class TabOggetti extends javax.swing.JPanel {
             case "UTENTI": serviceButton1.setText("Imposta utente");
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {impostaUtente(evt);}});
+                serviceButton2.setText("Gestione utente");
+                /*GESTIONE METODO: Apre una finestra dove selezionare 3 cose:
+                **1) Visualizza liste desideri
+                **2) Visualizza carrello
+                **3) Visualizza ordini già effettuati
+                */
                 break;
-            //case "LIBRI": ALTRE AZIONI
+            case "AUTORI": serviceButton1.setText("Visualizza libri autore");
+                //GESTIONE METODO: Visualizza tutti i libri dell'autore selezionato
+                break;
+            case "EDITORI": serviceButton1.setText("Visualizza libri editore");
+                //GESTIONE METODO: Visualizza tutti i libri dell'editore selezionato
+                break;
+            case "LIBRI": serviceButton1.setText("Visualizza informazioni libro");
+                //GESTIONE METODO: Visualizza TUTTE le info sul libro, comprese quelle non visibili nella tabella
                 
             default: serviceButton1.setVisible(false);
             break;
@@ -351,6 +364,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         serviceButton1 = new javax.swing.JToggleButton();
+        serviceButton2 = new javax.swing.JToggleButton();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -397,6 +411,7 @@ public final class TabOggetti extends javax.swing.JPanel {
 
         searchBox.setToolTipText("Scrivi la query di ricerca");
         searchBox.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        searchBox.setMaximumSize(new java.awt.Dimension(2147483647, 20));
         searchBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchBoxActionPerformed(evt);
@@ -453,6 +468,13 @@ public final class TabOggetti extends javax.swing.JPanel {
             }
         });
 
+        serviceButton2.setText("serviceButton2");
+        serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serviceButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -460,7 +482,7 @@ public final class TabOggetti extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(searchBox)
+                    .addComponent(searchBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(newRecord)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -478,13 +500,16 @@ public final class TabOggetti extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4))
-                    .addComponent(serviceButton1))
-                .addContainerGap(59, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(serviceButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(serviceButton2)))
+                .addContainerGap(214, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
@@ -499,14 +524,16 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addComponent(editRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(deleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(1, 1, 1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchBox, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(searchBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(searchButton)
-                        .addComponent(serviceButton1)))
+                        .addComponent(serviceButton1)
+                        .addComponent(serviceButton2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -587,6 +614,10 @@ public final class TabOggetti extends javax.swing.JPanel {
         searchButtonActionPerformed(evt);
     }//GEN-LAST:event_searchBoxActionPerformed
 
+    private void serviceButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serviceButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_serviceButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton deleteRecord;
@@ -601,6 +632,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     private javax.swing.JTextField searchBox;
     private javax.swing.JButton searchButton;
     private javax.swing.JToggleButton serviceButton1;
+    private javax.swing.JToggleButton serviceButton2;
     private javax.swing.JTable tabella;
     private javax.swing.JButton updateTable;
     // End of variables declaration//GEN-END:variables

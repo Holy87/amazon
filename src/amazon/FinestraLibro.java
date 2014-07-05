@@ -55,6 +55,8 @@ public class FinestraLibro extends EditForm {
         tPesoSped = new javax.swing.JTextField();
         tDataUscita = new javax.swing.JTextField();
         tISBN = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        tID1 = new javax.swing.JTextField();
 
         jLabel9.setText("Descrizione");
 
@@ -66,7 +68,6 @@ public class FinestraLibro extends EditForm {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modifica Libro");
-        setLocationByPlatform(true);
 
         jLabel1.setText("Nome libro");
 
@@ -104,11 +105,15 @@ public class FinestraLibro extends EditForm {
 
         jLabel14.setText("Data Uscita");
 
+        jLabel4.setText("Prod. ID");
+
+        tID1.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -133,19 +138,27 @@ public class FinestraLibro extends EditForm {
                             .addComponent(tPesoSped)
                             .addComponent(tDataUscita)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tNEdizione)
-                            .addComponent(tNomeLibro))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(tID1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(tNomeLibro, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tNEdizione))))
                 .addGap(1, 1, 1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(tID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tNomeLibro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -210,6 +223,7 @@ public class FinestraLibro extends EditForm {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -217,6 +231,7 @@ public class FinestraLibro extends EditForm {
     private javax.swing.JTextField tDescrizione;
     private javax.swing.JTextField tGenere;
     private javax.swing.JTextField tID;
+    private javax.swing.JTextField tID1;
     private javax.swing.JTextField tISBN;
     private javax.swing.JTextField tNEdizione;
     private javax.swing.JTextField tNPagine;
@@ -226,6 +241,7 @@ public class FinestraLibro extends EditForm {
 
     @Override
     protected void fillContents() {
+        tID.setText((String)dati.get(0));
         tNomeLibro.setText((String)dati.get(1));
         tNEdizione.setText((String)dati.get(2));
         tISBN.setText((String)dati.get(3));
@@ -238,6 +254,7 @@ public class FinestraLibro extends EditForm {
 
     @Override
     protected void cleanContents() {
+        tID.setText("");
         tNomeLibro.setText("");
         tNEdizione.setText("");
         tISBN.setText("");
@@ -254,9 +271,9 @@ public class FinestraLibro extends EditForm {
         try {
             setVisible(false);
             if (mode == ADDN)
-                DBConnection.creaLibro(tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), Integer.parseInt(tISBN.getText()), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
+                DBConnection.creaLibro(tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
             else
-                DBConnection.aggiornaLibro(Integer.parseInt(tID.getText()), tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), Integer.parseInt(tISBN.getText()), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
+                DBConnection.aggiornaLibro(tID.getText(), tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
             chiudiFinestra();
         }
         catch(SQLException ex){
