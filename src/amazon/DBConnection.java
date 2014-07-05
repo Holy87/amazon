@@ -336,6 +336,28 @@ public class DBConnection {
        
        pstmt.executeUpdate();
    }
+   
+   public static void creaEditore(String nomeEditore) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("INSERT INTO EDITORI(EDI_NOME) VALUES(?)");
+       pstmt.setString(1, nomeEditore);
+
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaEditore(String idEditore, String nomeEditore) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE AUTORI SET EDI_NOME = ?, WHERE EDI_ID = ?");
+       pstmt.setString(1, nomeEditore);
+       pstmt.setString(2, idEditore);
+       
+       pstmt.executeUpdate();
+   }
 }
 
    

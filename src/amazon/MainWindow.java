@@ -32,7 +32,7 @@ public class MainWindow extends javax.swing.JFrame {
     private String nomeUtente;
     
     private FinestraAutore finestraAutore;
-    
+    private FinestraEditore finestraEditore;
     private FinestraLibro finestraLibro;
     
     
@@ -43,6 +43,8 @@ public class MainWindow extends javax.swing.JFrame {
         tabUtenti.impostaInterfaccia("UTENTI", finestraUtente, this);
         finestraAutore = new FinestraAutore(this, false);
         tabAutori.impostaInterfaccia("AUTORI", finestraAutore, this);
+        finestraEditore = new FinestraEditore(this, false);
+        tabEditori.impostaInterfaccia("EDITORI", finestraEditore, this);
         finestraLibro = new FinestraLibro(this, false);
         tabLibri.impostaInterfaccia("LIBRI", finestraLibro, this);
     }
@@ -51,6 +53,7 @@ public class MainWindow extends javax.swing.JFrame {
     {
         tabUtenti.connectTable();
         tabAutori.connectTable();
+        tabEditori.connectTable();
         tabLibri.connectTable();
     }
     
@@ -262,7 +265,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-         finestraAutore.show(ADDN, null, tabAutori);
+        finestraAutore.show(ADDN, null, tabAutori);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
@@ -270,7 +273,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        //da mettere
+        //da mettere il Venditore per il sottomenu di nuovo
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     /**
