@@ -352,9 +352,31 @@ public class DBConnection {
    public static void aggiornaEditore(String idEditore, String nomeEditore) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE AUTORI SET EDI_NOME = ?, WHERE EDI_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE EDITORI SET EDI_NOME = ?, WHERE EDI_ID = ?");
        pstmt.setString(1, nomeEditore);
        pstmt.setString(2, idEditore);
+       
+       pstmt.executeUpdate();
+   }
+   
+      public static void creaVenditore(String nomeVenditore) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       ResultSet rs; //Variabile dove inserire i risultati della Query
+       
+       pstmt = conn.prepareStatement("INSERT INTO VENDITORI(VENDITORE_NOME) VALUES(?)");
+       pstmt.setString(1, nomeVenditore);
+
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaVenditore(String idVenditore, String nomeVenditore) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE VENDITORI SET VENDITORE_NOME = ?, WHERE VENDITORE_ID = ?");
+       pstmt.setString(1, nomeVenditore);
+       pstmt.setString(2, idVenditore);
        
        pstmt.executeUpdate();
    }
