@@ -223,8 +223,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                         int in = Integer.parseInt(query);
                         preQuery += colonna + " = ? OR ";
                         tab2.add('i');
-                } catch (Exception e) {
-                    //nulla
+                } catch (NumberFormatException e) {
+                    System.out.println(query + " non valido su " + colonna);
                 }
                     break;
                 case 's': if (query.contains("%"))
@@ -237,8 +237,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                     Float.parseFloat(query);
                     preQuery += " = ? OR ";
                     tab2.add('f');
-                } catch (Exception e) {
-                    //nulla
+                } catch (NumberFormatException e) {
+                    System.out.println(query + " non valido su " + colonna);
                 }
                     break;
             }
