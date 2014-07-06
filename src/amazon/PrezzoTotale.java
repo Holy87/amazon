@@ -11,5 +11,10 @@ package amazon;
  * @author Claudio Renza
  */
 public class PrezzoTotale {
+    public double totale;    
     
+    public double setPrezzo(double netto, double costosped, double sconto)  {
+        totale = netto + costosped - sconto;
+        return totale;
+    }
 }
