@@ -67,6 +67,41 @@ public class MainWindow extends javax.swing.JFrame {
         lUtente.setText(nome);
         JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
     }
+    
+    public void gestisciUtente(){
+        /*Metodo che gestisce l'Utente e visualizza:
+        **1) Visualizza liste desideri
+        **2) Visualizza carrello
+        **3) Visualizza ordini già effettuati
+        **4) Crea ordine
+        **5) Crea recensione
+        */
+    }
+    
+    public void visualizzaLibriAutore(){
+        /*Metodo che gestisce l'Utente e visualizza:
+        **1) Visualizza liste desideri
+        **2) Visualizza carrello
+        **3) Visualizza ordini già effettuati
+        */
+    }
+    
+    public void visualizzaLibriEditore(){
+        /*Metodo che gestisce l'Editore e visualizza 
+        **tutti i libri di quell'editore*/
+    }
+    
+    public void visualizzaInfoLibro(){
+        /*Metodo che prende un libro e ne visualizza
+        **le info complete, tra cui:
+        **1) Le immagini di copertina
+        **2) Gli autori del libro
+        **3) Gli editori del libro
+        **4) Le lingue
+        **5) Il formato ed il prezzo di listino applicato a quel formato
+        **6) FACOLTATIVO: elencare tutte le recensioni di quel libro
+        */
+    }
             
     
     /**
