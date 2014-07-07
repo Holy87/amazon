@@ -149,7 +149,7 @@ public class FinestraLibro extends EditForm {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(tNomeLibro, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tNEdizione))))
-                .addGap(1, 1, 1))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

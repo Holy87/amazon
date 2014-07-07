@@ -202,6 +202,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      */
     private void aggiornaTabella(PreparedStatement pstmt)
     {
+        System.out.println("qui ci arrivo");
         ultimaRicerca = pstmt;
         try {
             rs = pstmt.executeQuery();
@@ -209,7 +210,8 @@ public final class TabOggetti extends javax.swing.JPanel {
             rs.absolute(cursore);
             mostraDati();
         } catch (SQLException ex) {
-            mostraErrore(ex);
+            //mostraErrore(ex);
+            System.out.println((String)colonne.get(9).toString());
         }
     }
     
@@ -253,36 +255,47 @@ public final class TabOggetti extends javax.swing.JPanel {
         String preQuery = "SELECT * FROM " + getTableName() + " WHERE ";
         Iterator itr = colonne.iterator();
         int num = 0;
+        boolean ok = false;
         while(itr.hasNext()){
             String colonna = (String)itr.next();
             switch ((char)tab.get(num)) {
                 case 'i': try {
                         int in = Integer.parseInt(query);
-                        preQuery += colonna + " = ? OR ";
+                        if (ok == true)
+                            preQuery += " OR ";
+                        preQuery += colonna + " = ?";
                         tab2.add('i');
+                        ok = true;
                 } catch (NumberFormatException e) {
                     System.out.println(query + " non valido su " + colonna);
                 }
                     break;
-                case 's': if (query.contains("%"))
-                        preQuery += colonna + " LIKE ? OR ";
+                case 's': if (ok == true)
+                            preQuery += " OR "; 
+                    if (query.contains("%"))
+                        preQuery += colonna + " LIKE ?";
                     else
-                        preQuery += colonna + " = ? OR ";
+                        preQuery += colonna + " = ?";
                     tab2.add('s');
+                    ok = true;
                     break;
                 case 'f': try {
                     Float.parseFloat(query);
-                    preQuery += " = ? OR ";
+                    if (ok == true)
+                            preQuery += " OR ";
+                    preQuery += colonna + " = ?";
                     tab2.add('f');
+                    ok = true;
                 } catch (NumberFormatException e) {
                     System.out.println(query + " non valido su " + colonna);
                 }
                     break;
             }
-            
             num ++;
+            
         }
-        preQuery = preQuery.substring(0, preQuery.length()-4);
+        if (preQuery.substring(preQuery.length()-4, preQuery.length()) == " OR ")
+            preQuery = preQuery.substring(0, preQuery.length()-4);
         System.out.println(preQuery);
         try {
             PreparedStatement pstmt = DBConnection.conn.prepareStatement(

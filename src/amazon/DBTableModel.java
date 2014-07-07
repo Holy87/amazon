@@ -40,6 +40,9 @@ public class DBTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
+        if (!DBConnection.connected()) {
+            return 0;
+        }
         if (rs == null)
             return 0;
         try {
@@ -51,7 +54,7 @@ public class DBTableModel extends AbstractTableModel {
             return last;
         }
         catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage(), null, ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "Errore: " + ex.toString(), null, ERROR_MESSAGE);
             return 0;
         }
     }
