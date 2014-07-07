@@ -6,6 +6,7 @@
 
 package amazon;
 
+import java.awt.event.ActionEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,12 +90,18 @@ public final class TabOggetti extends javax.swing.JPanel {
                 break;
             case "AUTORI": serviceButton1.setText("Visualizza libri autore");
                 //GESTIONE METODO: Visualizza tutti i libri dell'autore selezionato
+                serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriAutore(evt);}});
                 break;
             case "EDITORI": serviceButton1.setText("Visualizza libri editore");
                 //GESTIONE METODO: Visualizza tutti i libri dell'editore selezionato
+                serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriEditore(evt);}});
                 break;
             case "LIBRI": serviceButton1.setText("Visualizza informazioni libro");
                 //GESTIONE METODO: Visualizza TUTTE le info sul libro, comprese quelle non visibili nella tabella
+                serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaInfoLibro(evt);}});
                 
             default: serviceButton1.setVisible(false);
             break;
@@ -106,6 +113,21 @@ public final class TabOggetti extends javax.swing.JPanel {
         int id = Integer.parseInt((String)utente.get(0));
         String nome = (String)utente.get(1) + " " + (String)utente.get(2);
         mainWindow.impostaUtente(id, nome);
+    }
+    
+    private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
+        //Non so cosa inserire
+        mainWindow.visualizzaLibriAutore();
+    }
+    
+    private void visualizzaLibriEditore(java.awt.event.ActionEvent evt) {
+        //Non so cosa inserire
+        mainWindow.visualizzaLibriEditore();
+    }
+    
+    private void visualizzaInfoLibro(java.awt.event.ActionEvent evt) {
+        //Non so cosa inserire
+        mainWindow.visualizzaInfoLibro();
     }
     
     /**
