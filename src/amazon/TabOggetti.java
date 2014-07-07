@@ -6,15 +6,12 @@
 
 package amazon;
 
-import java.awt.event.ActionEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
@@ -74,37 +71,54 @@ public final class TabOggetti extends javax.swing.JPanel {
         finestraEdit = finestra;
         mainWindow = mainW;
         setService();
+        setService2();
     }
     
+    @SuppressWarnings("unchecked")
     private void setService() {
         switch (nomeTabella) {
             case "UTENTI": serviceButton1.setText("Imposta utente");
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {impostaUtente(evt);}});
-                serviceButton2.setText("Gestione utente");
-                /*GESTIONE METODO: Apre una finestra dove selezionare 3 cose:
-                **1) Visualizza liste desideri
-                **2) Visualizza carrello
-                **3) Visualizza ordini già effettuati
-                */
                 break;
             case "AUTORI": serviceButton1.setText("Visualizza libri autore");
                 //GESTIONE METODO: Visualizza tutti i libri dell'autore selezionato
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriAutore(evt);}});
                 break;
             case "EDITORI": serviceButton1.setText("Visualizza libri editore");
                 //GESTIONE METODO: Visualizza tutti i libri dell'editore selezionato
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriEditore(evt);}});
                 break;
             case "LIBRI": serviceButton1.setText("Visualizza informazioni libro");
                 //GESTIONE METODO: Visualizza TUTTE le info sul libro, comprese quelle non visibili nella tabella
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaInfoLibro(evt);}});
                 
             default: serviceButton1.setVisible(false);
             break;
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void setService2() {
+        switch (nomeTabella) {
+            case "UTENTI": serviceButton2.setText("Gestione utente");
+                /*GESTIONE METODO: Apre una finestra dove selezionare 3 cose:
+                **1) Visualizza liste desideri
+                **2) Visualizza carrello
+                **3) Visualizza ordini già effettuati
+                */
+                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {gestioneUtente(evt);}});
+                break;
+            default: serviceButton2.setVisible(false);
         }
     }
     
@@ -128,6 +142,10 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void visualizzaInfoLibro(java.awt.event.ActionEvent evt) {
         //Non so cosa inserire
         mainWindow.visualizzaInfoLibro();
+    }
+    
+    private void gestioneUtente(java.awt.event.ActionEvent evt) {
+        // Inserire la gestione dell'utente
     }
     
     /**
@@ -222,9 +240,6 @@ public final class TabOggetti extends javax.swing.JPanel {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
-        catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
     }
     
     /**
@@ -268,6 +283,7 @@ public final class TabOggetti extends javax.swing.JPanel {
             num ++;
         }
         preQuery = preQuery.substring(0, preQuery.length()-4);
+        System.out.println(preQuery);
         try {
             PreparedStatement pstmt = DBConnection.conn.prepareStatement(
                     preQuery,
@@ -358,7 +374,11 @@ public final class TabOggetti extends javax.swing.JPanel {
         List dati = new LinkedList();
         for (int i = 0; i < modelloTabella.getColumnCount(); i++)
         {
-            dati.add((String)modelloTabella.getValueAt(cursore-1, i).toString());
+            try {
+                dati.add((String)modelloTabella.getValueAt(cursore-1, i).toString());
+            } catch (NullPointerException ex) {
+                dati.add("");
+            }
         }
         return dati;
     }
@@ -546,9 +566,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addComponent(editRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(deleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                        .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(1, 1, 1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(searchBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
