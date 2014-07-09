@@ -382,6 +382,34 @@ public class DBConnection {
        
        pstmt.executeUpdate();
    }
+   
+   public ResultSet visualizzaLibriAutore(String idAutore) throws SQLException {
+       /*Metodo che gestisce l'Autore e visualizza 
+       **tutti i libri di quell'autore
+        
+       QUERY = SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB INNER JOIN LIBRI ON AUTORI_LIB.ISBN=LIBRI.ISBN WHERE AUTORE_ID=?;*/
+       
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB INNER JOIN LIBRI ON AUTORI_LIB.ISBN=LIBRI.ISBN WHERE AUTORE_ID = ?");
+       pstmt.setString(1, idAutore);
+       
+       return pstmt.executeQuery();
+    }
+   
+   public ResultSet visualizzaLibriEditore(String idEditore) throws SQLException {
+        /*Metodo che gestisce l'Editore e visualizza 
+        **tutti i libri di quell'editore
+       
+       QUERY SELECT LIBRO_NOME FROM LIBRI INNER JOIN EDITORI_LIB ON EDITORI_LIB.ISBN=LIBRI.ISBN WHERE EDI_ID=?; = */
+       
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI INNER JOIN EDITORI_LIB ON EDITORI_LIB.ISBN=LIBRI.ISBN WHERE EDI_ID = ?");
+       pstmt.setString(1, idEditore);
+       
+       return pstmt.executeQuery();
+    }
 }
 
    

@@ -70,25 +70,12 @@ public class MainWindow extends javax.swing.JFrame {
     
     public void gestisciUtente(){
         /*Metodo che gestisce l'Utente e visualizza:
-        **1) Visualizza liste desideri
-        **2) Visualizza carrello
-        **3) Visualizza ordini già effettuati
-        **4) Crea ordine
-        **5) Crea recensione
+        * 1) Visualizza liste desideri
+        * 2) Visualizza carrello
+        * 3) Visualizza ordini già effettuati
+        * 4) Crea ordine
+        * 5) Crea recensione
         */
-    }
-    
-    public void visualizzaLibriAutore(){
-        /*Metodo che gestisce l'Utente e visualizza:
-        **1) Visualizza liste desideri
-        **2) Visualizza carrello
-        **3) Visualizza ordini già effettuati
-        */
-    }
-    
-    public void visualizzaLibriEditore(){
-        /*Metodo che gestisce l'Editore e visualizza 
-        **tutti i libri di quell'editore*/
     }
     
     public void visualizzaInfoLibro(){

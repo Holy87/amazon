@@ -83,13 +83,13 @@ public final class TabOggetti extends javax.swing.JPanel {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {impostaUtente(evt);}});
                 break;
             case "AUTORI": serviceButton1.setText("Visualizza libri autore");
-                //GESTIONE METODO: Visualizza tutti i libri dell'autore selezionato
+                //GESTIONE METODO: Visualizza tutti i libri dell'autore selezionato in un'altra finestra
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriAutore(evt);}});
                 break;
             case "EDITORI": serviceButton1.setText("Visualizza libri editore");
-                //GESTIONE METODO: Visualizza tutti i libri dell'editore selezionato
+                //GESTIONE METODO: Visualizza tutti i libri dell'editore selezionato in un'altra finestra
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriEditore(evt);}});
