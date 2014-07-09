@@ -160,6 +160,21 @@ public class DBConnection {
        return rs;
    }
    
+   public static void visualizzaListeDesideri(String idUtente) {
+       /*Visualizza le liste desideri di un utente, dato il suo ID
+       **QUERY DI BASE= SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?;
+       **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
+       */
+   }
+      
+   public static void visualizzaCarrello(String idUtente) {
+       //Visualizza l'attuale carrello dell'utente dato il suo ID
+   }
+   
+   public static void visualizzaOrdini(String idUtente) {
+       //Visualizza gli ordini effettuati dall'utente dato il suo ID
+   }
+   
    public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
@@ -237,6 +252,10 @@ public class DBConnection {
        
        insertDelivery.close();
        
+   }
+   
+   public static void creaRecensione() {
+       //Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore 
    }
    
    //Creazione di un nuovo utente
@@ -410,6 +429,10 @@ public class DBConnection {
        
        return pstmt.executeQuery();
     }
+   
+   public void visualizzaInfoLibro () {
+       /*A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra*/
+   }
 }
 
    

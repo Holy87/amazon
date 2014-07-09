@@ -113,6 +113,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                 **1) Visualizza liste desideri
                 **2) Visualizza carrello
                 **3) Visualizza ordini già effettuati
+                **4) Crea ordine
+                **5) Crea recensione libro/venditore
                 */
                 serviceButton2.addActionListener(new java.awt.event.ActionListener() {
                     @Override
