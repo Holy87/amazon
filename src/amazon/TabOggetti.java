@@ -74,6 +74,10 @@ public final class TabOggetti extends javax.swing.JPanel {
         setService2();
     }
     
+    public void impostaInterfaccia(ResultSet rs) {
+        
+    }
+    
     @SuppressWarnings("unchecked")
     private void setService() {
         switch (nomeTabella) {
