@@ -160,6 +160,21 @@ public class DBConnection {
        return rs;
    }
    
+   public static void visualizzaListeDesideri(String idUtente) {
+       /*Visualizza le liste desideri di un utente, dato il suo ID
+       **QUERY DI BASE= SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?;
+       **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
+       */
+   }
+      
+   public static void visualizzaCarrello(String idUtente) {
+       //Visualizza l'attuale carrello dell'utente dato il suo ID
+   }
+   
+   public static void visualizzaOrdini(String idUtente) {
+       //Visualizza gli ordini effettuati dall'utente dato il suo ID
+   }
+   
    public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
@@ -237,6 +252,10 @@ public class DBConnection {
        
        insertDelivery.close();
        
+   }
+   
+   public static void creaRecensione() {
+       //Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore 
    }
    
    //Creazione di un nuovo utente
@@ -381,6 +400,38 @@ public class DBConnection {
        pstmt.setString(2, idVenditore);
        
        pstmt.executeUpdate();
+   }
+   
+   public ResultSet visualizzaLibriAutore(String idAutore) throws SQLException {
+       /*Metodo che gestisce l'Autore e visualizza 
+       **tutti i libri di quell'autore
+        
+       QUERY = SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB INNER JOIN LIBRI ON AUTORI_LIB.ISBN=LIBRI.ISBN WHERE AUTORE_ID=?;*/
+       
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB INNER JOIN LIBRI ON AUTORI_LIB.ISBN=LIBRI.ISBN WHERE AUTORE_ID = ?");
+       pstmt.setString(1, idAutore);
+       
+       return pstmt.executeQuery();
+    }
+   
+   public ResultSet visualizzaLibriEditore(String idEditore) throws SQLException {
+        /*Metodo che gestisce l'Editore e visualizza 
+        **tutti i libri di quell'editore
+       
+       QUERY SELECT LIBRO_NOME FROM LIBRI INNER JOIN EDITORI_LIB ON EDITORI_LIB.ISBN=LIBRI.ISBN WHERE EDI_ID=?; = */
+       
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI INNER JOIN EDITORI_LIB ON EDITORI_LIB.ISBN=LIBRI.ISBN WHERE EDI_ID = ?");
+       pstmt.setString(1, idEditore);
+       
+       return pstmt.executeQuery();
+    }
+   
+   public void visualizzaInfoLibro () {
+       /*A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra*/
    }
 }
 
