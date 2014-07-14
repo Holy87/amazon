@@ -458,9 +458,15 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public void visualizzaMagazzino()    {
+   public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(idVenditore));
        
+       return pstmt.executeQuery();
        /*CREATE VIEW viewmagazzino AS
         SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
         FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
@@ -505,6 +511,8 @@ public class DBConnection {
         
        
        //WHERE MAGAZZINO_LIBRI.ISBN = ?;
-                */
+                
+       
+       In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
    } 
 }   
