@@ -459,7 +459,12 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaListinoLibri() {
-       return null; //RIEMPIRE IL CODICE
+       /* CREATE VIEW viewarticolomagazzini AS
+        SELECT MAGAZZINO_LIBRI.PREZZOVENDITA AS PREZZO, MAGAZZINO_LIBRI.VENDITORE_ID, VENDITORI.VENDITORE_NOME
+        FROM VENDITORI INNER JOIN MAGAZZINO_LIBRI ON VENDITORI.VENDITORE_ID = MAGAZZINO_LIBRI.VENDITORE_ID
+        WHERE MAGAZZINO_LIBRI.ISBN = 9788804508359;
+                */
+       return null;
    }
    
    public static ResultSet visualizzaListinoLibri(String query) {
@@ -474,20 +479,8 @@ public class DBConnection {
        
    }
    
-   public void visualizzaArticoli() {
-        /* CREATE VIEW viewarticoli AS
-        SELECT LIBRI.ISBN, LIBRI.LIBRO_NOME, MIN(MAGAZZINO_LIBRI.PREZZOVENDITA) AS PREZZO
-        FROM LIBRI INNER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.ISBN = LIBRI.ISBN
-        GROUP BY LIBRI.ISBN, LIBRI.LIBRO_NOME;
-                */
-   }
-   
    public void visualizzaArticoloMagazzini()    {
-        /* CREATE VIEW viewarticolomagazzini AS
-        SELECT MAGAZZINO_LIBRI.PREZZOVENDITA AS PREZZO, MAGAZZINO_LIBRI.VENDITORE_ID, VENDITORI.VENDITORE_NOME
-        FROM VENDITORI INNER JOIN MAGAZZINO_LIBRI ON VENDITORI.VENDITORE_ID = MAGAZZINO_LIBRI.VENDITORE_ID
-        WHERE MAGAZZINO_LIBRI.ISBN = 9788804508359;
-                */
+        
        
    }
 }   
