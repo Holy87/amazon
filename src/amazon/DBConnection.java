@@ -439,13 +439,24 @@ public class DBConnection {
        
        PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI INNER JOIN EDITORI_LIB ON EDITORI_LIB.ISBN=LIBRI.ISBN WHERE EDI_ID = ?",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI, EDITORI_LIB WHERE EDITORI_LIB.ISBN = LIBRI.ISBN AND EDI_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, idEditore);
        
        return pstmt.executeQuery();
     }
+   
+   public static ResultSet cercaLibroEditore(String idEditore, String query) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI, EDITORI_LIB WHERE EDITORI_LIB.ISBN = LIBRI.ISBN AND EDI_ID = ? AND LIBRO_NOME LIKE ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(idEditore));
+       pstmt.setString(2,query);
+       
+       return pstmt.executeQuery();
+   }
    
    public void visualizzaInfoLibro () {
        /*A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra*/
