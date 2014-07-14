@@ -461,7 +461,7 @@ public class DBConnection {
    public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(idVenditore));
