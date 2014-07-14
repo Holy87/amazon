@@ -53,11 +53,11 @@ public class FinestraMagazzino extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
     protected ResultSet resultSetAggiorna() throws SQLException {
-        
+        return null;
     }
 }
