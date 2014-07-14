@@ -24,8 +24,9 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     /**
      * Creates new form FinestraComposita
      */
-    public FinestraComposita(java.awt.Frame parent, boolean modal) {
+    public FinestraComposita(java.awt.Frame parent, boolean modal, String id) {
         super(parent, modal);
+        this.id = id;
         initComponents();
         impostaTabella();
     }
@@ -33,6 +34,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private ResultSet rs;
     private DBTableModel modelloTabella;
     private int cursore = 1;
+    protected String id;
     
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {
