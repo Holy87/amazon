@@ -458,7 +458,22 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public void visualizzaMagazzino()    {
+       //Vista sull'inventario di un magazzino
+       
+       /*CREATE VIEW viewmagazzino AS
+        SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
+        FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
+       */
+       
+       
+       //WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?
+   }
+   
    public static ResultSet visualizzaListinoLibri() {
+        //Lista completa di tutti i libri che i venditori hanno a disposizione
+       
+       
        /* CREATE VIEW viewarticoli AS
         SELECT LIBRI.ISBN, LIBRI.LIBRO_NOME, MIN(MAGAZZINO_LIBRI.PREZZOVENDITA) AS PREZZO
         FROM LIBRI INNER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.ISBN = LIBRI.ISBN
@@ -481,18 +496,6 @@ public class DBConnection {
        */
    }
    
-   public void visualizzaMagazzino()    {
-       //Vista sull'inventario di un magazzino
-       
-       /*CREATE VIEW viewmagazzino AS
-        SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
-        FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
-       */
-       
-       
-       //WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?
-   }
-   
    public void visualizzaArticoloMagazzini(String ISBN)    {
        
        //In quali magazzini c'è quel libro
@@ -503,5 +506,5 @@ public class DBConnection {
        
        //WHERE MAGAZZINO_LIBRI.ISBN = ?;
                 */
-   }
+   } 
 }   
