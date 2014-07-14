@@ -459,7 +459,12 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaListinoLibri() {
-       return null; //RIEMPIRE IL CODICE
+       /* CREATE VIEW viewarticoli AS
+        SELECT LIBRI.ISBN, LIBRI.LIBRO_NOME, MIN(MAGAZZINO_LIBRI.PREZZOVENDITA) AS PREZZO
+        FROM LIBRI INNER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.ISBN = LIBRI.ISBN
+        GROUP BY LIBRI.ISBN, LIBRI.LIBRO_NOME;
+                */
+       return null;
    }
    
    public static ResultSet visualizzaListinoLibri(String query) {
@@ -467,8 +472,36 @@ public class DBConnection {
    }
    
    public void visualizzaInfoLibro () {
-       /*A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra*/
+       /*A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra
+       SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA, VOTOPROD_MEDIA
+        FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB
+       
+       
+        //WHERE ISBN = ?;
+       */
    }
-}
-
    
+   public void visualizzaMagazzino()    {
+       //Vista sull'inventario di un magazzino
+       
+       /*CREATE VIEW viewmagazzino AS
+        SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
+        FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
+       */
+       
+       
+       //WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?
+   }
+   
+   public void visualizzaArticoloMagazzini(String ISBN)    {
+       
+       //In quali magazzini c'è quel libro
+        /* CREATE VIEW viewarticolomagazzini AS
+        SELECT MAGAZZINO_LIBRI.PREZZOVENDITA AS PREZZO, MAGAZZINO_LIBRI.VENDITORE_ID, VENDITORI.VENDITORE_NOME
+        FROM VENDITORI INNER JOIN MAGAZZINO_LIBRI ON VENDITORI.VENDITORE_ID = MAGAZZINO_LIBRI.VENDITORE_ID
+        
+       
+       //WHERE MAGAZZINO_LIBRI.ISBN = ?;
+                */
+   }
+}   
