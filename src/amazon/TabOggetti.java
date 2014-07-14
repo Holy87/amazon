@@ -145,8 +145,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     private void visualizzaLibriEditore(java.awt.event.ActionEvent evt) {
-        //Non so cosa inserire
-        //mainWindow.visualizzaLibriEditore();
+        FinestraLibriEditore libriEditore = new FinestraLibriEditore(mainWindow, false, getSelectedID());
+        libriEditore.setVisible(true);
     }
     
     private void visualizzaInfoLibro(java.awt.event.ActionEvent evt) {
