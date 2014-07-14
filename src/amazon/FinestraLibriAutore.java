@@ -54,7 +54,7 @@ public class FinestraLibriAutore extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        return DBConnection.cercaLibriAutori(id, query);
+        return DBConnection.cercaLibriAutore(id, query);
     }
 
     @Override

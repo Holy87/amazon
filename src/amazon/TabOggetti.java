@@ -139,6 +139,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
+        FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, false, getSelectedID());
+        libriAutore.setVisible(true);
 
     }
     
@@ -332,7 +334,8 @@ public final class TabOggetti extends javax.swing.JPanel {
      * @return 
      */
     private String getSelectedID() {
-        return (String)tabella.getValueAt(cursore, 1);
+        int id = Integer.parseInt((String)tabella.getValueAt(cursore-1, 0).toString());
+        return "" + (id);
     }
     
     /**

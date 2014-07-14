@@ -50,10 +50,6 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
         } 
                 
         );
-        //impostaPulsanteServizi();
-    }
-    
-    public void connectTable() {
         aggiornaTabella();
     }
     
@@ -156,6 +152,11 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
                 searchBoxPropertyChange(evt);
             }
         });
+        searchBox.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                searchBoxKeyTyped(evt);
+            }
+        });
 
         jButton1.setText("Fine");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -254,6 +255,10 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private void searchBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_searchBoxPropertyChange
         searchButton.setEnabled(searchBox.getText().length() > 0);
     }//GEN-LAST:event_searchBoxPropertyChange
+
+    private void searchBoxKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBoxKeyTyped
+        searchButton.setEnabled(searchBox.getText().length() > 0);
+    }//GEN-LAST:event_searchBoxKeyTyped
 
     
 

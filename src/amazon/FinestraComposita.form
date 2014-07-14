@@ -66,6 +66,7 @@
     <Component class="javax.swing.JTextField" name="searchBox">
       <Events>
         <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="searchBoxPropertyChange"/>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="searchBoxKeyTyped"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
