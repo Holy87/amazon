@@ -8,6 +8,8 @@ package amazon;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -72,12 +74,16 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private void eseguiRicerca(){
         searchBox.setText(null);
         searchButton.setEnabled(false);
-        modelloTabella.setRS(resultSetRicerca(searchBox.getText()));
+        try {
+            modelloTabella.setRS(resultSetRicerca(searchBox.getText()));
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }
     
-    protected abstract ResultSet resultSetRicerca(String query);
+    protected abstract ResultSet resultSetRicerca(String query) throws SQLException;
     
-    protected abstract ResultSet resultSetAggiorna();
+    protected abstract ResultSet resultSetAggiorna() throws SQLException;
     
     /**
      * Mostra infine i dati sulla tabella dopo un aggiornamento
