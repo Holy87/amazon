@@ -40,8 +40,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     private int cursore = 1;
     private List colonne; //lista delle colonne della tabella
     PreparedStatement ultimaRicerca;
-    private final int EDIT = 1;
-    private final int ADDN = 2;
+    private final int EDIT = 1; // definizione per l'apertura della finestra in modifica
+    private final int ADDN = 2; // definizione per l'aggiunta
     private EditForm finestraEdit;
     private String nomeTabella = "";
     private MainWindow mainWindow;
@@ -74,9 +74,12 @@ public final class TabOggetti extends javax.swing.JPanel {
         setService2();
     }
     
-    public void impostaInterfaccia(ResultSet rs) {
-        
-    }
+//    public void impostaInterfaccia(int tipoResultSe) {
+//        setting = tipoResultSet;
+//        switch (tipoResultSet) {
+//            case LIBAUT: impostaTabella(DBConnection.visualizzaLibriAutore())
+//        }
+//    }
     
     @SuppressWarnings("unchecked")
     private void setService() {
@@ -136,18 +139,17 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
-        //Non so cosa inserire
-        mainWindow.visualizzaLibriAutore();
+
     }
     
     private void visualizzaLibriEditore(java.awt.event.ActionEvent evt) {
         //Non so cosa inserire
-        mainWindow.visualizzaLibriEditore();
+        //mainWindow.visualizzaLibriEditore();
     }
     
     private void visualizzaInfoLibro(java.awt.event.ActionEvent evt) {
         //Non so cosa inserire
-        mainWindow.visualizzaInfoLibro();
+        //mainWindow.visualizzaInfoLibro();
     }
     
     private void gestioneUtente(java.awt.event.ActionEvent evt) {

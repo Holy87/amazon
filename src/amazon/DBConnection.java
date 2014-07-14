@@ -416,6 +416,16 @@ public class DBConnection {
        return pstmt.executeQuery();
     }
    
+   public ResultSet cercaLibriAutore(String idAutore, String chiave) throws SQLException {
+       PreparedStatement pstmt;
+       String query = "SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB, LIBRI WHERE AUTORI_LIB.ISBN = LIBRI.ISBN AND AUTORE_ID = ? AND LIBRI.LIBRO_NOME LIKE ?";
+       pstmt = conn.prepareStatement(query);
+       pstmt.setString(1, idAutore);
+       pstmt.setString(2, chiave);
+       
+       return pstmt.executeQuery();
+   }
+   
    public ResultSet visualizzaLibriEditore(String idEditore) throws SQLException {
         /*Metodo che gestisce l'Editore e visualizza 
         **tutti i libri di quell'editore
