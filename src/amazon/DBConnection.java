@@ -458,6 +458,14 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static ResultSet visualizzaListinoLibri() {
+       return null; //RIEMPIRE IL CODICE
+   }
+   
+   public static ResultSet visualizzaListinoLibri(String query) {
+       return null; //RIEMPIRE IL CODICE
+   }
+   
    public void visualizzaInfoLibro () {
        /*A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra*/
    }
