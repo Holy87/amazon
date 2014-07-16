@@ -7,18 +7,10 @@
 package amazon;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -47,8 +39,6 @@ public class DBConnection {
     * <i>SELECT</i>.
     */
    final static public int CONTESTO_ESEGUI_QUERY = 1;
-   
-   private static Hashtable<String, LinkedList> tabelle;
     
     /**
      * 
@@ -69,12 +59,12 @@ public class DBConnection {
         //Stampa Versione Driver
         conn = ods.getConnection();
         
-        createTables();
+        //createTables();
     }
     
     private static void createTables() {
         ListaTipi tipi = new ListaTipi();
-        tabelle = tipi.getTipi();
+        //tabelle = tipi.getTipi();
     }
     
     
@@ -160,32 +150,65 @@ public class DBConnection {
        return rs;
    }
    
-   public static void visualizzaListeDesideri(String idUtente) {
+   public static ResultSet visualizzaListeDesideri(String idUtente) throws SQLException {
        /*Visualizza le liste desideri di un utente, dato il suo ID
        **QUERY DI BASE= SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?;
        **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
+       
        */
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(idUtente));
+       
+       return pstmt.executeQuery();
    }
       
-   public static void visualizzaCarrello(String idUtente) {
+   public static ResultSet visualizzaCarrello(String idUtente) throws SQLException {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, MAGAZZINO_LIBRI.PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ\n" +
+                                     "FROM COMPARTICOLI\n" +
+                                     "NATURAL JOIN LIBRI\n" +
+                                     "NATURAL JOIN MAGAZZINO_LIBRI\n" +
+                                     "NATURAL JOIN IMPOSTAZIONI\n" +
+                                     "NATURAL JOIN VENDITORI\n" +
+                                     "WHERE UTENTE_ID=? AND ORDINE_ID=NULL;",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+       pstmt.setInt(1, Integer.parseInt(idUtente));
+       
+       return pstmt.executeQuery();
    }
    
-   public static void visualizzaOrdini(String idUtente) {
+   public static ResultSet visualizzaOrdini(String idUtente) throws SQLException {
        //Visualizza gli ordini effettuati dall'utente dato il suo ID
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+       pstmt.setInt(1, Integer.parseInt(idUtente));
+       
+       return pstmt.executeQuery();
    }
    
-   public static void creaOrdine (int idUtente, int costospedin, int scontocomplin, int idContatto) throws SQLException {
+   public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto) throws SQLException {
+       //NOTA = sistemare i "parse" ove necessario
+       
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       String idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        int countCourier;
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=NULL)), ?, ?)");
-       pstmt.setInt(1, idUtente);
-       pstmt.setInt(2, idUtente);
+       pstmt.setString(1, idUtente);
+       pstmt.setString(2, idUtente);
        pstmt.setInt(3, costospedin);
-       pstmt.setInt(4, scontocomplin);
+       pstmt.setString(4, scontocomplin);
        
        pstmt.executeUpdate();
        pstmt.close();
@@ -195,21 +218,21 @@ public class DBConnection {
        lastorder = conn.prepareStatement("SELECT ORDINE_ID FROM UTENTI WHERE ROWNUM <=1 ORDER BY UTENTE_ID DESC;");
        rs = pstmt.executeQuery();
        rs.next();
-       idOrder = rs.getInt(1);
+       idOrder = rs.getString(1);
        lastorder.close();
        
        //Aggiornamento di COMPARTICOLI
        PreparedStatement updateCompArticoli;
        updateCompArticoli = conn.prepareStatement("UPDATE COMPARTICOLI SET ORDINE_ID=? WHERE (UTENTE_ID=? AND ORDINE_ID=NULL);");
-       updateCompArticoli.setInt(1, idOrder);
-       updateCompArticoli.setInt(2, idUtente);
+       updateCompArticoli.setString(1, idOrder);
+       updateCompArticoli.setString(2, idUtente);
        updateCompArticoli.executeUpdate();
        updateCompArticoli.close();
        
        //Calcolo di PREZZO TOTALE
        PreparedStatement totalPrice;
        totalPrice = conn.prepareStatement("UPDATE ORDINI SET PREZZOTOTALE=(PREZZONETTO+COSTOSPED)-SCONTOCOMPL WHERE (ORDINE_ID=?);");
-       totalPrice.setInt(1, idOrder);
+       totalPrice.setString(1, idOrder);
        totalPrice.executeUpdate();
        totalPrice.close();
        
@@ -241,8 +264,8 @@ public class DBConnection {
        PreparedStatement insertDelivery;
        insertDelivery = conn.prepareStatement("INSERT INTO SPEDIZIONI(CORRIERE_ID, ORDINE_ID, CONTACT_ID, DATACONSEGNA) VALUES (?, ?, ?, ?);");
        insertDelivery.setInt(1, idCourier);
-       insertDelivery.setInt(2, idOrder);
-       insertDelivery.setInt(3, idContatto);
+       insertDelivery.setString(2, idOrder);
+       insertDelivery.setString(3, idContatto);
        if (costospedin == 8)
             insertDelivery.setString(4, "SYSDATE + 1");
        else if (costospedin == 4)
@@ -254,8 +277,25 @@ public class DBConnection {
        
    }
    
-   public static void creaRecensione() {
-       //Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore 
+   public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
+       /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
+       **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, PROD_ID, VOTO)
+       **               VALUES ('423572', 'Un libro meraviglioso, con forti spunti di riflessione. Da consigliare a tutti', '1', ‘5’)
+       **Se la variabile booleana libroRec è TRUE, inserisce una recensione di un prodotto, altrimenti di un venditore.
+       */
+       PreparedStatement pstmt;
+       
+       if ( libroRec )
+           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, PROD_ID, VOTO) VALUES ('?', '?', '?', '?')");
+       else
+           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, VENDITORE_ID, VOTO) VALUES ('?', '?', '?', '?')");
+       
+       pstmt.setString(1, idUtente);
+       pstmt.setString(2, commento);
+       pstmt.setString(3, target);
+       pstmt.setString(4, voto);
+       
+       pstmt.executeUpdate();
    }
    
    //Creazione di un nuovo utente
@@ -531,7 +571,7 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
-       
+   }
         /* CREATE VIEW viewarticolomagazzini AS
         SELECT MAGAZZINO_LIBRI.PREZZOVENDITA AS PREZZO, MAGAZZINO_LIBRI.VENDITORE_ID, VENDITORI.VENDITORE_NOME
         FROM VENDITORI INNER JOIN MAGAZZINO_LIBRI ON VENDITORI.VENDITORE_ID = MAGAZZINO_LIBRI.VENDITORE_ID
@@ -541,7 +581,6 @@ public class DBConnection {
                 
        
        In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
-   } 
    
    public static ResultSet visualizzaVenditoriLibro(String idLibro) {
        return null; //da implementare
