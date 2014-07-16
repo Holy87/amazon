@@ -542,4 +542,8 @@ public class DBConnection {
        
        In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
    } 
+   
+   public static ResultSet visualizzaVenditoriLibro(String idLibro) {
+       return null; //da implementare
+   }
 }   

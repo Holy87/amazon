@@ -65,7 +65,7 @@ public class MainWindow extends javax.swing.JFrame {
         utenteID = id;
         nomeUtente = nome;
         lUtente.setText(nome);
-        jMenuItem4.setEnabled(true);
+        mAcquisto.setEnabled(true);
         JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
     }
     
@@ -119,7 +119,8 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        mAcquisto = new javax.swing.JMenuItem();
+        Carrello = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gruppo 26 - Amazon");
@@ -193,15 +194,20 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu3.setText("Azioni");
 
-        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem4.setText("Acquisto libri");
-        jMenuItem4.setEnabled(false);
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        mAcquisto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mAcquisto.setText("Acquisto libri");
+        mAcquisto.setEnabled(false);
+        mAcquisto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                mAcquistoActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem4);
+        jMenu3.add(mAcquisto);
+
+        Carrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        Carrello.setText("Vai al carrello");
+        Carrello.setEnabled(false);
+        jMenu3.add(Carrello);
 
         jMenuBar1.add(jMenu3);
 
@@ -256,10 +262,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void mAcquistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAcquistoActionPerformed
         AnagraficaLibri anaLibri = new AnagraficaLibri(this, false);
         anaLibri.setVisible(true);
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_mAcquistoActionPerformed
 
     /**
      * 
@@ -329,6 +335,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Carrello;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -337,10 +344,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
+    private javax.swing.JMenuItem mAcquisto;
     private amazon.TabOggetti tabAutori;
     private amazon.TabOggetti tabEditori;
     private amazon.TabOggetti tabLibri;
