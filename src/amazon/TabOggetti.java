@@ -492,7 +492,7 @@ public final class TabOggetti extends javax.swing.JPanel {
 
         searchBox.setToolTipText("Scrivi la query di ricerca");
         searchBox.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        searchBox.setMaximumSize(new java.awt.Dimension(2147483647, 20));
+        searchBox.setMaximumSize(new java.awt.Dimension(6, 20));
         searchBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchBoxActionPerformed(evt);

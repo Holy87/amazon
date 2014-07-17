@@ -180,13 +180,7 @@ public class DBConnection {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, MAGAZZINO_LIBRI.PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ\n" +
-                                     "FROM COMPARTICOLI\n" +
-                                     "NATURAL JOIN LIBRI\n" +
-                                     "NATURAL JOIN MAGAZZINO_LIBRI\n" +
-                                     "NATURAL JOIN IMPOSTAZIONI\n" +
-                                     "NATURAL JOIN VENDITORI\n" +
-                                     "WHERE UTENTE_ID=? AND ORDINE_ID=NULL;",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, MAGAZZINO_LIBRI.PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI NATURAL JOIN LIBRI NATURAL JOIN MAGAZZINO_LIBRI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VENDITORI WHERE UTENTE_ID=? AND ORDINE_ID=NULL;",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setInt(1, Integer.parseInt(idUtente));
@@ -284,6 +278,9 @@ public class DBConnection {
             insertDelivery.setString(4, "SYSDATE + 5");
        
        insertDelivery.close();
+       
+       //UPDATE valore PREZZOVENDITA in comparticoli
+       //UPDATE PEZZIDISPONIBILI per i libri del nuovo ordine
        
    }
    

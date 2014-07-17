@@ -211,4 +211,14 @@ public class FinestraUtente extends EditForm {
         }
         
     }
+    
+    @Override
+    protected String titoloNuovo () {
+        return "Nuovo Utente";
+    }
+    
+    @Override
+    protected String titoloModifica () {
+        return "Modifica Utente";
+    }
 }

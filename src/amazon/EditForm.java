@@ -39,11 +39,13 @@ public abstract class EditForm extends javax.swing.JDialog {
         this.mode = mode;
         if (mode == EDIT)
         {
+            setTitle(titoloModifica());
             this.dati = dati;
             fillContents();
         }
         else if (mode == ADDN)
         {
+            setTitle(titoloNuovo());
             this.dati = null;
             cleanContents();
         }
@@ -67,6 +69,8 @@ public abstract class EditForm extends javax.swing.JDialog {
         scheda.aggiornaTabellaConQuery();
     }
     
+    protected abstract String titoloNuovo();
+    protected abstract String titoloModifica();
     
     
     

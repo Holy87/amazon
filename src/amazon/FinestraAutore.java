@@ -171,4 +171,14 @@ public class FinestraAutore extends EditForm {
         }
         
     }
+    
+    @Override
+    protected String titoloNuovo () {
+        return "Nuovo Autore";
+    }
+    
+    @Override
+    protected String titoloModifica () {
+        return "Modifica Autore";
+    }
 }
