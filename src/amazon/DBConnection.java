@@ -527,22 +527,17 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri che i venditori hanno a disposizione
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWARTICOLI",
+       pstmt = conn.prepareStatement("SELECT * FROM LIBRI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
        return pstmt.executeQuery();
        
-       /* CREATE VIEW viewarticoli AS
-        SELECT LIBRI.ISBN, LIBRI.LIBRO_NOME, MIN(MAGAZZINO_LIBRI.PREZZOVENDITA) AS PREZZO
-        FROM LIBRI INNER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.ISBN = LIBRI.ISBN
-        GROUP BY LIBRI.ISBN, LIBRI.LIBRO_NOME;
-                */
    }
    
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWARTICOLI WHERE LIBRI.LIBRO_NOME LIKE ?",
+       pstmt = conn.prepareStatement("SELECT * FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
