@@ -509,13 +509,13 @@ public class DBConnection {
    public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT * FROM VIEW_MAGAZZINO WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(idVenditore));
        
        return pstmt.executeQuery();
-       /*CREATE VIEW viewmagazzino AS
+       /*CREATE VIEW view_magazzino AS
         SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
         FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
        */
@@ -549,7 +549,7 @@ public class DBConnection {
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {
        //A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWINFOLIBRO WHERE ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));
