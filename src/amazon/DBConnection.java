@@ -590,4 +590,20 @@ public class DBConnection {
        
        //In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
    }
+   
+   public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
+       
+       //Compaiono i formati del libro disponibili di quel venditore
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(isbn));
+       pstmt.setInt(2, Integer.parseInt(venditoreID));
+       
+       return pstmt.executeQuery();
+                
+       
+       //In questo campo verrà selezionato il prodotto specifico che verrà aggiunto nel carrello*/
+   }
 }   
