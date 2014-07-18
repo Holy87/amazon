@@ -310,7 +310,6 @@ public class DBConnection {
    public static void creaUtente(String nome, String cognome, String mail, String password, String cellulare) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       ResultSet rs; //Variabile dove inserire i risultati della Query
        
        pstmt = conn.prepareStatement("INSERT INTO UTENTI(NOME, COGNOME, EMAIL, PSW, NUMCELLULARE) VALUES(?, ?, ?, ?, ?)");
        pstmt.setString(1, nome);
@@ -346,7 +345,6 @@ public class DBConnection {
    public static void creaAutore(String nome, String cognome) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       ResultSet rs; //Variabile dove inserire i risultati della Query
        
        pstmt = conn.prepareStatement("INSERT INTO AUTORI(AUT_NOME, AUT_COGNOME) VALUES(?, ?)");
        pstmt.setString(1, nome);
@@ -370,7 +368,6 @@ public class DBConnection {
    public static void creaLibro(String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       ResultSet rs; //Variabile dove inserire i risultati della Query
        
        //Quando si crea un libro bisogna aggiungere: COD_AUTORE, EDITORE, LINGUA, PREZZO
        
@@ -390,7 +387,6 @@ public class DBConnection {
    public static void aggiornaLibro(String id, String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       ResultSet rs; //Variabile dove inserire i risultati della Query
        
        pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE PROD_ID = ?");
        pstmt.setString(1, nomeLibro);
@@ -409,7 +405,6 @@ public class DBConnection {
    public static void creaEditore(String nomeEditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       ResultSet rs; //Variabile dove inserire i risultati della Query
        
        pstmt = conn.prepareStatement("INSERT INTO EDITORI(EDI_NOME) VALUES(?)");
        pstmt.setString(1, nomeEditore);
@@ -431,7 +426,6 @@ public class DBConnection {
       public static void creaVenditore(String nomeVenditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       ResultSet rs; //Variabile dove inserire i risultati della Query
        
        pstmt = conn.prepareStatement("INSERT INTO VENDITORI(VENDITORE_NOME) VALUES(?)");
        pstmt.setString(1, nomeVenditore);
@@ -453,19 +447,19 @@ public class DBConnection {
    public static ResultSet visualizzaLibriAutore(String idAutore) throws SQLException {
        /*Metodo che gestisce l'Autore e visualizza 
        **tutti i libri di quell'autore
-        
-       QUERY = SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB INNER JOIN LIBRI ON AUTORI_LIB.ISBN=LIBRI.ISBN WHERE AUTORE_ID=?;*/
+       */
        
        PreparedStatement pstmt;
        
-       //pstmt = conn.prepareStatement("SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB INNER JOIN LIBRI ON AUTORI_LIB.ISBN=LIBRI.ISBN WHERE AUTORE_ID = ?");
        pstmt = conn.prepareStatement("SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB, LIBRI WHERE AUTORI_LIB.ISBN = LIBRI.ISBN AND AUTORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       //pstmt.setString(1, idAutore);
        pstmt.setInt(1, Integer.parseInt(idAutore));
        
        return pstmt.executeQuery();
+       /*RISULTATO QUERY: LIBRO_NOME
+                          Soffocare
+       */
     }
    
    public static ResultSet cercaLibriAutore(String idAutore, String chiave) throws SQLException {
@@ -477,13 +471,15 @@ public class DBConnection {
        pstmt.setString(2, chiave);
        
        return pstmt.executeQuery();
+       /*RISULTATO QUERY: LIBRO_NOME
+                          Fight Club
+       */
    }
    
    public static ResultSet visualizzaLibriEditore(String idEditore) throws SQLException {
         /*Metodo che gestisce l'Editore e visualizza 
         **tutti i libri di quell'editore
-       
-       QUERY SELECT LIBRO_NOME FROM LIBRI INNER JOIN EDITORI_LIB ON EDITORI_LIB.ISBN=LIBRI.ISBN WHERE EDI_ID=?; = */
+        */
        
        PreparedStatement pstmt;
        
@@ -507,7 +503,7 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
-       //Vista sull'inventario di un magazzino
+       //Vista sull'inventario di un magazzino di un venditore
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_MAGAZZINO WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -515,13 +511,9 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(idVenditore));
        
        return pstmt.executeQuery();
-       /*CREATE VIEW view_magazzino AS
-        SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
-        FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
+       /*RISULTATO QUERY: LIBRO_NOME    AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            VENDITORE_ID
+                          Fight Club	Chuck       Palahniuk       Mondadori	9788804508359	6318
        */
-       
-       
-       //WHERE MAGAZZINO_LIBRI.VENDITORE_ID = ?
    }
    
    public static ResultSet visualizzaListinoLibri() throws SQLException {
@@ -556,11 +548,7 @@ public class DBConnection {
        
        return pstmt.executeQuery();
        /*
-       SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA, VOTOPROD_MEDIA
-        FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB
-       
-       
-        //WHERE ISBN = ?;
+       DA SISTEMARE
        */
    }
    
@@ -574,6 +562,11 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(venditoreID));
        
        return pstmt.executeQuery();
+       
+       /*RISULTATO QUERY: LIBRO_NOME            FORMATO_NOME            TIPOCONDIZIONE  PEZZIDISPONIBILI    PREZZOVENDITA
+                          I racconti di Nené	Copertina Flessibile	Nuovo           5                   5,99
+       
+       */
    }
    
    public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
@@ -588,7 +581,11 @@ public class DBConnection {
        return pstmt.executeQuery();
                 
        
-       //In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
+       //In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone
+       /*RISULTATO QUERY: VENDITORE_NOME    PREZZOVENDITA_MINIM
+                          C.U.S.            4,99
+       
+       */
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
@@ -604,6 +601,10 @@ public class DBConnection {
        return pstmt.executeQuery();
                 
        
-       //In questo campo verrà selezionato il prodotto specifico che verrà aggiunto nel carrello*/
+       //In questo campo verrà selezionato il prodotto specifico che verrà aggiunto nel carrello
+       /*RISULTATO QUERY: FORMATO_NOME           PREZZOVENDITA   TIPOCONDIZIONE
+                          Copertina Rigida	 7,65            Nuovo
+       
+       */
    }
 }   
