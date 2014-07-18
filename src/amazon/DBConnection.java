@@ -202,6 +202,7 @@ public class DBConnection {
    
    public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario
+       //NOTA2 = gestire i pezzi disponibile. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
@@ -566,6 +567,18 @@ public class DBConnection {
        
         //WHERE ISBN = ?;
        */
+   }
+   
+   public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
+       //Quali libri vende quel venditore
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       
+       pstmt.setInt(1, Integer.parseInt(venditoreID));
+       
+       return pstmt.executeQuery();
    }
    
    public static ResultSet visualizzaArticoloMagazzini(String isbn) throws SQLException   {
