@@ -576,25 +576,18 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaArticoloMagazzini(String isbn) throws SQLException   {
+   public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
        
        //In quali magazzini c'è quel libro
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWARTICOLOMAGAZZINI WHERE MAGAZZINO_LIBRI.ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
-       
-        /* CREATE VIEW viewarticolomagazzini AS
-        SELECT MAGAZZINO_LIBRI.PREZZOVENDITA AS PREZZO, MAGAZZINO_LIBRI.VENDITORE_ID, VENDITORI.VENDITORE_NOME
-        FROM VENDITORI INNER JOIN MAGAZZINO_LIBRI ON VENDITORI.VENDITORE_ID = MAGAZZINO_LIBRI.VENDITORE_ID
-        
-       
-       //WHERE MAGAZZINO_LIBRI.ISBN = ?;
                 
        
-       In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
+       //In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
    }
 }   
