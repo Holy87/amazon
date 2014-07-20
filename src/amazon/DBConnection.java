@@ -170,13 +170,7 @@ public class DBConnection {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, MAGAZZINO_LIBRI.PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ\n" +
-                                     "FROM COMPARTICOLI\n" +
-                                     "NATURAL JOIN LIBRI\n" +
-                                     "NATURAL JOIN MAGAZZINO_LIBRI\n" +
-                                     "NATURAL JOIN IMPOSTAZIONI\n" +
-                                     "NATURAL JOIN VENDITORI\n" +
-                                     "WHERE UTENTE_ID=? AND ORDINE_ID=NULL;",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, MAGAZZINO_LIBRI.PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI NATURAL JOIN LIBRI NATURAL JOIN MAGAZZINO_LIBRI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VENDITORI WHERE UTENTE_ID=? AND ORDINE_ID=NULL;",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setInt(1, Integer.parseInt(idUtente));
@@ -198,6 +192,7 @@ public class DBConnection {
    
    public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario
+       //NOTA2 = gestire i pezzi disponibile. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
@@ -274,6 +269,9 @@ public class DBConnection {
             insertDelivery.setString(4, "SYSDATE + 5");
        
        insertDelivery.close();
+       
+       //UPDATE valore PREZZOVENDITA in comparticoli
+       //UPDATE PEZZIDISPONIBILI per i libri del nuovo ordine
        
    }
    
@@ -502,12 +500,12 @@ public class DBConnection {
        //Vista sull'inventario di un magazzino
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(idVenditore));
        
        return pstmt.executeQuery();
-       /*CREATE VIEW viewmagazzino AS
+       /*CREATE VIEW view_magazzino AS
         SELECT LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN
         FROM LIBRI NATURAL JOIN AUTORI_LIB NATURAL JOIN AUTORI NATURAL JOIN EDITORI NATURAL JOIN EDITORI_LIB NATURAL JOIN MAGAZZINO_LIBRI;
        */
@@ -519,22 +517,17 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri che i venditori hanno a disposizione
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWARTICOLI",
+       pstmt = conn.prepareStatement("SELECT * FROM LIBRI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
        return pstmt.executeQuery();
        
-       /* CREATE VIEW viewarticoli AS
-        SELECT LIBRI.ISBN, LIBRI.LIBRO_NOME, MIN(MAGAZZINO_LIBRI.PREZZOVENDITA) AS PREZZO
-        FROM LIBRI INNER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.ISBN = LIBRI.ISBN
-        GROUP BY LIBRI.ISBN, LIBRI.LIBRO_NOME;
-                */
    }
    
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWARTICOLI WHERE LIBRI.LIBRO_NOME LIKE ?",
+       pstmt = conn.prepareStatement("SELECT * FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -546,7 +539,7 @@ public class DBConnection {
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {
        //A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWINFOLIBRO WHERE ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));
@@ -561,28 +554,40 @@ public class DBConnection {
        */
    }
    
-   public static ResultSet visualizzaArticoloMagazzini(String isbn) throws SQLException   {
+   public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
+       //Quali libri vende quel venditore
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       
+       pstmt.setInt(1, Integer.parseInt(venditoreID));
+       
+       return pstmt.executeQuery();
+   }
+   
+   public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
        
        //In quali magazzini c'è quel libro
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWARTICOLOMAGAZZINI WHERE MAGAZZINO_LIBRI.ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
    }
-        /* CREATE VIEW viewarticolomagazzini AS
-        SELECT MAGAZZINO_LIBRI.PREZZOVENDITA AS PREZZO, MAGAZZINO_LIBRI.VENDITORE_ID, VENDITORI.VENDITORE_NOME
-        FROM VENDITORI INNER JOIN MAGAZZINO_LIBRI ON VENDITORI.VENDITORE_ID = MAGAZZINO_LIBRI.VENDITORE_ID
-        
-       
-       //WHERE MAGAZZINO_LIBRI.ISBN = ?;
-                
-       
-       In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone*/
    
-   public static ResultSet visualizzaVenditoriLibro(String idLibro) {
-       return null; //da implementare
+   public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
+       
+       //Compaiono i formati del libro disponibili di quel venditore
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(isbn));
+       pstmt.setInt(2, Integer.parseInt(venditoreID));
+       
+       return pstmt.executeQuery();
    }
-}   
+}

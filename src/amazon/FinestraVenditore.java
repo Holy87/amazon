@@ -153,4 +153,14 @@ public class FinestraVenditore extends EditForm {
         }
         
     }
+    
+    @Override
+    protected String titoloNuovo () {
+        return "Nuovo Venditore";
+    }
+    
+    @Override
+    protected String titoloModifica () {
+        return "Modifica Venditore";
+    }
 }

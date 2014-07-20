@@ -153,7 +153,7 @@
           <Color id="Cursore testo"/>
         </Property>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[2147483647, 20]"/>
+          <Dimension value="[6, 20]"/>
         </Property>
       </Properties>
       <Events>

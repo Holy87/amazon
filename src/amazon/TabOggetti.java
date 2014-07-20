@@ -109,6 +109,7 @@ public final class TabOggetti extends javax.swing.JPanel {
                 break;
             case "VENDITORI": serviceButton1.setText("Visualizza libri venditore");
                 //GESTIONE METODO: Visualizza TUTTE le info sul libro, comprese quelle non visibili nella tabella
+                //GESTIONE METODO: Visualizza TUTTI i libri del Venditore, con relative informazioni
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriVenditore(evt);}});
@@ -503,7 +504,7 @@ public final class TabOggetti extends javax.swing.JPanel {
 
         searchBox.setToolTipText("Scrivi la query di ricerca");
         searchBox.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        searchBox.setMaximumSize(new java.awt.Dimension(2147483647, 20));
+        searchBox.setMaximumSize(new java.awt.Dimension(6, 20));
         searchBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchBoxActionPerformed(evt);

@@ -282,4 +282,14 @@ public class FinestraLibro extends EditForm {
         }
         
     }
+    
+    @Override
+    protected String titoloNuovo () {
+        return "Nuovo Libro";
+    }
+    
+    @Override
+    protected String titoloModifica () {
+        return "Modifica Libro";
+    }
 }
