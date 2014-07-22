@@ -117,12 +117,6 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
             mostraErrore(ex);
         }
     }
-    
-    /*private void setInserisci() {
-        switch(nomeTabella) {
-            case ""
-        }
-    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
