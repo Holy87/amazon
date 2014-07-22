@@ -492,6 +492,8 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   
+   //SCEGLIERE METODO VISUALIZZAZIONE MAGAZZINO_LIBRI
    public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino di un venditore
        PreparedStatement pstmt;
@@ -506,8 +508,35 @@ public class DBConnection {
        */
    }
    
+   public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
+       //Lista dei libri dettagliata che il venditore ha a disposizione
+       
+       //Esempio: VENDITORE_ID = 6317;
+       /*RISULTATO QUERY:
+                        LIBRO_NOME                      FORMATO_NOME            TIPOCONDIZIONE  PEZZIDISPONIBILI    PREZZOVENDITA
+                        I racconti di Nené              Copertina Flessibile	Ricondizionato	2                   2,99
+                        I racconti di Nené              Copertina Flessibile	Nuovo           10                  4,99
+                        Avatar                          Copertina Flessibile	Nuovo           0                   8,99
+                        Soffocare                       Copertina Flessibile	Usato           1                   5,99
+                        Invito alla Biologia            Copertina Flessibile	Usato           1                   8,47
+                        Hunger Games                    Copertina Flessibile	Nuovo           20                  12,99
+                        La Danza delle Stelle           Copertina Rigida	Nuovo           10                  9,99
+                        La Solitudine dei Numeri Primi	Copertina Rigida	Nuovo           10                  11,99
+                        Fight Club                      Copertina Rigida	Nuovo           10	            7,4
+       
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       
+       pstmt.setInt(1, Integer.parseInt(venditoreID));
+       
+       return pstmt.executeQuery();
+   }
+   
    public static ResultSet visualizzaListinoLibri() throws SQLException {
-        //Lista completa di tutti i libri che i venditori hanno a disposizione
+        //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM LIBRI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -518,6 +547,7 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
+       //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -529,7 +559,13 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {
-       //A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra
+       //Compaiono le informazioni dettagliate dei libri presenti nell'archivio
+       
+        //Esempio: ISBN = 9788804632238;
+       /*RISULTATO QUERY:
+            LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
+            Hunger Games        Suzanne     Collins         Mondadori	9788804632238	Quando Katniss urla "Mi offro volontaria, mi offro volontaria come tributo!" sa di aver appena firmato la sua condanna a morte.     Fantascienza    370         399         14-MAG-13       (null)
+       */
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -537,31 +573,19 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
-       /*
-       DA SISTEMARE
-       */
-   }
-   
-   public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
-       //Quali libri vende quel venditore
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
        
-       pstmt.setInt(1, Integer.parseInt(venditoreID));
-       
-       return pstmt.executeQuery();
-       
-       /*RISULTATO QUERY: LIBRO_NOME            FORMATO_NOME            TIPOCONDIZIONE  PEZZIDISPONIBILI    PREZZOVENDITA
-                          I racconti di Nené	Copertina Flessibile	Nuovo           5                   5,99
-       
-       */
    }
    
    public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
+       //In questo campo compaiono i venditori che hanno a disposizione il libro scelto, qualsiasi formato abbiano a disposizione
        
-       //In quali magazzini c'è quel libro
+       //Esempio: ISBN = 9788804508359;
+       /*RISULTATO QUERY: 
+                        VENDITORE_NOME    PREZZOVENDITA_MINIM
+                        C.U.S.            4,99
+                        Libri.it          7,40
+       
+       */
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -569,32 +593,24 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
-                
-       
-       //In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone
-       /*RISULTATO QUERY: VENDITORE_NOME    PREZZOVENDITA_MINIM
-                          C.U.S.            4,99
-       
-       */
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
-       
-       //Compaiono i formati del libro disponibili di quel venditore
+       //In questo campo compaiono i formati che il venditore ha a disposizione per il libro in questione
+
+       //Esempio: ISBN = 9788804508359 AND VENDITORE_ID = 6318;
+       /*RISULTATO QUERY: FORMATO_NOME           PREZZOVENDITA   TIPOCONDIZIONE
+                          Copertina Rigida	 7,65            Nuovo
+                          Copertina Rigida	 4,99            Usato
+                          Kindle        	 5,99            Nuovo
+       */
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = 6318",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));
        pstmt.setInt(2, Integer.parseInt(venditoreID));
        
-       return pstmt.executeQuery();
-                
-       
-       //In questo campo verrà selezionato il prodotto specifico che verrà aggiunto nel carrello
-       /*RISULTATO QUERY: FORMATO_NOME           PREZZOVENDITA   TIPOCONDIZIONE
-                          Copertina Rigida	 7,65            Nuovo
-       
-       */
+       return pstmt.executeQuery();   
    }
 }
