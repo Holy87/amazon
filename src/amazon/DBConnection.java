@@ -613,4 +613,20 @@ public class DBConnection {
        
        return pstmt.executeQuery();   
    }
+   
+   public static void inserisciLibro(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
+       //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
+       
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO LIBRI VALUES(?, ?, ?, ?, ?, ?)");
+       pstmt.setString(1, venditoreID);
+       pstmt.setString(2, isbn);
+       pstmt.setString(3, formatoID);
+       pstmt.setString(4, tipoCondizione);
+       pstmt.setString(5, pezziDisp);
+       pstmt.setString(6, prezzo);
+       
+       pstmt.executeUpdate();
+   }
 }

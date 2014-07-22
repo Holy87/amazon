@@ -149,6 +149,27 @@ public final class TabOggetti extends javax.swing.JPanel {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {gestioneUtente(evt);}});
                 break;
+            case "VENDITORI": serviceButton2.setText("Aggiungi libro a venditore");
+                /*GESTIONE METODO: Selezionato il venditore, apre una tabella dove selezionare tutti i libri, quindi una finestra che dà
+                  gli stessi risultati di visualizzaListinoLibri(). Una volta selezionato il libro, si inseriscono
+                  quattro ulteriori informazioni:
+                  1) Formato_Nome (menù a tendina con i formati disponibili presi dalla tabella IMPOSTAZIONI)
+                  2) TipoCondizione (menù a tendina con "Nuovo", "Usato" e "Ricondizionato")
+                  3) PezziDisponibili
+                  4) Prezzo di vendita
+                  
+                  Alla funzione presente in DB Connection inserisciLibro gli passeremo quindi:
+                  1) Il venditore_ID selezionato all'inizio
+                  2) L'ISBN del libro da inserire
+                  3) Il Formato_ID del formato selezionato
+                  4) Il Tipo Condizione
+                  5) I Pezzi Disponibili
+                  6) Il Prezzo di vendita
+                */
+                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciLibro(evt);}});
+                break;
             default: serviceButton2.setVisible(false);
         }
     }
@@ -183,6 +204,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     
     private void gestioneUtente(java.awt.event.ActionEvent evt) {
         // Inserire la gestione dell'utente
+    }
+    
+    private void inserisciLibro(java.awt.event.ActionEvent evt) {
+        FinestraInserisciLibri InserisciLibri = new FinestraInserisciLibri(mainWindow, false, getSelectedID());
+        InserisciLibri.setVisible(true);
     }
     
     /**
