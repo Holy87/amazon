@@ -493,7 +493,7 @@ public class DBConnection {
    }
    
    
-   //SCEGLIERE METODO VISUALIZZAZIONE MAGAZZINO_LIBRI
+
    /*public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino di un venditore
        PreparedStatement pstmt;
@@ -508,7 +508,7 @@ public class DBConnection {
        
    }*/
    
-   public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
+   public static ResultSet visualizzaMagazzino (String venditoreID) throws SQLException {
        //Lista dei libri dettagliata che il venditore ha a disposizione
        
        //Esempio: VENDITORE_ID = 6317;
