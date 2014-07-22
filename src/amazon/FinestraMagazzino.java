@@ -53,11 +53,11 @@ public class FinestraMagazzino extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        return DBConnection.visualizzaMagazzino(id);
+        return DBConnection.visualizzaLibriVenditore(id);
     }
 
     @Override
     protected ResultSet resultSetAggiorna() throws SQLException {
-        return DBConnection.visualizzaMagazzino(id);
+        return DBConnection.visualizzaLibriVenditore(id);
     }
 }

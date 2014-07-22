@@ -152,13 +152,13 @@ public class DBConnection {
    
    public static ResultSet visualizzaListeDesideri(String idUtente) throws SQLException {
        /*Visualizza le liste desideri di un utente, dato il suo ID
-       **QUERY DI BASE= SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?;
+       **QUERY DI BASE= SELECT NOMELISTA, ISBN, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?;
        **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
        
        */
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?",
+       pstmt = conn.prepareStatement("SELECT NOMELISTA, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(idUtente));
@@ -277,14 +277,14 @@ public class DBConnection {
    
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
-       **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, PROD_ID, VOTO)
+       **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
        **               VALUES ('423572', 'Un libro meraviglioso, con forti spunti di riflessione. Da consigliare a tutti', '1', ‘5’)
        **Se la variabile booleana libroRec è TRUE, inserisce una recensione di un prodotto, altrimenti di un venditore.
        */
        PreparedStatement pstmt;
        
        if ( libroRec )
-           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, PROD_ID, VOTO) VALUES ('?', '?', '?', '?')");
+           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, ISBN, VOTO) VALUES ('?', '?', '?', '?')");
        else
            pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, VENDITORE_ID, VOTO) VALUES ('?', '?', '?', '?')");
        
@@ -378,7 +378,7 @@ public class DBConnection {
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE PROD_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE ISBN = ?");
        pstmt.setString(1, nomeLibro);
        pstmt.setString(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -494,7 +494,7 @@ public class DBConnection {
    
    
    //SCEGLIERE METODO VISUALIZZAZIONE MAGAZZINO_LIBRI
-   public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
+   /*public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino di un venditore
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ?",
@@ -505,8 +505,8 @@ public class DBConnection {
        return pstmt.executeQuery();
        /*RISULTATO QUERY: LIBRO_NOME    AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            VENDITORE_ID
                           Fight Club	Chuck       Palahniuk       Mondadori	9788804508359	6318
-       */
-   }
+       
+   }*/
    
    public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
        //Lista dei libri dettagliata che il venditore ha a disposizione
