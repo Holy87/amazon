@@ -39,9 +39,9 @@
                   <Component id="searchButton" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jLabel1" min="-2" pref="64" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -51,10 +51,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton4" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Component id="serviceButton1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="serviceButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="serviceButton2" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="214" max="-2" attributes="0"/>
@@ -67,7 +67,7 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel1" pref="35" max="32767" attributes="0"/>
+                  <Component id="jLabel1" max="32767" attributes="0"/>
                   <Component id="jButton1" max="32767" attributes="0"/>
                   <Component id="newRecord" pref="35" max="32767" attributes="0"/>
                   <Component id="updateTable" max="32767" attributes="0"/>
@@ -82,8 +82,8 @@
                   <Component id="searchBox" alignment="1" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="searchButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="serviceButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="serviceButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="serviceButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -207,21 +207,15 @@
         <Property name="text" type="java.lang.String" value="Scorrimento:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JToggleButton" name="serviceButton1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="serviceButton1"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="serviceButton1ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JToggleButton" name="serviceButton2">
+    <Component class="javax.swing.JButton" name="serviceButton2">
       <Properties>
         <Property name="text" type="java.lang.String" value="serviceButton2"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="serviceButton2ActionPerformed"/>
-      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="serviceButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="serviceButton1"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

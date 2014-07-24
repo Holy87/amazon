@@ -482,8 +482,8 @@ public final class TabOggetti extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        serviceButton1 = new javax.swing.JToggleButton();
-        serviceButton2 = new javax.swing.JToggleButton();
+        serviceButton2 = new javax.swing.JButton();
+        serviceButton1 = new javax.swing.JButton();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -580,19 +580,9 @@ public final class TabOggetti extends javax.swing.JPanel {
 
         jLabel1.setText("Scorrimento:");
 
-        serviceButton1.setText("serviceButton1");
-        serviceButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                serviceButton1ActionPerformed(evt);
-            }
-        });
-
         serviceButton2.setText("serviceButton2");
-        serviceButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                serviceButton2ActionPerformed(evt);
-            }
-        });
+
+        serviceButton1.setText("serviceButton1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -613,9 +603,9 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addComponent(deleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
                     .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -627,7 +617,7 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(serviceButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(serviceButton2)))
+                        .addComponent(serviceButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(214, 214, 214))
             .addComponent(jScrollPane1)
         );
@@ -636,7 +626,7 @@ public final class TabOggetti extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(newRecord, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                     .addComponent(updateTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -650,8 +640,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addComponent(searchBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(searchButton)
-                        .addComponent(serviceButton1)
-                        .addComponent(serviceButton2)))
+                        .addComponent(serviceButton2)
+                        .addComponent(serviceButton1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE))
         );
@@ -724,17 +714,9 @@ public final class TabOggetti extends javax.swing.JPanel {
         searchButton.setEnabled(searchBox.getText().length() > 0);
     }//GEN-LAST:event_searchBoxKeyTyped
 
-    private void serviceButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serviceButton1ActionPerformed
-        pulsanteDiServizio();
-    }//GEN-LAST:event_serviceButton1ActionPerformed
-
     private void searchBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBoxActionPerformed
         searchButtonActionPerformed(evt);
     }//GEN-LAST:event_searchBoxActionPerformed
-
-    private void serviceButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serviceButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_serviceButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -749,8 +731,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     private javax.swing.JButton newRecord;
     private javax.swing.JTextField searchBox;
     private javax.swing.JButton searchButton;
-    private javax.swing.JToggleButton serviceButton1;
-    private javax.swing.JToggleButton serviceButton2;
+    private javax.swing.JButton serviceButton1;
+    private javax.swing.JButton serviceButton2;
     private javax.swing.JTable tabella;
     private javax.swing.JButton updateTable;
     // End of variables declaration//GEN-END:variables
