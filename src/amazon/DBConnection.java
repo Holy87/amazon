@@ -149,22 +149,6 @@ public class DBConnection {
        ResultSet rs = pstmt.executeQuery(query);
        return rs;
    }
-   
-   public static ResultSet visualizzaListeDesideri(String idUtente) throws SQLException {
-       /*Visualizza le liste desideri di un utente, dato il suo ID
-       **QUERY DI BASE= SELECT NOMELISTA, ISBN, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?;
-       **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
-       
-       */
-       
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT NOMELISTA, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(idUtente));
-       
-       return pstmt.executeQuery();
-   }
       
    public static ResultSet visualizzaCarrello(String idUtente) throws SQLException {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
@@ -554,7 +538,7 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM LIBRI",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN FROM LIBRI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -565,7 +549,7 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
        //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -681,6 +665,42 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static ResultSet visualizzaListeUtente(String utenteId) throws SQLException   {
+       //In questo campo compaiono le liste dei desideri di un singolo utente
+       
+       //Esempio: UTENTE_ID = 423570;
+       /*RISULTATO QUERY: 
+                        LISTA_NOME              LISTA_PRIVACY
+                        CD da Acquistare	Pubblica
+                        Per mia Moglie          Privata
+       
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LISTA_NOME, LISTA_PRIVACY FROM LISTA_DESIDERI WHERE UTENTE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(utenteId));
+       
+       return pstmt.executeQuery();
+   }
    
+   public static ResultSet visualizzaArticoliListaUtente(String utenteId, String listaNome) throws SQLException   {
+       //In questo campo compaiono i libri di una lista di un utente
+       
+       //Esempio: UTENTE_ID = 423572, LISTA_NOME LIKE 'Default';
+       /*RISULTATO QUERY: 
+                        LIBRO_NOME              FORMATO_NOME            TIPOCONDIZIONE      VENDITORE_NOME      PREZZOVENDITA
+                        Invito alla Biologia	Copertina Flessibile	Usato               Amazon.it           5,99
+       
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE UTENTE_ID = ? AND LISTA_NOME LIKE '?'",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(utenteId));
+       pstmt.setInt(2, Integer.parseInt(listaNome));
+       
+       return pstmt.executeQuery();
+   }
 }
 
