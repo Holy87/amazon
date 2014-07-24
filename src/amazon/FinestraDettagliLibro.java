@@ -31,7 +31,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     }
     
     private LinkedList libro;
-    private String isbn, titolo, autore, editore;
+    private String isbn, titolo, autore, editore, formato, stato;
     private int prezzo, disponibilita;
     
     private ResultSet rs;
@@ -69,6 +69,22 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    private void aggiornaDatiLibro() {
+        tPrezzo.setText("€"+prezzo);
+        tFormato.setText("Formato: " + formato);
+        tCondizioni.setText("Condizioni: " + stato);
+        tDisponibile.setText("Disponibilità: " + getDisponibilita());
+    }
+    
+    private String getDisponibilita() {
+        if (disponibilita < 0) {
+            return "Illimitata";
+        } else if (disponibilita > 10)
+            return "più di 10 disponibili";
+          else  
+            return disponibilita + " disponibili";  
     }
     
     /**
@@ -133,6 +149,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         tAnno = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
+        tCondizioni = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -187,6 +204,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tabella);
 
+        tCondizioni.setText("Condizioni: Nuovo");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -230,6 +249,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tCodice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(tAnno, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tCondizioni, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -258,7 +279,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tEditore)
-                    .addComponent(tCodice))
+                    .addComponent(tCodice)
+                    .addComponent(tCondizioni))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tFormato)
@@ -284,6 +306,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private javax.swing.JLabel tAnno;
     private javax.swing.JLabel tAutore;
     private javax.swing.JLabel tCodice;
+    private javax.swing.JLabel tCondizioni;
     private javax.swing.JLabel tDisponibile;
     private javax.swing.JLabel tEditore;
     private javax.swing.JLabel tFormato;

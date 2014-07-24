@@ -80,7 +80,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     }
     
     protected ResultSet resultSetAggiorna() throws SQLException {
-        return DBConnection.visualizzaListinoLibri();
+        return DBConnection.visualizzaListinoLibri();//.visualizzaLibriDisponibili();
     }
     
     /**

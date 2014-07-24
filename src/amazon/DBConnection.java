@@ -505,6 +505,22 @@ public class DBConnection {
                           Fight Club	Chuck       Palahniuk       Mondadori	9788804508359	6318
        */
    }
+   //serve per la ricerca su un nome
+   public static ResultSet visualizzaMagazzino(String idVenditore, String query) throws SQLException   {
+       //Vista sull'inventario di un magazzino di un venditore
+       PreparedStatement pstmt;
+       query.replace('%', ' ');
+       pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ? AND LIBRI_NOME LIKE %?%",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(idVenditore));
+       pstmt.setString(2, query);
+       
+       return pstmt.executeQuery();
+       /*RISULTATO QUERY: LIBRO_NOME    AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            VENDITORE_ID
+                          Fight Club	Chuck       Palahniuk       Mondadori	9788804508359	6318
+       */
+   }
    
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri che i venditori hanno a disposizione
@@ -582,7 +598,8 @@ public class DBConnection {
        
        //Compaiono i formati del libro disponibili di quel venditore
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
+       //ho inserito anche ISBN e VENDITORE_ID nei risultati perché c'è bisogno di loro quando seleziono il libro
+       pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));
@@ -596,5 +613,13 @@ public class DBConnection {
                           Copertina Rigida	 7,65            Nuovo
        
        */
+   }
+   
+   public static ResultSet visualizzaLibriDisponibili() throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT * FROM VIEW_LIBRIDISPONIBILI",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       return pstmt.executeQuery();
    }
 }

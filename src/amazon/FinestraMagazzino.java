@@ -53,7 +53,7 @@ public class FinestraMagazzino extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        return DBConnection.visualizzaMagazzino(id);
+        return DBConnection.visualizzaMagazzino(id, query);
     }
 
     @Override
