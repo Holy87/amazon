@@ -615,28 +615,48 @@ public class DBConnection {
        return pstmt.executeQuery();   
    }
    
-   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String quantita) throws SQLException {
+   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String tipoCondizione, String quantita) throws SQLException {
         //Viene effettuato l'inserimento nel carrello di un articolo
  
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Quantità) VALUES(?,?,?,?,?)",
+        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Tipocondizione, Quantità) VALUES(?,?,?,?,?,?)",
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
         pstmt.setInt(2, Integer.parseInt(isbn));
         pstmt.setInt(3, Integer.parseInt(formatoId));
         pstmt.setInt(4, Integer.parseInt(venditoreId));
-        pstmt.setInt(5, Integer.parseInt(quantita));   
+        pstmt.setString(5, tipoCondizione);
+        pstmt.setInt(6, Integer.parseInt(quantita));   
         
         pstmt.executeQuery(); 
  }
+   
+   public static void inserisciArticoloLista(String utenteId, String listaNome, String isbn, String formatoId, String venditoreId, String tipoCond, String dataPrezzo) throws SQLException {
+        //Viene effettuato l'inserimento nel carrello di un articolo
+ 
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("INSERT INTO COMPLISTADESIDERI(UTENTE_ID, LISTA_NOME, ISBN, Formato_ID, Venditore_ID, TIPOCONDIZIONE, DATAAGGIUNTA_PREZZO) VALUES(?,?,?,?,?,?,?)",
+        ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+        pstmt.setInt(1, Integer.parseInt(utenteId));
+        pstmt.setString(2, listaNome);
+        pstmt.setInt(3, Integer.parseInt(isbn));
+        pstmt.setInt(4, Integer.parseInt(formatoId));
+        pstmt.setInt(5, Integer.parseInt(venditoreId));
+        pstmt.setString(6, tipoCond);
+        pstmt.setString(7, dataPrezzo);   
+        
+        pstmt.executeQuery(); 
+    }
+   
    
    public static void inserisciLibro(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
        //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO LIBRI VALUES(?, ?, ?, ?, ?, ?)");
+       pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO_LIBRI VALUES(?, ?, ?, ?, ?, ?)");
        pstmt.setString(1, venditoreID);
        pstmt.setString(2, isbn);
        pstmt.setString(3, formatoID);
