@@ -640,12 +640,12 @@ public class DBConnection {
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
-        pstmt.setInt(2, Integer.parseInt(listaNome));
+        pstmt.setString(2, listaNome);
         pstmt.setInt(3, Integer.parseInt(isbn));
         pstmt.setInt(4, Integer.parseInt(formatoId));
         pstmt.setInt(5, Integer.parseInt(venditoreId));
-        pstmt.setInt(6, Integer.parseInt(tipoCond));
-        pstmt.setInt(6, Integer.parseInt(dataPrezzo));   
+        pstmt.setString(6, tipoCond);
+        pstmt.setString(7, dataPrezzo);   
         
         pstmt.executeQuery(); 
     }
