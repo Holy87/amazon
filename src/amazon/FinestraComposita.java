@@ -135,7 +135,6 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
 
         jButton4.setText("Aggiorna");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -199,13 +198,6 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
             }
         });
 
-        jButton5.setText("Inserisci");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -214,9 +206,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
                 .addComponent(searchBox, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(114, 114, 114)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
@@ -232,9 +222,8 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
                     .addComponent(searchBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
                     .addComponent(jButton3)
-                    .addComponent(jButton2)
-                    .addComponent(jButton5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -281,10 +270,6 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -292,7 +277,6 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField searchBox;
     private javax.swing.JButton searchButton;
