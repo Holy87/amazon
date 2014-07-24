@@ -631,18 +631,19 @@ public class DBConnection {
        return pstmt.executeQuery();   
    }
    
-   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId) throws SQLException {
+   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String quantita) throws SQLException {
         //Viene effettuato l'inserimento nel carrello di un articolo
  
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID) VALUES(?,?,?,?)",
+        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Quantità) VALUES(?,?,?,?,?)",
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
         pstmt.setInt(2, Integer.parseInt(isbn));
         pstmt.setInt(3, Integer.parseInt(formatoId));
         pstmt.setInt(4, Integer.parseInt(venditoreId));
- 
+        pstmt.setInt(5, Integer.parseInt(quantita));   
+        
         pstmt.executeQuery(); 
  }
    
