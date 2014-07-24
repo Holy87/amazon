@@ -670,4 +670,16 @@ public class DBConnection {
                ResultSet.CONCUR_READ_ONLY);
        return pstmt.executeQuery();
    }
+   
+      public static ResultSet visualizzaFormatoLibro(String venditoreID, String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT FORMATO_ID, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ? AND ISBN = ?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, venditoreID);
+       pstmt.setString(2, isbn);
+       return pstmt.executeQuery();
+   }
+      
 }
+
