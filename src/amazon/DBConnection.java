@@ -681,6 +681,42 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static ResultSet visualizzaListeUtente(String utenteId) throws SQLException   {
+       //In questo campo compaiono le liste dei desideri di un singolo utente
+       
+       //Esempio: UTENTE_ID = 423570;
+       /*RISULTATO QUERY: 
+                        LISTA_NOME              LISTA_PRIVACY
+                        CD da Acquistare	Pubblica
+                        Per mia Moglie          Privata
+       
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LISTA_NOME, LISTA_PRIVACY FROM LISTA_DESIDERI WHERE UTENTE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(utenteId));
+       
+       return pstmt.executeQuery();
+   }
    
+   public static ResultSet visualizzaArticoliListaUtente(String utenteId, String listaNome) throws SQLException   {
+       //In questo campo compaiono i libri di una lista di un utente
+       
+       //Esempio: UTENTE_ID = 423572, LISTA_NOME LIKE 'Default';
+       /*RISULTATO QUERY: 
+                        LIBRO_NOME              FORMATO_NOME            TIPOCONDIZIONE      VENDITORE_NOME      PREZZOVENDITA
+                        Invito alla Biologia	Copertina Flessibile	Usato               Amazon.it           5,99
+       
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE UTENTE_ID = ? AND LISTA_NOME LIKE '?'",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, Integer.parseInt(utenteId));
+       pstmt.setInt(2, Integer.parseInt(listaNome));
+       
+       return pstmt.executeQuery();
+   }
 }
 
