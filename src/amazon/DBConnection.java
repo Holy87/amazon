@@ -526,7 +526,7 @@ public class DBConnection {
        
        */
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM VIEW_INFO WHERE VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -631,18 +631,19 @@ public class DBConnection {
        return pstmt.executeQuery();   
    }
    
-   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId) throws SQLException {
+   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String quantita) throws SQLException {
         //Viene effettuato l'inserimento nel carrello di un articolo
  
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID) VALUES(?,?,?,?)",
+        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Quantità) VALUES(?,?,?,?,?)",
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
         pstmt.setInt(2, Integer.parseInt(isbn));
         pstmt.setInt(3, Integer.parseInt(formatoId));
         pstmt.setInt(4, Integer.parseInt(venditoreId));
- 
+        pstmt.setInt(5, Integer.parseInt(quantita));   
+        
         pstmt.executeQuery(); 
  }
    
@@ -669,4 +670,17 @@ public class DBConnection {
                ResultSet.CONCUR_READ_ONLY);
        return pstmt.executeQuery();
    }
+   
+      public static ResultSet visualizzaFormatoLibro(String venditoreID, String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT FORMATO_ID, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ? AND ISBN = ?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, venditoreID);
+       pstmt.setString(2, isbn);
+       return pstmt.executeQuery();
+   }
+   
+   
 }
+
