@@ -149,22 +149,6 @@ public class DBConnection {
        ResultSet rs = pstmt.executeQuery(query);
        return rs;
    }
-   
-   public static ResultSet visualizzaListeDesideri(String idUtente) throws SQLException {
-       /*Visualizza le liste desideri di un utente, dato il suo ID
-       **QUERY DI BASE= SELECT NOMELISTA, ISBN, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?;
-       **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
-       
-       */
-       
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT NOMELISTA, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(idUtente));
-       
-       return pstmt.executeQuery();
-   }
       
    public static ResultSet visualizzaCarrello(String idUtente) throws SQLException {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
