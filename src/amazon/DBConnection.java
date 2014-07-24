@@ -603,7 +603,7 @@ public class DBConnection {
        
        */
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(isbn));

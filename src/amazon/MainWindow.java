@@ -120,6 +120,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         mAcquisto = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         Carrello = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -192,7 +193,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu2.setText("Modifica");
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("Azioni");
+        jMenu3.setText("Azioni utente");
 
         mAcquisto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mAcquisto.setText("Acquisto libri");
@@ -203,6 +204,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         jMenu3.add(mAcquisto);
+
+        jMenuItem4.setText("Lista desideri");
+        jMenuItem4.setEnabled(false);
+        jMenu3.add(jMenuItem4);
 
         Carrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         Carrello.setText("Vai al carrello");
@@ -344,6 +349,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
