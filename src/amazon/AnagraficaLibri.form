@@ -34,21 +34,26 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="rbTutti" max="32767" attributes="0"/>
                   <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jSeparator2" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="117" max="-2" attributes="0"/>
+                  </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="rbCartaceo" min="-2" max="-2" attributes="0"/>
-                          <Component id="rbEBook" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbFlessibile" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <Component id="rbNuovo" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="rbUsato" min="-2" max="-2" attributes="0"/>
                           <Component id="rbRicondizionato" min="-2" max="-2" attributes="0"/>
                           <Component id="rbTutti2" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbRigida" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbEBook" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="70" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="54" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jSeparator2" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="searchBox" min="-2" pref="385" max="-2" attributes="0"/>
@@ -57,10 +62,6 @@
                   </Group>
                   <Component id="jScrollPane1" min="-2" pref="483" max="-2" attributes="0"/>
               </Group>
-          </Group>
-          <Group type="102" attributes="0">
-              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -82,14 +83,16 @@
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="rbCartaceo" min="-2" max="-2" attributes="0"/>
+                      <Component id="rbFlessibile" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="rbRigida" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="rbEBook" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="rbTutti" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Component id="rbNuovo" min="-2" max="-2" attributes="0"/>
@@ -141,15 +144,18 @@
               </Table>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tabellaMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JRadioButton" name="rbCartaceo">
+    <Component class="javax.swing.JRadioButton" name="rbFlessibile">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="formatoLibri"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Cartaceo"/>
+        <Property name="text" type="java.lang.String" value="Copertina flessibile"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbEBook">
@@ -212,6 +218,14 @@
           <ComponentRef name="condizioniLibri"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Ricondizionato"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="rbRigida">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="formatoLibri"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Copertina rigida"/>
       </Properties>
     </Component>
   </SubComponents>
