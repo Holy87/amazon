@@ -554,7 +554,7 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM LIBRI",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN FROM LIBRI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -565,7 +565,7 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
        //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
