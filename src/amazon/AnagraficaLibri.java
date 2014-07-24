@@ -130,6 +130,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     private void initComponents() {
 
         formatoLibri = new javax.swing.ButtonGroup();
+        condizioniLibri = new javax.swing.ButtonGroup();
         searchBox = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -144,6 +145,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         rbTutti2 = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
+        rbRicondizionato = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Listino");
@@ -183,15 +185,21 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         formatoLibri.add(rbTutti);
         rbTutti.setText("Tutti");
 
+        condizioniLibri.add(rbNuovo);
         rbNuovo.setText("Nuovo");
 
+        condizioniLibri.add(rbUsato);
         rbUsato.setText("Usato");
 
         jLabel1.setText("Formato");
 
+        condizioniLibri.add(rbTutti2);
         rbTutti2.setText("Tutti");
 
         jLabel2.setText("Condizioni");
+
+        condizioniLibri.add(rbRicondizionato);
+        rbRicondizionato.setText("Ricondizionato");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -206,10 +214,11 @@ public class AnagraficaLibri extends javax.swing.JDialog {
                             .addComponent(rbCartaceo)
                             .addComponent(rbEBook)
                             .addComponent(jLabel1)
-                            .addComponent(rbTutti2)
                             .addComponent(rbNuovo)
-                            .addComponent(rbUsato))
-                        .addGap(0, 19, Short.MAX_VALUE))
+                            .addComponent(rbUsato)
+                            .addComponent(rbRicondizionato)
+                            .addComponent(rbTutti2))
+                        .addGap(0, 70, Short.MAX_VALUE))
                     .addComponent(jSeparator2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -250,8 +259,10 @@ public class AnagraficaLibri extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rbUsato)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbTutti2)
+                        .addComponent(rbRicondizionato)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbTutti2)
+                        .addGap(1, 1, 1)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)))
@@ -270,6 +281,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup condizioniLibri;
     private javax.swing.ButtonGroup formatoLibri;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -279,6 +291,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     private javax.swing.JRadioButton rbCartaceo;
     private javax.swing.JRadioButton rbEBook;
     private javax.swing.JRadioButton rbNuovo;
+    private javax.swing.JRadioButton rbRicondizionato;
     private javax.swing.JRadioButton rbTutti;
     private javax.swing.JRadioButton rbTutti2;
     private javax.swing.JRadioButton rbUsato;

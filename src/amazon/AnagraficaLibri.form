@@ -4,6 +4,8 @@
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="formatoLibri">
     </Component>
+    <Component class="javax.swing.ButtonGroup" name="condizioniLibri">
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
@@ -37,13 +39,14 @@
                           <Component id="rbCartaceo" min="-2" max="-2" attributes="0"/>
                           <Component id="rbEBook" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <Component id="rbTutti2" min="-2" max="-2" attributes="0"/>
                           <Component id="rbNuovo" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="rbUsato" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbRicondizionato" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbTutti2" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="19" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="70" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jSeparator2" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -93,8 +96,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="rbUsato" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="rbTutti2" min="-2" max="-2" attributes="0"/>
+                      <Component id="rbRicondizionato" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="rbTutti2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Component id="jSeparator2" min="-2" pref="10" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -167,11 +172,17 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbNuovo">
       <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="condizioniLibri"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Nuovo"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbUsato">
       <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="condizioniLibri"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Usato"/>
       </Properties>
     </Component>
@@ -182,6 +193,9 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbTutti2">
       <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="condizioniLibri"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Tutti"/>
       </Properties>
     </Component>
@@ -191,6 +205,14 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator2">
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="rbRicondizionato">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="condizioniLibri"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Ricondizionato"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
