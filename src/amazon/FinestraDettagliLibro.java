@@ -9,6 +9,8 @@ package amazon;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -23,28 +25,35 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     /**
      * Creates new form FinestraDettagliLibro
      */
-    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, LinkedList libro) {
+    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn) {
         super(parent, modal);
-        this.libro = libro;
+        try {
+            libro = DBConnection.visualizzaInfoLibro(isbn);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        this.isbn = isbn;
         initComponents();
-        
+        assegnaDettagliLibro();
     }
     
-    private LinkedList libro;
-    private String isbn, titolo, autore, editore, formato, stato;
-    private int prezzo, disponibilita;
+    //private LinkedList libro;
+    private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione;
+    private int prezzo, disponibilita, pagine, peso;
     
-    private ResultSet rs;
-    private DBTableModel modelloTabella;
+    private ResultSet rs, rs2, libro;
+    private DBTableModel modelloTabellaVenditori;
+    private DBTableModel modelloTabellaFormati;
     private int cursore = 1;
+    private int cursore2 = 1;
     protected String id;
     
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {
-        modelloTabella = new DBTableModel(rs);
-        tabella.setModel(modelloTabella); //metto il modellotabella nel
-        tabella.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
-        tabella.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        modelloTabellaVenditori = new DBTableModel(rs);
+        tabellaVenditori.setModel(modelloTabellaVenditori); //metto il modellotabella nel
+        tabellaVenditori.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
+        tabellaVenditori.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -53,22 +62,57 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } 
                 
         );
+        
+        modelloTabellaFormati = new DBTableModel(rs2);
+        tabellaFormati.setModel(modelloTabellaFormati);
+        tabellaFormati.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabellaFormati.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                tableSelectionChanged2();
+            }
+        });
         aggiornaTabella();
+        aggiornaTabella2();
+    }
+    
+    private void assegnaDettagliLibro() {
+        try {
+            titolo = libro.getNString(0);
+            autore = libro.getNString(1) + " " + libro.getNString(2);
+            editore = libro.getNString(3);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        
     }
     
     /**
      * Aggiorna i dati della tabella con tutti i dati del database.
      */
-    public void aggiornaTabella()
+    private void aggiornaTabella()
     {
         try {
             rs = DBConnection.visualizzaVenditoriLibro(isbn);
-            modelloTabella.setRS(rs);
+            modelloTabellaVenditori.setRS(rs);
             rs.absolute(cursore);
             mostraDati();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    private void aggiornaTabella2() {
+        try {
+            rs2 = DBConnection.visualizzaFormatoLibroVenditore(isbn, modelloTabellaVenditori.getValueAt(cursore-1, 0).toString());
+            modelloTabellaFormati.setRS(rs2);
+            rs2.absolute(cursore2);
+            mostraDati2();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        
     }
     
     private void aggiornaDatiLibro() {
@@ -93,8 +137,20 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private void mostraDati() {
       try {
           cursore = rs.getRow();
-          tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
-          tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
+          tabellaVenditori.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
+          tabellaVenditori.setRowSelectionInterval(cursore - 1, cursore - 1);
+      } catch (SQLException ex) {
+          mostraErrore(ex);
+      } catch (java.lang.IllegalArgumentException ex) {
+          System.out.println(ex.getMessage());
+      }
+    }
+    
+    private void mostraDati2() {
+        try {
+          cursore2 = rs2.getRow();
+          tabellaFormati.getSelectionModel().setSelectionInterval(cursore2 - 1,cursore2 - 1);
+          tabellaFormati.setRowSelectionInterval(cursore2 - 1, cursore2 - 1);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -117,8 +173,18 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private void tableSelectionChanged() 
     {
         try {
-            rs.absolute(tabella.getSelectionModel().getMinSelectionIndex() + 1);
+            rs.absolute(tabellaVenditori.getSelectionModel().getMinSelectionIndex() + 1);
             mostraDati();
+            aggiornaTabella2();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
+    private void tableSelectionChanged2() {
+        try {
+            rs2.absolute(tabellaFormati.getSelectionModel().getMinSelectionIndex() + 1);
+            mostraDati2();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -148,10 +214,19 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         tCodice = new javax.swing.JLabel();
         tAnno = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabella = new javax.swing.JTable();
+        tabellaVenditori = new javax.swing.JTable();
         tCondizioni = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabellaFormati = new javax.swing.JTable();
+        tGenere = new javax.swing.JLabel();
+        tPagine = new javax.swing.JLabel();
+        tPeso = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tDescrizione = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         tTitolo.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         tTitolo.setForeground(new java.awt.Color(150, 200, 25));
@@ -191,7 +266,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
 
         tAnno.setText("Anno:");
 
-        tabella.setModel(new javax.swing.table.DefaultTableModel(
+        tabellaVenditori.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -202,9 +277,34 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tabella);
+        jScrollPane1.setViewportView(tabellaVenditori);
 
         tCondizioni.setText("Condizioni: Nuovo");
+
+        tabellaFormati.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tabellaFormati);
+
+        tGenere.setText("Genere:");
+
+        tPagine.setText("Pagine:");
+
+        tPeso.setText("Peso:");
+
+        tDescrizione.setColumns(20);
+        tDescrizione.setRows(5);
+        jScrollPane3.setViewportView(tDescrizione);
+
+        jLabel2.setText("Descrizione:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -237,26 +337,44 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
                     .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tEditore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tFormato, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tCodice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tAnno, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tCondizioni, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(tPagine, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(tPeso, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(tEditore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(tFormato, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(tCodice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(tAnno, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(tCondizioni, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                                            .addComponent(tGenere, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(10, 10, 10))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tTitolo, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -272,7 +390,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                     .addComponent(tDisponibile, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(tQuantita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(68, 68, 68)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
@@ -284,10 +402,20 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tFormato)
-                    .addComponent(tAnno))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(59, Short.MAX_VALUE))
+                    .addComponent(tAnno)
+                    .addComponent(tGenere))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tPagine)
+                    .addComponent(tPeso))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
@@ -300,20 +428,28 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCarrello;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel tAnno;
     private javax.swing.JLabel tAutore;
     private javax.swing.JLabel tCodice;
     private javax.swing.JLabel tCondizioni;
+    private javax.swing.JTextArea tDescrizione;
     private javax.swing.JLabel tDisponibile;
     private javax.swing.JLabel tEditore;
     private javax.swing.JLabel tFormato;
+    private javax.swing.JLabel tGenere;
+    private javax.swing.JLabel tPagine;
+    private javax.swing.JLabel tPeso;
     private javax.swing.JLabel tPrezzo;
     private javax.swing.JTextField tQuantita;
     private javax.swing.JLabel tTitolo;
     private javax.swing.JLabel tVoto;
-    private javax.swing.JTable tabella;
+    private javax.swing.JTable tabellaFormati;
+    private javax.swing.JTable tabellaVenditori;
     // End of variables declaration//GEN-END:variables
 }
