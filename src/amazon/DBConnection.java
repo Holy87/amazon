@@ -152,13 +152,13 @@ public class DBConnection {
    
    public static ResultSet visualizzaListeDesideri(String idUtente) throws SQLException {
        /*Visualizza le liste desideri di un utente, dato il suo ID
-       **QUERY DI BASE= SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?;
+       **QUERY DI BASE= SELECT NOMELISTA, ISBN, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?;
        **NOTA = Se possibile, visualizzare anche il prezzo di ogni articolo aggiunto
        
        */
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT NOMELISTA, PROD_ID, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.PROD_ID=LIBRI.PROD_ID WHERE UTENTE_ID=?",
+       pstmt = conn.prepareStatement("SELECT NOMELISTA, LIBRO_NOME FROM COMPLISTA_DESIDERI INNER JOIN LIBRI ON COMPLISTA_DESIDERI.ISBN=LIBRI.ISBN WHERE UTENTE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, Integer.parseInt(idUtente));
@@ -170,7 +170,7 @@ public class DBConnection {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, MAGAZZINO_LIBRI.PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI NATURAL JOIN LIBRI NATURAL JOIN MAGAZZINO_LIBRI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VENDITORI WHERE UTENTE_ID=? AND ORDINE_ID=NULL;",
+       pstmt = conn.prepareStatement("SELECT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID=? AND ORDINE_ID=0;",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setInt(1, Integer.parseInt(idUtente));
@@ -277,14 +277,14 @@ public class DBConnection {
    
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
-       **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, PROD_ID, VOTO)
+       **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
        **               VALUES ('423572', 'Un libro meraviglioso, con forti spunti di riflessione. Da consigliare a tutti', '1', ‘5’)
        **Se la variabile booleana libroRec è TRUE, inserisce una recensione di un prodotto, altrimenti di un venditore.
        */
        PreparedStatement pstmt;
        
        if ( libroRec )
-           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, PROD_ID, VOTO) VALUES ('?', '?', '?', '?')");
+           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, ISBN, VOTO) VALUES ('?', '?', '?', '?')");
        else
            pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, VENDITORE_ID, VOTO) VALUES ('?', '?', '?', '?')");
        
@@ -378,7 +378,7 @@ public class DBConnection {
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE PROD_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE ISBN = ?");
        pstmt.setString(1, nomeLibro);
        pstmt.setString(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -492,7 +492,9 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
+   
+
+   /*public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
        //Vista sull'inventario di un magazzino di un venditore
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ?",
@@ -503,7 +505,34 @@ public class DBConnection {
        return pstmt.executeQuery();
        /*RISULTATO QUERY: LIBRO_NOME    AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            VENDITORE_ID
                           Fight Club	Chuck       Palahniuk       Mondadori	9788804508359	6318
+       
+   }*/
+   
+   public static ResultSet visualizzaMagazzino (String venditoreID) throws SQLException {
+       //Lista dei libri dettagliata che il venditore ha a disposizione
+       
+       //Esempio: VENDITORE_ID = 6317;
+       /*RISULTATO QUERY:
+                        LIBRO_NOME                      FORMATO_NOME            TIPOCONDIZIONE  PEZZIDISPONIBILI    PREZZOVENDITA
+                        I racconti di Nené              Copertina Flessibile	Ricondizionato	2                   2,99
+                        I racconti di Nené              Copertina Flessibile	Nuovo           10                  4,99
+                        Avatar                          Copertina Flessibile	Nuovo           0                   8,99
+                        Soffocare                       Copertina Flessibile	Usato           1                   5,99
+                        Invito alla Biologia            Copertina Flessibile	Usato           1                   8,47
+                        Hunger Games                    Copertina Flessibile	Nuovo           20                  12,99
+                        La Danza delle Stelle           Copertina Rigida	Nuovo           10                  9,99
+                        La Solitudine dei Numeri Primi	Copertina Rigida	Nuovo           10                  11,99
+                        Fight Club                      Copertina Rigida	Nuovo           10	            7,4
+       
        */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       
+       pstmt.setInt(1, Integer.parseInt(venditoreID));
+       
+       return pstmt.executeQuery();
    }
    //serve per la ricerca su un nome
    public static ResultSet visualizzaMagazzino(String idVenditore, String query) throws SQLException   {
@@ -523,7 +552,7 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaListinoLibri() throws SQLException {
-        //Lista completa di tutti i libri che i venditori hanno a disposizione
+        //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM LIBRI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -534,6 +563,7 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
+       //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -545,7 +575,13 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {
-       //A differenza degli altri metodi, invece di stampare i risultati in una tabella, li stampa in una finestra
+       //Compaiono le informazioni dettagliate dei libri presenti nell'archivio
+       
+        //Esempio: ISBN = 9788804632238;
+       /*RISULTATO QUERY:
+            LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
+            Hunger Games        Suzanne     Collins         Mondadori	9788804632238	Quando Katniss urla "Mi offro volontaria, mi offro volontaria come tributo!" sa di aver appena firmato la sua condanna a morte.     Fantascienza    370         399         14-MAG-13       (null)
+       */
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -553,31 +589,19 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
-       /*
-       DA SISTEMARE
-       */
-   }
-   
-   public static ResultSet visualizzaLibriVenditore (String venditoreID) throws SQLException {
-       //Quali libri vende quel venditore
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
        
-       pstmt.setInt(1, Integer.parseInt(venditoreID));
-       
-       return pstmt.executeQuery();
-       
-       /*RISULTATO QUERY: LIBRO_NOME            FORMATO_NOME            TIPOCONDIZIONE  PEZZIDISPONIBILI    PREZZOVENDITA
-                          I racconti di Nené	Copertina Flessibile	Nuovo           5                   5,99
-       
-       */
    }
    
    public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
+       //In questo campo compaiono i venditori che hanno a disposizione il libro scelto, qualsiasi formato abbiano a disposizione
        
-       //In quali magazzini c'è quel libro
+       //Esempio: ISBN = 9788804508359;
+       /*RISULTATO QUERY: 
+                        VENDITORE_NOME    PREZZOVENDITA_MINIM
+                        C.U.S.            4,99
+                        Libri.it          7,40
+       
+       */
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -585,18 +609,17 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(isbn));
        
        return pstmt.executeQuery();
-                
-       
-       //In questo campo viene selezionato il venditore dove reperire il prodotto, che viene aggiunto nel carrello con un bottone
-       /*RISULTATO QUERY: VENDITORE_NOME    PREZZOVENDITA_MINIM
-                          C.U.S.            4,99
-       
-       */
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
-       
-       //Compaiono i formati del libro disponibili di quel venditore
+       //In questo campo compaiono i formati che il venditore ha a disposizione per il libro in questione
+
+       //Esempio: ISBN = 9788804508359 AND VENDITORE_ID = 6318;
+       /*RISULTATO QUERY: FORMATO_NOME           PREZZOVENDITA   TIPOCONDIZIONE
+                          Copertina Rigida	 7,65            Nuovo
+                          Copertina Rigida	 4,99            Usato
+                          Kindle        	 5,99            Nuovo
+       */
        PreparedStatement pstmt;
        //ho inserito anche ISBN e VENDITORE_ID nei risultati perché c'è bisogno di loro quando seleziono il libro
        pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
@@ -605,14 +628,38 @@ public class DBConnection {
        pstmt.setInt(1, Integer.parseInt(isbn));
        pstmt.setInt(2, Integer.parseInt(venditoreID));
        
-       return pstmt.executeQuery();
-                
+       return pstmt.executeQuery();   
+   }
+   
+   public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId) throws SQLException {
+        //Viene effettuato l'inserimento nel carrello di un articolo
+ 
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID) VALUES(?,?,?,?)",
+        ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_READ_ONLY);
+        pstmt.setInt(1, Integer.parseInt(utenteId));
+        pstmt.setInt(2, Integer.parseInt(isbn));
+        pstmt.setInt(3, Integer.parseInt(formatoId));
+        pstmt.setInt(4, Integer.parseInt(venditoreId));
+ 
+        pstmt.executeQuery(); 
+ }
+   
+   public static void inserisciLibro(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
+       //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
-       //In questo campo verrà selezionato il prodotto specifico che verrà aggiunto nel carrello
-       /*RISULTATO QUERY: FORMATO_NOME           PREZZOVENDITA   TIPOCONDIZIONE
-                          Copertina Rigida	 7,65            Nuovo
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       */
+       pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO LIBRI VALUES(?, ?, ?, ?, ?, ?)");
+       pstmt.setString(1, venditoreID);
+       pstmt.setString(2, isbn);
+       pstmt.setString(3, formatoID);
+       pstmt.setString(4, tipoCondizione);
+       pstmt.setString(5, pezziDisp);
+       pstmt.setString(6, prezzo);
+       
+       pstmt.executeUpdate();
    }
    
    public static ResultSet visualizzaLibriDisponibili() throws SQLException {
