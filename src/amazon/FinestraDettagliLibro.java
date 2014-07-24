@@ -39,7 +39,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     //private LinkedList libro;
     private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione;
-    private int prezzo, disponibilita, pagine, peso;
+    private int prezzo, disponibilita, pagine, peso, voto;
     
     private ResultSet rs, rs2, libro;
     private DBTableModel modelloTabellaVenditori;
@@ -82,6 +82,22 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             titolo = libro.getNString(0);
             autore = libro.getNString(1) + " " + libro.getNString(2);
             editore = libro.getNString(3);
+            descrizione = libro.getNString(5);
+            genere = libro.getNString(6);
+            pagine = Integer.parseInt(libro.getNString(7));
+            peso = Integer.parseInt(libro.getNString(8));
+            data = libro.getNString(9);
+            voto = Integer.parseInt(libro.getNString(10));
+            
+            tTitolo.setText(titolo);
+            tAutore.setText(autore);
+            tEditore.setText("Editore: " + editore);
+            tDescrizione.setText(descrizione);
+            tGenere.setText("Genere: " + genere);
+            tPagine.setText("Pagine: " + pagine);
+            tPeso.setText("Peso: " + peso);
+            tAnno.setText("Data uscita: " + data);
+            tVoto.setText("Voto medio: " + voto + "/5");
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -151,6 +167,9 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
           cursore2 = rs2.getRow();
           tabellaFormati.getSelectionModel().setSelectionInterval(cursore2 - 1,cursore2 - 1);
           tabellaFormati.setRowSelectionInterval(cursore2 - 1, cursore2 - 1);
+          prezzo = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 2).toString());
+          disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 1).toString());
+          aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
