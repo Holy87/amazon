@@ -651,7 +651,7 @@ public class DBConnection {
     }
    
    
-   public static void inserisciLibro(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
+   public static void inserisciLibroMagazzino(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
        //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -668,6 +668,7 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaLibriDisponibili() throws SQLException {
+       //Query (ridondante ma) utile per controllare la disponibilità di un libro nei magazzini
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_LIBRIDISPONIBILI",
                ResultSet.TYPE_SCROLL_INSENSITIVE,
