@@ -266,6 +266,12 @@ public class DBConnection {
        insertDelivery.close();
        
        //UPDATE valore PREZZOVENDITA in comparticoli
+       /*
+       UPDATE COMPARTICOLI
+       SET PREZZOVENDITA=
+       (SELECT PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID=? AND FORMATO_ID=? AND ISBN=? AND TIPOCONDIZIONE LIKE '?')
+        WHERE VENDITORE_ID=? AND FORMATO_ID=? AND ISBN=? AND TIPOCONDIZIONE LIKE '?';
+       */
        
        //UPDATE PEZZIDISPONIBILI per i libri del nuovo ordine
        
