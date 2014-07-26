@@ -570,7 +570,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(isbn));
+       pstmt.setString(1, isbn);
        
        return pstmt.executeQuery();
        
@@ -590,7 +590,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(isbn));
+       pstmt.setString(1, isbn);
        
        return pstmt.executeQuery();
    }
@@ -609,7 +609,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(isbn));
+       pstmt.setString(1, isbn);
        pstmt.setInt(2, Integer.parseInt(venditoreID));
        
        return pstmt.executeQuery();   
@@ -623,7 +623,7 @@ public class DBConnection {
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
-        pstmt.setInt(2, Integer.parseInt(isbn));
+        pstmt.setString(2, isbn);
         pstmt.setInt(3, Integer.parseInt(formatoId));
         pstmt.setInt(4, Integer.parseInt(venditoreId));
         pstmt.setString(5, tipoCondizione);
@@ -641,7 +641,7 @@ public class DBConnection {
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
         pstmt.setString(2, listaNome);
-        pstmt.setInt(3, Integer.parseInt(isbn));
+        pstmt.setString(3, isbn);
         pstmt.setInt(4, Integer.parseInt(formatoId));
         pstmt.setInt(5, Integer.parseInt(venditoreId));
         pstmt.setString(6, tipoCond);
