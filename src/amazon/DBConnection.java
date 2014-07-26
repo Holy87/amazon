@@ -174,16 +174,17 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto) throws SQLException {
+   public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto, String codiciSconto[], int n) throws SQLException {
+       //Int n = numero di codici 
        //NOTA = sistemare i "parse" ove necessario
-       //NOTA2 = gestire i pezzi disponibile. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
+       //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
        String idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        int countCourier;
        
-       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=NULL)), ?, ?)");
+       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=0)), ?, ?)");
        pstmt.setString(1, idUtente);
        pstmt.setString(2, idUtente);
        pstmt.setInt(3, costospedin);
@@ -202,11 +203,21 @@ public class DBConnection {
        
        //Aggiornamento di COMPARTICOLI
        PreparedStatement updateCompArticoli;
-       updateCompArticoli = conn.prepareStatement("UPDATE COMPARTICOLI SET ORDINE_ID=? WHERE (UTENTE_ID=? AND ORDINE_ID=NULL);");
+       updateCompArticoli = conn.prepareStatement("UPDATE COMPARTICOLI SET ORDINE_ID=? WHERE (UTENTE_ID=? AND ORDINE_ID=0);");
        updateCompArticoli.setString(1, idOrder);
        updateCompArticoli.setString(2, idUtente);
        updateCompArticoli.executeUpdate();
        updateCompArticoli.close();
+       
+       //Aggiornamento dei CODICI SCONTO utilizzati nell'ordine (CLAUDIO TE LA VEDI TU COL FOR)
+       for (int i=0; i<n; i++) {
+           PreparedStatement updateCodiciUsati;
+           updateCodiciUsati = conn.prepareStatement("UPDATE SCONTO_CODICI SET ORDINE_ID=? WHERE (CODPROMO=?);");
+           updateCodiciUsati.setString(1, idOrder);
+           updateCodiciUsati.setString(2, codiciSconto[i]);
+           updateCodiciUsati.executeUpdate();
+           updateCodiciUsati.close();
+       }
        
        //Calcolo di PREZZO TOTALE
        PreparedStatement totalPrice;
@@ -255,6 +266,7 @@ public class DBConnection {
        insertDelivery.close();
        
        //UPDATE valore PREZZOVENDITA in comparticoli
+       
        //UPDATE PEZZIDISPONIBILI per i libri del nuovo ordine
        
    }
