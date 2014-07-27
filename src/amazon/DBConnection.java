@@ -277,6 +277,32 @@ public class DBConnection {
        
    }
    
+  public static ResultSet applicaSconto(String codPromo, String codSalva[], int i) throws SQLException {
+      //PARLARE CON FRANCESCO PER LA CHIAMATA AL METODO
+       //Restituisce lo sconto da applicare in ScontoCompl oppure un messaggio d'errore se non è presente
+       
+       //Esempio: CODPROMO = HUAKE72LE037;
+       /*RISULTATO QUERY:
+            SCONTO
+            10
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE '?' AND ORDINE_ID IS null",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, codPromo);
+       if (pstmt.executeQuery()==null)  {
+           System.out.println("Codice Promo già usata o non valida");
+       }
+       else {
+           //Inserire codice per la visualizzazione in finestra dello sconto applicato (possibile applicarlo fuori da questo metodo)
+           //Es: "Sconto convalidato: 10€"
+           codSalva[i]=codPromo; //Salvataggio dei codice valido nell'array passato per parametro
+       }
+       
+       return pstmt.executeQuery();
+   } 
+   
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
        **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
