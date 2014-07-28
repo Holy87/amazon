@@ -35,11 +35,12 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         this.isbn = isbn;
         initComponents();
         assegnaDettagliLibro();
+        impostaTabella();
     }
     
     //private LinkedList libro;
     private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione;
-    private int prezzo, disponibilita, pagine, peso;
+    private int prezzo, disponibilita, pagine, peso, voto;
     
     private ResultSet rs, rs2, libro;
     private DBTableModel modelloTabellaVenditori;
@@ -79,13 +80,55 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     private void assegnaDettagliLibro() {
         try {
-            titolo = libro.getNString(0);
-            autore = libro.getNString(1) + " " + libro.getNString(2);
-            editore = libro.getNString(3);
+            JOptionPane.showMessageDialog(null, "Dimensione: " + conteggio());
+            libro.first();
+            titolo = libro.getNString(1);
+            autore = libro.getNString(2) + " " + libro.getNString(3);
+            editore = libro.getNString(4);
+            descrizione = libro.getNString(6);
+            genere = libro.getNString(7);
+            try {
+                pagine = Integer.parseInt(libro.getNString(8));
+            } catch(NumberFormatException ex) {
+                System.out.println("PAGINE   " + ex);
+            }
+            try {
+                peso = Integer.parseInt(libro.getNString(9));
+            } catch(NumberFormatException ex) {
+                System.out.println("PESO   " + ex);
+            }
+            data = libro.getNString(10);
+            try {
+            voto = Integer.parseInt(libro.getNString(11));
+            } catch(NumberFormatException ex) {
+                System.out.println("VOTO   " + ex);
+            }
+            tTitolo.setText(titolo);
+            tAutore.setText(autore);
+            tEditore.setText("Editore: " + editore);
+            tDescrizione.setText(descrizione);
+            tGenere.setText("Genere: " + genere);
+            tPagine.setText("Pagine: " + pagine);
+            tPeso.setText("Peso: " + peso);
+            tAnno.setText("Data uscita: " + data);
+            tVoto.setText("Voto medio: " + voto + "/5");
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         
+    }
+    
+    private int conteggio() {
+        int size = 0;
+try {
+    libro.last();
+    size = libro.getRow();
+    libro.beforeFirst();
+}
+catch(Exception ex) {
+    return 0;
+}
+return size;
     }
     
     /**
@@ -151,6 +194,9 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
           cursore2 = rs2.getRow();
           tabellaFormati.getSelectionModel().setSelectionInterval(cursore2 - 1,cursore2 - 1);
           tabellaFormati.setRowSelectionInterval(cursore2 - 1, cursore2 - 1);
+          prezzo = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 2).toString());
+          disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 1).toString());
+          aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -159,7 +205,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     }
     
     private void mostraErrore(SQLException ex) {
-        String errore = "Errore di connessione al database";
+        String errore = "(Finestra dettagli libro) Errore di connessione al database";
         errore += "\nCodice: " + ex.getErrorCode();
         errore += "\nMessaggio: " + ex.getMessage();
         errore += "\n\n" + ex.getSQLState();

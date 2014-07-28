@@ -317,8 +317,8 @@ public class MainWindow extends javax.swing.JFrame {
         try {
             // Set System L&F
         UIManager.setLookAndFeel(
-                "javax.swing.plaf.nimbus.MetalLookAndFeel");
-            //UIManager.getSystemLookAndFeelClassName());
+                //"javax.swing.plaf.nimbus.MetalLookAndFeel");
+            UIManager.getSystemLookAndFeelClassName());
     } 
     catch (UnsupportedLookAndFeelException e) {
        // handle exception

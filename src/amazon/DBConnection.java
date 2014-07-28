@@ -605,6 +605,7 @@ public class DBConnection {
             LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
             Hunger Games        Suzanne     Collins         Mondadori	9788804632238	Quando Katniss urla "Mi offro volontaria, mi offro volontaria come tributo!" sa di aver appena firmato la sua condanna a morte.     Fantascienza    370         399         14-MAG-13       (null)
        */
+       System.out.println(""+Long.parseLong(isbn));
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -721,7 +722,7 @@ public class DBConnection {
                ResultSet.TYPE_SCROLL_INSENSITIVE,
                ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, venditoreID);
-       pstmt.setString(2, isbn);
+       pstmt.setLong(2, Long.parseLong(isbn));
        return pstmt.executeQuery();
    }
    
