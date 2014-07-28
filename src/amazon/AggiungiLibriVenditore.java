@@ -155,7 +155,7 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     private void aggiungiLibro() {
         try {
             setVisible(false);
-            DBConnection.inserisciLibroMagazzino(idVenditore, isbn(), getFormato(), getCondizione(), tQuantita.getText(), tPrezzo.getText());
+            DBConnection.inserisciLibroMagazzino(idVenditore, isbn(), getFormato(), getCondizione(), Integer.parseInt(tQuantita.getText()), Double.parseDouble(tPrezzo.getText()));
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
