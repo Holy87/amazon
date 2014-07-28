@@ -276,6 +276,20 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   public static ResultSet visualizzaRubricaUtente(int idUtente) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT CONTACT_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI WHERE UTENTE_ID=?");
+       pstmt.setInt(1, idUtente);
+       
+       return pstmt.executeQuery();
+       
+       /*VISUALIZZA:
+        1234567	Roberto	Fasullo     Via Roma, 323       80100   Napoli  NA      Italia  5551029387
+        1234568	Marco   Carrozzo    Via Dei Sub, 41     80100	Napoli	NA	Italia	5559876543
+       */
+   }
+   
    public static void eliminaRecord(String id, String tabella, String nomeColonna) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        pstmt = conn.prepareStatement("DELETE FROM " + tabella + " WHERE " + nomeColonna + " = ?");
