@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import java.util.Hashtable;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -175,7 +176,33 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto, String codiciSconto[], int n) throws SQLException {
+   public static double applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
+       ResultSet rs;
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+       pstmt.setString(1, codice);
+       
+       rs=pstmt.executeQuery();
+       
+        try {
+            rs.last();
+        }
+        catch(Exception ex) {
+            System.out.println("Codice non disponibile");
+            return 0;
+        }
+        
+        tabellaSconti.put(codice, rs.getDouble(1));
+       //APPLICARE ALL'ESTERNO CONDIZIONE DI ESISTENZA
+       
+       return rs.getDouble(1);
+   }
+   
+   
+   
+   public static ResultSet creaOrdine (String idUtente, String sped, String sconto, String modsped) throws SQLException {
        //Int n = numero di codici 
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
@@ -183,17 +210,15 @@ public class DBConnection {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
        String idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
-       int countCourier;
        
-       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=0)), ?, ?)");
+       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setString(1, idUtente);
-       pstmt.setString(2, idUtente);
-       pstmt.setInt(3, costospedin);
-       pstmt.setString(4, scontocomplin);
+       pstmt.setString(2, sped);
+       pstmt.setDouble(3, Double.parseDouble(sconto));
+       pstmt.setInt(4, Integer.parseInt(modsped));
        
-       pstmt.executeUpdate();
-       pstmt.close();
-       
+       return pstmt.executeQuery();
+       /*
        //Query per visualizzare l'ultimo record inserito
        PreparedStatement lastorder;
        lastorder = conn.prepareStatement("SELECT ORDINE_ID FROM UTENTI WHERE ROWNUM <=1 ORDER BY UTENTE_ID DESC;");
@@ -267,7 +292,7 @@ public class DBConnection {
        insertDelivery.close();
        
        //UPDATE valore PREZZOVENDITA in comparticoli
-       /*
+   
        UPDATE COMPARTICOLI
        SET PREZZOVENDITA=
        (SELECT PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID=? AND FORMATO_ID=? AND ISBN=? AND TIPOCONDIZIONE LIKE '?')
