@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Hashtable;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -174,7 +175,7 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static double applicaSconto(String codiciSconto[], String codice) throws SQLException {
+   public static double applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
        ResultSet rs;
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -182,11 +183,23 @@ public class DBConnection {
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setString(1, codice);
        
+       rs=pstmt.executeQuery();
+       
+        try {
+            rs.last();
+        }
+        catch(Exception ex) {
+            System.out.println("Codice non disponibile");
+            return 0;
+        }
+        
+        tabellaSconti.put(codice, rs.getDouble(1));
        //APPLICARE ALL'ESTERNO CONDIZIONE DI ESISTENZA
        
-       rs=pstmt.executeQuery();
        return rs.getDouble(1);
    }
+   
+   
    
    public static ResultSet creaOrdine (String idUtente, String sped, String sconto, String modsped) throws SQLException {
        //Int n = numero di codici 
