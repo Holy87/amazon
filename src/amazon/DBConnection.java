@@ -174,16 +174,17 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto) throws SQLException {
+   public static void creaOrdine (String idUtente, int costospedin, String scontocomplin, String idContatto, String codiciSconto[], int n) throws SQLException {
+       //Int n = numero di codici 
        //NOTA = sistemare i "parse" ove necessario
-       //NOTA2 = gestire i pezzi disponibile. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
+       //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
        String idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        int countCourier;
        
-       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=NULL)), ?, ?)");
+       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, PREZZONETTO, COSTOSPED, SCONTOCOMPL) VALUES(?, SYSDATE, (SELECT SUM(PREZZOVENDITA) FROM COMPARTICOLI WHERE (?=UTENTE_ID AND ORDINE_ID=0)), ?, ?)");
        pstmt.setString(1, idUtente);
        pstmt.setString(2, idUtente);
        pstmt.setInt(3, costospedin);
@@ -202,11 +203,21 @@ public class DBConnection {
        
        //Aggiornamento di COMPARTICOLI
        PreparedStatement updateCompArticoli;
-       updateCompArticoli = conn.prepareStatement("UPDATE COMPARTICOLI SET ORDINE_ID=? WHERE (UTENTE_ID=? AND ORDINE_ID=NULL);");
+       updateCompArticoli = conn.prepareStatement("UPDATE COMPARTICOLI SET ORDINE_ID=? WHERE (UTENTE_ID=? AND ORDINE_ID=0);");
        updateCompArticoli.setString(1, idOrder);
        updateCompArticoli.setString(2, idUtente);
        updateCompArticoli.executeUpdate();
        updateCompArticoli.close();
+       
+       //Aggiornamento dei CODICI SCONTO utilizzati nell'ordine (CLAUDIO TE LA VEDI TU COL FOR)
+       for (int i=0; i<n; i++) {
+           PreparedStatement updateCodiciUsati;
+           updateCodiciUsati = conn.prepareStatement("UPDATE SCONTO_CODICI SET ORDINE_ID=? WHERE (CODPROMO=?);");
+           updateCodiciUsati.setString(1, idOrder);
+           updateCodiciUsati.setString(2, codiciSconto[i]);
+           updateCodiciUsati.executeUpdate();
+           updateCodiciUsati.close();
+       }
        
        //Calcolo di PREZZO TOTALE
        PreparedStatement totalPrice;
@@ -255,9 +266,42 @@ public class DBConnection {
        insertDelivery.close();
        
        //UPDATE valore PREZZOVENDITA in comparticoli
+       /*
+       UPDATE COMPARTICOLI
+       SET PREZZOVENDITA=
+       (SELECT PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID=? AND FORMATO_ID=? AND ISBN=? AND TIPOCONDIZIONE LIKE '?')
+        WHERE VENDITORE_ID=? AND FORMATO_ID=? AND ISBN=? AND TIPOCONDIZIONE LIKE '?';
+       */
+       
        //UPDATE PEZZIDISPONIBILI per i libri del nuovo ordine
        
    }
+   
+  public static ResultSet applicaSconto(String codPromo, String codSalva[], int i) throws SQLException {
+      //PARLARE CON FRANCESCO PER LA CHIAMATA AL METODO
+       //Restituisce lo sconto da applicare in ScontoCompl oppure un messaggio d'errore se non è presente
+       
+       //Esempio: CODPROMO = HUAKE72LE037;
+       /*RISULTATO QUERY:
+            SCONTO
+            10
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE '?' AND ORDINE_ID IS null",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, codPromo);
+       if (pstmt.executeQuery()==null)  {
+           System.out.println("Codice Promo già usata o non valida");
+       }
+       else {
+           //Inserire codice per la visualizzazione in finestra dello sconto applicato (possibile applicarlo fuori da questo metodo)
+           //Es: "Sconto convalidato: 10€"
+           codSalva[i]=codPromo; //Salvataggio dei codice valido nell'array passato per parametro
+       }
+       
+       return pstmt.executeQuery();
+   } 
    
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
@@ -571,7 +615,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-        pstmt.setLong(1, Long.parseLong(isbn));
+       pstmt.setString(1, isbn);
        
        return pstmt.executeQuery();
        
@@ -591,7 +635,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(isbn));
+       pstmt.setString(1, isbn);
        
        return pstmt.executeQuery();
    }
@@ -610,7 +654,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setLong(1, Long.parseLong(isbn));
+       pstmt.setString(1, isbn);
        pstmt.setInt(2, Integer.parseInt(venditoreID));
        
        return pstmt.executeQuery();   
@@ -624,7 +668,7 @@ public class DBConnection {
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
-        pstmt.setInt(2, Integer.parseInt(isbn));
+        pstmt.setString(2, isbn);
         pstmt.setInt(3, Integer.parseInt(formatoId));
         pstmt.setInt(4, Integer.parseInt(venditoreId));
         pstmt.setString(5, tipoCondizione);
@@ -642,7 +686,7 @@ public class DBConnection {
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, Integer.parseInt(utenteId));
         pstmt.setString(2, listaNome);
-        pstmt.setInt(3, Integer.parseInt(isbn));
+        pstmt.setString(3, isbn);
         pstmt.setInt(4, Integer.parseInt(formatoId));
         pstmt.setInt(5, Integer.parseInt(venditoreId));
         pstmt.setString(6, tipoCond);
@@ -652,7 +696,7 @@ public class DBConnection {
     }
    
    
-   public static void inserisciLibro(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
+   public static void inserisciLibroMagazzino(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
        //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -669,6 +713,7 @@ public class DBConnection {
    }
    
    public static ResultSet visualizzaLibriDisponibili() throws SQLException {
+       //Query (ridondante ma) utile per controllare la disponibilità di un libro nei magazzini
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_LIBRIDISPONIBILI",
                ResultSet.TYPE_SCROLL_INSENSITIVE,
