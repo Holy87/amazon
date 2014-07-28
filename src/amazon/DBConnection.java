@@ -633,7 +633,7 @@ public class DBConnection {
     }
    
    
-   public static void inserisciLibroMagazzino(int venditoreID, String isbn, int formatoID, String tipoCondizione, String pezziDisp, double prezzo) throws SQLException {
+   public static void inserisciLibroMagazzino(int venditoreID, String isbn, int formatoID, String tipoCondizione, int pezziDisp, double prezzo) throws SQLException {
        //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -643,7 +643,7 @@ public class DBConnection {
        pstmt.setString(2, isbn);
        pstmt.setInt(3, formatoID);
        pstmt.setString(4, tipoCondizione);
-       pstmt.setString(5, pezziDisp);
+       pstmt.setInt(5, pezziDisp);
        pstmt.setDouble(6, prezzo);
        
        pstmt.executeUpdate();
