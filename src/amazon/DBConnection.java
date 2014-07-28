@@ -176,7 +176,7 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static double applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
+   public static void applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
        ResultSet rs;
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -190,14 +190,10 @@ public class DBConnection {
             rs.last();
         }
         catch(Exception ex) {
-            System.out.println("Codice non disponibile");
-            return 0;
+            //APPLICARE MESSAGGIO A FINESTRA
         }
         
-        tabellaSconti.put(codice, rs.getDouble(1));
-       //APPLICARE ALL'ESTERNO CONDIZIONE DI ESISTENZA
-       
-       return rs.getDouble(1);
+        tabellaSconti.put(codice, rs.getDouble(1));       
    }
    
    
@@ -302,32 +298,6 @@ public class DBConnection {
        //UPDATE PEZZIDISPONIBILI per i libri del nuovo ordine
        
    }
-   
-  public static ResultSet applicaSconto(String codPromo, String codSalva[], int i) throws SQLException {
-      //PARLARE CON FRANCESCO PER LA CHIAMATA AL METODO
-       //Restituisce lo sconto da applicare in ScontoCompl oppure un messaggio d'errore se non è presente
-       
-       //Esempio: CODPROMO = HUAKE72LE037;
-       /*RISULTATO QUERY:
-            SCONTO
-            10
-       */
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE '?' AND ORDINE_ID IS null",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setString(1, codPromo);
-       if (pstmt.executeQuery()==null)  {
-           System.out.println("Codice Promo già usata o non valida");
-       }
-       else {
-           //Inserire codice per la visualizzazione in finestra dello sconto applicato (possibile applicarlo fuori da questo metodo)
-           //Es: "Sconto convalidato: 10€"
-           codSalva[i]=codPromo; //Salvataggio dei codice valido nell'array passato per parametro
-       }
-       
-       return pstmt.executeQuery();
-   } 
    
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore

@@ -6,6 +6,12 @@
 
 package amazon;
 
+import static amazon.DBConnection.applicaSconto;
+import java.sql.SQLException;
+import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author frbos_000
@@ -15,9 +21,21 @@ public class FinestraOrdine extends javax.swing.JDialog {
     /**
      * Creates new form FinestraOrdine
      */
+    public Hashtable tabellaSconti = new Hashtable();
+    
     public FinestraOrdine(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+    
+    private void inserisciCodice() {
+        String codice = codiceSconto.getText();
+        try {
+            applicaSconto(tabellaSconti, codice);
+        } catch (SQLException ex) {
+            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        codiceSconto.setText("");
     }
 
     /**
@@ -43,8 +61,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        codiceSconto = new javax.swing.JTextField();
+        pulsanteCodiceSconto = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable4 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
@@ -121,7 +139,18 @@ public class FinestraOrdine extends javax.swing.JDialog {
 
         jLabel3.setText("Inserisci codice promozionale se presente:");
 
-        jButton1.setText("Aggiungi");
+        codiceSconto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codiceScontoActionPerformed(evt);
+            }
+        });
+
+        pulsanteCodiceSconto.setText("Aggiungi");
+        pulsanteCodiceSconto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pulsanteCodiceScontoActionPerformed(evt);
+            }
+        });
 
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -189,9 +218,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(codiceSconto, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)))
+                                .addComponent(pulsanteCodiceSconto, javax.swing.GroupLayout.PREFERRED_SIZE, 85, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -209,7 +238,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -245,8 +274,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
+                            .addComponent(codiceSconto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pulsanteCodiceSconto))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addGap(29, 29, 29)
@@ -284,10 +313,18 @@ public class FinestraOrdine extends javax.swing.JDialog {
         // AGGIUNGERE L'EVENTO CON IL TASTO DESTRO DEL MOUSE
     }//GEN-LAST:event_jTable4MouseClicked
 
+    private void pulsanteCodiceScontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pulsanteCodiceScontoActionPerformed
+        inserisciCodice();
+    }//GEN-LAST:event_pulsanteCodiceScontoActionPerformed
+
+    private void codiceScontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codiceScontoActionPerformed
+        inserisciCodice();
+    }//GEN-LAST:event_codiceScontoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField codiceSconto;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -312,7 +349,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTable jTable4;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton pulsanteCodiceSconto;
     private javax.swing.JLabel tSconto;
     // End of variables declaration//GEN-END:variables
 }
