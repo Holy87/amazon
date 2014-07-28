@@ -156,7 +156,7 @@ public class DBConnection {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID=? AND ORDINE_ID=0;",
+       pstmt = conn.prepareStatement("SELECT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID=? AND ORDINE_ID=0",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setInt(1, Integer.parseInt(idUtente));
@@ -164,17 +164,31 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaOrdini(String idUtente) throws SQLException {
+   public static ResultSet visualizzaOrdiniUtente(String idUtente) throws SQLException {
        //Visualizza gli ordini effettuati dall'utente dato il suo ID
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("",
+       pstmt = conn.prepareStatement("SELECT ORDINE_ID, DATAORDINE, PREZZOTOTALE FROM ORDINI WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
-       pstmt.setInt(1, Integer.parseInt(idUtente));
+       pstmt.setString(1, idUtente);
        
        return pstmt.executeQuery();
    }
+   
+   public static ResultSet visualizzaArticoliOrdine(String idUtente, String idOrdine) throws SQLException {
+       //Visualizza gli articoli presenti in un ordine di un utente
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, COMPARTICOLI.QUANTITÀ, COMPARTICOLI.PREZZOVENDITA FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID = ? AND ORDINE_ID=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+       pstmt.setString(1, idUtente);
+       pstmt.setString(2, idOrdine);
+       
+       return pstmt.executeQuery();
+   }
+   
    
    public static void applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
        ResultSet rs;
@@ -224,6 +238,23 @@ public class DBConnection {
        pstmt2.setString(3, sped);
        pstmt2.setString(4, modpagamento);
        
+   }
+   
+   public static ResultSet sceltaModPagamento (String utenteId) throws SQLException {
+       //Su un sottomenu a tendina compaiono le modalità di pagamento disponibili per l'utente attivo
+       
+       //Esempio: UTENTE_ID = 423575;
+       /*RISULTATO QUERY:
+                    TITOLARECARTA_NOME      TITOLARECARTA_COGNOME   TIPOCARTA   NUMEROCARTACREDITO      DATASCADENZA
+                    Roberto                 Di Carlo                Mastercard	4172836483428572	01-GEN-24
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM MOD_PAGAMENTO WHERE UTENTE_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, utenteId);
+       
+       return pstmt.executeQuery();
    }
    
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
