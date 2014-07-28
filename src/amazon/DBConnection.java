@@ -188,7 +188,7 @@ public class DBConnection {
        return rs.getDouble(1);
    }
    
-   public static ResultSet creaOrdine (String idUtente, String sped, String sconto, String modsped) throws SQLException {
+   public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento) throws SQLException {
        //Int n = numero di codici 
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
@@ -201,9 +201,20 @@ public class DBConnection {
        pstmt.setString(1, idUtente);
        pstmt.setString(2, sped);
        pstmt.setDouble(3, Double.parseDouble(sconto));
-       pstmt.setInt(4, Integer.parseInt(modsped));
+       pstmt.setInt(4, Integer.parseInt(modpagamento));
        
-       return pstmt.executeQuery();
+       rs=pstmt.executeQuery();
+       idOrder=rs.getString(2);//Ottenimento ORDINE_ID riga inserita
+       pstmt.close();
+       
+       PreparedStatement pstmt2; //Statement per il richiamo della funzione per il completamento
+       
+       pstmt2 = conn.prepareStatement("BEGIN CREA_ORDINE_PART_2(?,?,?,?); END;");
+       pstmt2.setString(1, idUtente);
+       pstmt2.setString(2, idOrder);
+       pstmt2.setString(3, sped);
+       pstmt2.setString(4, modpagamento);
+       
        /*
        //Query per visualizzare l'ultimo record inserito
        PreparedStatement lastorder;
