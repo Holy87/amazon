@@ -189,7 +189,6 @@ public class DBConnection {
    }
    
    public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento) throws SQLException {
-       //Int n = numero di codici 
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
