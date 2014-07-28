@@ -174,7 +174,21 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet creaOrdine (String idUtente) throws SQLException {
+   public static double applicaSconto(String codiciSconto[], String codice) throws SQLException {
+       ResultSet rs;
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+       pstmt.setString(1, codice);
+       
+       //APPLICARE ALL'ESTERNO CONDIZIONE DI ESISTENZA
+       
+       rs=pstmt.executeQuery();
+       return rs.getDouble(1);
+   }
+   
+   public static ResultSet creaOrdine (String idUtente, String sped, String sconto, String modsped) throws SQLException {
        //Int n = numero di codici 
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
@@ -183,8 +197,11 @@ public class DBConnection {
        ResultSet rs; //Variabile dove inserire i risultati della Query
        String idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
-       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE) VALUES(?,SYSDATE)");
+       pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setString(1, idUtente);
+       pstmt.setString(2, sped);
+       pstmt.setDouble(3, Double.parseDouble(sconto));
+       pstmt.setInt(4, Integer.parseInt(modsped));
        
        return pstmt.executeQuery();
        /*
