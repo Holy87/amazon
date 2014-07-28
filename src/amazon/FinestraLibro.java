@@ -55,8 +55,6 @@ public class FinestraLibro extends EditForm {
         tPesoSped = new javax.swing.JTextField();
         tDataUscita = new javax.swing.JTextField();
         tISBN = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        tID1 = new javax.swing.JTextField();
 
         jLabel9.setText("Descrizione");
 
@@ -105,10 +103,6 @@ public class FinestraLibro extends EditForm {
 
         jLabel14.setText("Data Uscita");
 
-        jLabel4.setText("Prod. ID");
-
-        tID1.setEnabled(false);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -140,13 +134,9 @@ public class FinestraLibro extends EditForm {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(tID1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(tNomeLibro, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tNEdizione))))
                 .addContainerGap())
@@ -154,11 +144,7 @@ public class FinestraLibro extends EditForm {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(tID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(37, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tNomeLibro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -223,7 +209,6 @@ public class FinestraLibro extends EditForm {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -231,7 +216,6 @@ public class FinestraLibro extends EditForm {
     private javax.swing.JTextField tDescrizione;
     private javax.swing.JTextField tGenere;
     private javax.swing.JTextField tID;
-    private javax.swing.JTextField tID1;
     private javax.swing.JTextField tISBN;
     private javax.swing.JTextField tNEdizione;
     private javax.swing.JTextField tNPagine;
@@ -241,15 +225,14 @@ public class FinestraLibro extends EditForm {
 
     @Override
     protected void fillContents() {
-        tID.setText((String)dati.get(0));
-        tNomeLibro.setText((String)dati.get(1));
-        tNEdizione.setText((String)dati.get(2));
-        tISBN.setText((String)dati.get(3));
-        tDescrizione.setText((String)dati.get(4));
-        tGenere.setText((String)dati.get(5));
-        tNPagine.setText((String)dati.get(6));
-        tPesoSped.setText((String)dati.get(7));
-        tDataUscita.setText((String)dati.get(8));
+        tNomeLibro.setText((String)dati.get(0));
+        tNEdizione.setText((String)dati.get(1));
+        tISBN.setText((String)dati.get(2));
+        tDescrizione.setText((String)dati.get(3));
+        tGenere.setText((String)dati.get(4));
+        tNPagine.setText((String)dati.get(5));
+        tPesoSped.setText((String)dati.get(6));
+        tDataUscita.setText((String)dati.get(7));
     }
 
     @Override

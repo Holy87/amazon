@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -610,7 +611,6 @@ public class DBConnection {
             LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
             Hunger Games        Suzanne     Collins         Mondadori	9788804632238	Quando Katniss urla "Mi offro volontaria, mi offro volontaria come tributo!" sa di aver appena firmato la sua condanna a morte.     Fantascienza    370         399         14-MAG-13       (null)
        */
-       System.out.println(""+Long.parseLong(isbn));
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -636,8 +636,9 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-       
-       return pstmt.executeQuery();
+       ResultSet rs =  pstmt.executeQuery();
+       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
+       return rs;
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
@@ -657,7 +658,10 @@ public class DBConnection {
        pstmt.setString(1, isbn);
        pstmt.setInt(2, Integer.parseInt(venditoreID));
        
-       return pstmt.executeQuery();   
+       //return pstmt.executeQuery();   
+       ResultSet rs =  pstmt.executeQuery();
+       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
+       return rs;
    }
    
    public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String tipoCondizione, String quantita) throws SQLException {
