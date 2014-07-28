@@ -55,13 +55,14 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private final int SPEDRAP = 3;
     
     private void inserisciCodice() {
-        String codice = codiceSconto.getText();
-        try {
-            applicaSconto(sconti, codice);
-        } catch (SQLException ex) {
-            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        codiceSconto.setText("");
+//        String codice = codiceSconto.getText();
+//        try {
+//            applicaSconto(sconti, codice);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        codiceSconto.setText("");
+        //MATRICE
     }
     
     private void impostaMetodiPagamento() {
