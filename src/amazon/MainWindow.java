@@ -27,6 +27,12 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
     
+    public MainWindow(String username, String password) {
+        initComponents();
+        initCustomComponents();
+        connessioneAutomatica(username, password);
+    }
+    
     private FinestraUtente finestraUtente;
     private int utenteID;
     private String nomeUtente;
@@ -78,6 +84,19 @@ public class MainWindow extends javax.swing.JFrame {
         * 4) Crea ordine
         * 5) Crea recensione
         */
+    }
+    
+    private void connessioneAutomatica(String user, String pass) {
+        DBConnection.tempUser = user;
+        DBConnection.tempPass = pass;
+        DBConnection.tempHost = "143.225.117.238";
+        DBConnection.tempPort = "1521";
+        try {
+            DBConnection.StartConnection();
+            checkState();
+        }
+        catch (SQLException exc){
+        }
     }
     
     public void visualizzaInfoLibro(){
@@ -346,7 +365,10 @@ public class MainWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainWindow().setVisible(true);
+                if (args.length == 2)
+                    new MainWindow(args[0], args[1]).setVisible(true);
+                else
+                    new MainWindow().setVisible(true);
             }
         });
     }

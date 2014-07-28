@@ -34,10 +34,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
         super(parent, modal);
         this.idUtente = idUtente;
         initComponents();
-        idutente.setText(""+idUtente);
         impostaTabella();
-        //impostaIndirizzi();
-        //impostaMetodiPagamento();
+        impostaIndirizzi();
+        impostaMetodiPagamento();
+        aggiornaTotale();
     }
     
     private ResultSet rsArticoli;
@@ -48,7 +48,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private ArrayList<LinkedList> indirizzi = new ArrayList();
     private ArrayList<LinkedList> metodiPagamento = new ArrayList();
     
-    private int idUtente, totale;
+    private int idUtente;
+    private double totale;
     
     private final int SPEDECO = 1;
     private final int SPEDMID = 2;
@@ -70,6 +71,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             ResultSet pagamenti = DBConnection.sceltaModPagamento(""+idUtente);
             cPagamento.removeAllItems();
             pagamenti.first();
+            LinkedList<String> elementi = new LinkedList();
             while (pagamenti.next()) {
                 LinkedList<String> lista = new LinkedList();
                 lista.add(pagamenti.getNString(0));//id metodo
@@ -80,6 +82,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 lista.add(pagamenti.getNString(5));//data
                 String numcarta = lista.get(4);
                 String stringa = lista.get(3) + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
+                elementi.add(stringa);
                 metodiPagamento.add(lista);
                 cPagamento.addItem(stringa);
             }
@@ -107,7 +110,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void impostaIndirizzi() {
         try {
-            ResultSet indirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
+            ResultSet indirizzi = DBConnection.visualizzaRubricaUtente(""+idUtente);
             cSpedizione.removeAllItems();
             indirizzi.first();
             while (indirizzi.next()) {
@@ -145,25 +148,28 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void aggiornaTotale() {
         totale = 0;
         totale += netto();
+        tNetto.setText(netto()+"€");
         totale += costoSpedizione();
+        tSpedizione.setText(costoSpedizione()+"€");
         totale -= bonusSconto();
+        tSconto.setText("-"+bonusSconto()+"€");
         tTotale.setText(totale + "€");
     }
     
-    private int netto() {
+    private double netto() {
         return modelloTabellaArticoli.getColumnSum(3);
     }
     
-    private int costoSpedizione() {
+    private double costoSpedizione() {
         switch (getSelectedSpedition()) {
             case SPEDECO: return 0;
-            case SPEDMID: return 4;
-            case SPEDRAP: return 8;
+            case SPEDMID: return 4.0;
+            case SPEDRAP: return 8.0;
             default: return 0;
         }
     }
     
-    private int bonusSconto() {
+    private double bonusSconto() {
         return 0; //DA SISTEMARE!!!
     }
     
@@ -241,9 +247,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jScrollPane4 = new javax.swing.JScrollPane();
         tabellaSconti = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        tNetto = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        tSpedizione = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         tSconto = new javax.swing.JLabel();
@@ -252,7 +258,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         cPagamento = new javax.swing.JComboBox();
-        idutente = new javax.swing.JLabel();
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -312,9 +317,19 @@ public class FinestraOrdine extends javax.swing.JDialog {
 
         buttonGroup1.add(rb2);
         rb2.setText("2-3 Giorni lavorativi: €4,00");
+        rb2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rb2ActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rb3);
         rb3.setText("1 Giorno: €8,00");
+        rb3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rb3ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Inserisci codice promozionale se presente:");
 
@@ -353,15 +368,15 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("Prezzo netto:");
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("10€");
+        tNetto.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        tNetto.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tNetto.setText("10€");
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("Costo spedizione:");
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel7.setText("0€");
+        tSpedizione.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tSpedizione.setText("0€");
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("Sconto:");
@@ -383,8 +398,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
 
         cPagamento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        idutente.setText("jLabel11");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -392,10 +405,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(145, 145, 145)
-                        .addComponent(idutente)))
+                    .addComponent(cPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -421,7 +431,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(tNetto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -429,7 +439,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tSpedizione, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(tSconto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
@@ -480,11 +490,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tNetto, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(jLabel7))
+                            .addComponent(tSpedizione))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -497,9 +507,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(idutente))
+                    .addComponent(jLabel10)
                     .addComponent(tTotale, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -509,7 +517,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rb1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb1ActionPerformed
-        // TODO add your handling code here:
+        aggiornaTotale();
     }//GEN-LAST:event_rb1ActionPerformed
 
     private void tabellaScontiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaScontiMouseClicked
@@ -524,22 +532,27 @@ public class FinestraOrdine extends javax.swing.JDialog {
         inserisciCodice();
     }//GEN-LAST:event_codiceScontoActionPerformed
 
+    private void rb2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb2ActionPerformed
+        aggiornaTotale();
+    }//GEN-LAST:event_rb2ActionPerformed
+
+    private void rb3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb3ActionPerformed
+        aggiornaTotale();
+    }//GEN-LAST:event_rb3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cPagamento;
     private javax.swing.JComboBox cSpedizione;
     private javax.swing.JTextField codiceSconto;
-    private javax.swing.JLabel idutente;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
@@ -553,7 +566,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JRadioButton rb1;
     private javax.swing.JRadioButton rb2;
     private javax.swing.JRadioButton rb3;
+    private javax.swing.JLabel tNetto;
     private javax.swing.JLabel tSconto;
+    private javax.swing.JLabel tSpedizione;
     private javax.swing.JLabel tTotale;
     private javax.swing.JTable tabellaArticoli;
     private javax.swing.JTable tabellaSconti;

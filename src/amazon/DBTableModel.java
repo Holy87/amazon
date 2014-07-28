@@ -104,13 +104,13 @@ public class DBTableModel extends AbstractTableModel {
         return ob;
     }
     
-    public int getColumnSum(int columnIndex) {
-        int sum = 0;
+    public double getColumnSum(int columnIndex) {
+        double sum = 0;
         for (int i = 0; i < getRowCount(); i++) {
             try {
-                sum += Integer.parseInt(getValueAt(i,columnIndex).toString());
+                sum += Double.parseDouble(getValueAt(i,columnIndex).toString());
             } catch (NumberFormatException ex) {
-                //NULLA
+                System.out.println("ERRORE SOMMA");
             }
         }
         return sum;
