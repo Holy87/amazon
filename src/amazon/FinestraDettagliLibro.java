@@ -35,6 +35,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         this.isbn = isbn;
         initComponents();
         assegnaDettagliLibro();
+        impostaTabella();
     }
     
     //private LinkedList libro;
@@ -79,16 +80,29 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     private void assegnaDettagliLibro() {
         try {
-            titolo = libro.getNString(0);
-            autore = libro.getNString(1) + " " + libro.getNString(2);
-            editore = libro.getNString(3);
-            descrizione = libro.getNString(5);
-            genere = libro.getNString(6);
-            pagine = Integer.parseInt(libro.getNString(7));
-            peso = Integer.parseInt(libro.getNString(8));
-            data = libro.getNString(9);
-            voto = Integer.parseInt(libro.getNString(10));
-            
+            JOptionPane.showMessageDialog(null, "Dimensione: " + conteggio());
+            libro.first();
+            titolo = libro.getNString(1);
+            autore = libro.getNString(2) + " " + libro.getNString(3);
+            editore = libro.getNString(4);
+            descrizione = libro.getNString(6);
+            genere = libro.getNString(7);
+            try {
+                pagine = Integer.parseInt(libro.getNString(8));
+            } catch(NumberFormatException ex) {
+                System.out.println("PAGINE   " + ex);
+            }
+            try {
+                peso = Integer.parseInt(libro.getNString(9));
+            } catch(NumberFormatException ex) {
+                System.out.println("PESO   " + ex);
+            }
+            data = libro.getNString(10);
+            try {
+            voto = Integer.parseInt(libro.getNString(11));
+            } catch(NumberFormatException ex) {
+                System.out.println("VOTO   " + ex);
+            }
             tTitolo.setText(titolo);
             tAutore.setText(autore);
             tEditore.setText("Editore: " + editore);
@@ -102,6 +116,19 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             mostraErrore(ex);
         }
         
+    }
+    
+    private int conteggio() {
+        int size = 0;
+try {
+    libro.last();
+    size = libro.getRow();
+    libro.beforeFirst();
+}
+catch(Exception ex) {
+    return 0;
+}
+return size;
     }
     
     /**
@@ -178,7 +205,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     }
     
     private void mostraErrore(SQLException ex) {
-        String errore = "Errore di connessione al database";
+        String errore = "(Finestra dettagli libro) Errore di connessione al database";
         errore += "\nCodice: " + ex.getErrorCode();
         errore += "\nMessaggio: " + ex.getMessage();
         errore += "\n\n" + ex.getSQLState();
