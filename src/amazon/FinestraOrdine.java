@@ -7,10 +7,16 @@
 package amazon;
 
 import static amazon.DBConnection.applicaSconto;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  *
@@ -21,21 +27,102 @@ public class FinestraOrdine extends javax.swing.JDialog {
     /**
      * Creates new form FinestraOrdine
      */
-    public Hashtable tabellaSconti = new Hashtable();
+    public Hashtable sconti = new Hashtable();
     
-    public FinestraOrdine(java.awt.Frame parent, boolean modal) {
+    public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
         initComponents();
     }
     
+    private ResultSet rsArticoli, rsCodici;
+    private DBTableModel modelloTabellaArticoli, modelloTabellaCodici;
+    
+    private int cursoreArticoli = 1;
+    private int cursoreSconti = 1;
+    private List<String> listaIndirizzi;
+    
+    private int idUtente;
+    
+    private final int SPEDECO = 1;
+    
     private void inserisciCodice() {
         String codice = codiceSconto.getText();
         try {
-            applicaSconto(tabellaSconti, codice);
+            applicaSconto(sconti, codice);
         } catch (SQLException ex) {
             Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
         }
         codiceSconto.setText("");
+    }
+    
+    @SuppressWarnings("Convert2Lambda")
+    public final void impostaTabella() {
+        modelloTabellaArticoli = new DBTableModel(rsArticoli);
+        tabellaArticoli.setModel(modelloTabellaArticoli); //metto il modellotabella nel
+        tabellaArticoli.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
+        tabellaArticoli.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                tableSelectionChanged();
+            }
+        } 
+                
+        );
+        aggiornaTabella();
+    }
+    
+    /**
+     * Aggiorna i dati della tabella con tutti i dati del database.
+     */
+    public void aggiornaTabella()
+    {
+        try {
+            rsArticoli = DBConnection.visualizzaCarrello(""+idUtente);
+            modelloTabellaArticoli.setRS(rsArticoli);
+            rsArticoli.absolute(cursoreArticoli);
+            mostraDati();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        
+    }
+    
+    /**
+     * Mostra infine i dati sulla tabella dopo un aggiornamento
+     */
+    private void mostraDati() {
+      try {
+          cursoreArticoli = rsArticoli.getRow();
+          tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
+          tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
+      } catch (SQLException ex) {
+          mostraErrore(ex);
+      } catch (java.lang.IllegalArgumentException ex) {
+          System.out.println(ex.getMessage());
+      }
+    }
+    
+    private void mostraErrore(SQLException ex) {
+        String errore = "Errore di connessione al database";
+        errore += "\nCodice: " + ex.getErrorCode();
+        errore += "\nMessaggio: " + ex.getMessage();
+        errore += "\n\n" + ex.getSQLState();
+        JOptionPane.showMessageDialog(this, "Errore: " + errore, null, ERROR_MESSAGE);
+    }
+    
+    /**
+     * Metodo che viene chiamato quando si clica il mouse sulla tabella
+     * cambiando la selezione
+     */
+    private void tableSelectionChanged() 
+    {
+        try {
+            rsArticoli.absolute(tabellaArticoli.getSelectionModel().getMinSelectionIndex() + 1);
+            mostraDati();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }
 
     /**
@@ -53,7 +140,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabellaArticoli = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
@@ -64,7 +151,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         codiceSconto = new javax.swing.JTextField();
         pulsanteCodiceSconto = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        tabellaSconti = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -104,7 +191,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabellaArticoli.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -115,7 +202,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabellaArticoli);
 
         jLabel1.setText("Indirizzo di spedizione:");
 
@@ -124,6 +211,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel2.setText("Tipo di spedizione:");
 
         buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
         jRadioButton1.setText("3-5 Giorni lavorativi: GRATIS");
         jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,7 +240,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             }
         });
 
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        tabellaSconti.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -163,12 +251,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable4.addMouseListener(new java.awt.event.MouseAdapter() {
+        tabellaSconti.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable4MouseClicked(evt);
+                tabellaScontiMouseClicked(evt);
             }
         });
-        jScrollPane4.setViewportView(jTable4);
+        jScrollPane4.setViewportView(tabellaSconti);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -220,7 +308,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(codiceSconto, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(pulsanteCodiceSconto, javax.swing.GroupLayout.PREFERRED_SIZE, 85, Short.MAX_VALUE)))
+                                .addComponent(pulsanteCodiceSconto, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +326,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, Short.MAX_VALUE))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -309,9 +397,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
+    private void tabellaScontiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaScontiMouseClicked
         // AGGIUNGERE L'EVENTO CON IL TASTO DESTRO DEL MOUSE
-    }//GEN-LAST:event_jTable4MouseClicked
+    }//GEN-LAST:event_tabellaScontiMouseClicked
 
     private void pulsanteCodiceScontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pulsanteCodiceScontoActionPerformed
         inserisciCodice();
@@ -345,11 +433,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
     private javax.swing.JButton pulsanteCodiceSconto;
     private javax.swing.JLabel tSconto;
+    private javax.swing.JTable tabellaArticoli;
+    private javax.swing.JTable tabellaSconti;
     // End of variables declaration//GEN-END:variables
 }
