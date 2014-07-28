@@ -44,6 +44,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private int idUtente;
     
     private final int SPEDECO = 1;
+    private final int SPEDMID = 2;
     
     private void inserisciCodice() {
         String codice = codiceSconto.getText();

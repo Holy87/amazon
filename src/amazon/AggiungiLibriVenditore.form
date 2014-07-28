@@ -61,9 +61,14 @@
                   <Component id="tRicondizionato" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="bAggiungi" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="bAnnulla" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="bAggiungi" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="bAnnulla" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="bNuovo" max="32767" attributes="0"/>
+              </Group>
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -87,22 +92,20 @@
                           <Component id="tUsato" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="tPrezzo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="bNuovo" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="tRicondizionato" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="tKindle" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="bAggiungi" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="bAnnulla" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                      <Component id="bAggiungi" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="bAnnulla" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -225,6 +228,14 @@
     <Component class="javax.swing.JTextField" name="tPrezzo">
       <Events>
         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="tPrezzoFocusLost"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="bNuovo">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Crea nuovo libro"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bNuovoActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

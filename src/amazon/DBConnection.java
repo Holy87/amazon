@@ -645,8 +645,12 @@ public class DBConnection {
        pstmt.setString(4, tipoCondizione);
        pstmt.setInt(5, pezziDisp);
        pstmt.setDouble(6, prezzo);
-       
-       pstmt.executeUpdate();
+//       try {    
+            pstmt.executeUpdate();
+//       } catch (SQLException ex) {
+//           if (ex.getErrorCode() == 9000)
+//               aggiungiLibriMagazzino(venditoreID, isbn, formatoID, tipoCondizione, pezziDisp, prezzo)
+//       } 
    }
    
    public static ResultSet visualizzaLibriDisponibili() throws SQLException {
