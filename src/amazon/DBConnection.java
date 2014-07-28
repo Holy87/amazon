@@ -309,13 +309,13 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   public static ResultSet visualizzaRubricaUtente(int idUtente) throws SQLException {
+   public static ResultSet visualizzaRubricaUtente(String idUtente) throws SQLException {
        PreparedStatement pstmt;
        
        pstmt = conn.prepareStatement("SELECT CONTACT_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
                ResultSet.TYPE_SCROLL_INSENSITIVE,
                ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, idUtente);
+       pstmt.setInt(1, Integer.parseInt(idUtente));
        
        return pstmt.executeQuery();
        
