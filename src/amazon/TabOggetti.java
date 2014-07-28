@@ -150,6 +150,7 @@ public final class TabOggetti extends javax.swing.JPanel {
 //                    public void actionPerformed(java.awt.event.ActionEvent evt) {gestioneUtente(evt);}});
 //                break;
             case "VENDITORI": serviceButton2.setText("Aggiungi libro a venditore");
+                
                 /*GESTIONE METODO: Selezionato il venditore, apre una tabella dove selezionare tutti i libri, quindi una finestra che dà
                   gli stessi risultati di visualizzaListinoLibri(). Una volta selezionato il libro, si inseriscono
                   quattro ulteriori informazioni:
@@ -207,8 +208,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     private void inserisciLibro(java.awt.event.ActionEvent evt) {
-        FinestraInserisciLibri InserisciLibri = new FinestraInserisciLibri(mainWindow, false, getSelectedID());
-        InserisciLibri.setVisible(true);
+        AggiungiLibriVenditore finestra = new AggiungiLibriVenditore(mainWindow, false, Integer.parseInt(getSelectedID()));
+        finestra.setVisible(true);
     }
     
     /**

@@ -8,6 +8,8 @@ package amazon;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -22,9 +24,11 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     /**
      * Creates new form AggiungiLibriVenditore
      */
-    public AggiungiLibriVenditore(java.awt.Frame parent, boolean modal) {
+    public AggiungiLibriVenditore(java.awt.Frame parent, boolean modal, int idVenditore) {
         super(parent, modal);
+        this.idVenditore = idVenditore;
         initComponents();
+        impostaTabella();
     }
     
     private ResultSet rs;
@@ -33,9 +37,10 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     private final int NUOVO = 1;
     private final int USATO = 2;
     private final int RENEW = 3;
-    private final int RIGID = 1;
-    private final int FLESS = 2;
-    private final int KINDL = 3;
+    private final int RIGID = 2002;
+    private final int FLESS = 2001;
+    private final int KINDL = 2003;
+    private int idVenditore;
     
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {
@@ -60,7 +65,8 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     public void aggiornaTabella()
     {
         try {
-            rs = DBConnection.visualizzaListinoLibri();
+            System.out.println(""+getFormato());
+            rs = DBConnection.visualizzaListinoLibri(getFormato());
             modelloTabella.setRS(rs);
             rs.absolute(cursore);
             mostraDati();
@@ -75,10 +81,11 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
+          tPrezzo.setText(modelloTabella.getValueAt(cursore - 1, 2).toString());
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          //System.out.println("IllegalArgumentException "+ex.getMessage());
       }
     }
     
@@ -105,21 +112,66 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     }
     
     private int getFormato() {
-        if (tRigida.isEnabled())
+        if (tRigida.isSelected())
             return RIGID;
-        else if (tFlessibile.isEnabled())
+        else if (tFlessibile.isSelected())
             return FLESS;
         else
             return KINDL;
     }
     
     private int getStato() {
-        if (tNuovo.isEnabled())
+        if (tNuovo.isSelected())
             return NUOVO;
-        else if (tUsato.isEnabled())
+        else if (tUsato.isSelected())
             return USATO;
         else
             return RENEW;
+    }
+    
+    private String getCondizione() {
+        switch (getStato()) {
+            case NUOVO: return "Nuovo";
+            case USATO: return "Usato";
+            case RENEW: return "Ricondizionato";
+            default: return "";
+        }
+    }
+    
+    private void impostaAbilitazione(boolean value) {
+        tQuantita.setEnabled(value);
+        tNuovo.setEnabled(value);
+        tUsato.setEnabled(value);
+        tRicondizionato.setEnabled(value);
+        aggiornaTabella();
+        
+    }
+    
+    private String isbn() {
+        System.out.println(modelloTabella.getValueAt(cursore-1, 1).toString());
+        return modelloTabella.getValueAt(cursore-1, 1).toString();
+    }
+    
+    private void aggiungiLibro() {
+        try {
+            setVisible(false);
+            DBConnection.inserisciLibroMagazzino(idVenditore, isbn(), getFormato(), getCondizione(), tQuantita.getText(), tPrezzo.getText());
+            dispose();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+            setVisible(true);
+        }
+    }
+    
+    private void verificaValore(javax.swing.JTextField campo) {
+        int prezzo = 0;
+        try {
+           prezzo = Integer.parseInt(campo.getText());
+        } catch (NumberFormatException ex) {
+            campo.setText("1");
+        }
+        if (prezzo == 0)
+            campo.setText("1");
     }
 
     /**
@@ -164,15 +216,32 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
         jScrollPane1.setViewportView(tabella);
 
         gruppoFormato.add(tRigida);
+        tRigida.setSelected(true);
         tRigida.setText("Copertina rigida");
+        tRigida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tRigidaActionPerformed(evt);
+            }
+        });
 
         gruppoFormato.add(tFlessibile);
         tFlessibile.setText("Copertina flessibile");
+        tFlessibile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tFlessibileActionPerformed(evt);
+            }
+        });
 
         gruppoFormato.add(tKindle);
         tKindle.setText("Kindle");
+        tKindle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tKindleActionPerformed(evt);
+            }
+        });
 
         gruppoStato.add(tNuovo);
+        tNuovo.setSelected(true);
         tNuovo.setText("Nuovo");
 
         gruppoStato.add(tUsato);
@@ -184,18 +253,39 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
         jLabel1.setText("Quantità:");
 
         tQuantita.setText("1");
+        tQuantita.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tQuantitaFocusLost(evt);
+            }
+        });
 
         bAnnulla.setText("Annulla");
+        bAnnulla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAnnullaActionPerformed(evt);
+            }
+        });
 
         bAggiungi.setText("Aggiungi");
+        bAggiungi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAggiungiActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Prezzo:");
+
+        tPrezzo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tPrezzoFocusLost(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -215,43 +305,77 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tQuantita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tPrezzo, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(tRicondizionato)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bAggiungi)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bAnnulla))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tPrezzo)
+                            .addComponent(tQuantita, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)))
+                    .addComponent(tRicondizionato))
+                .addGap(18, 18, 18)
+                .addComponent(bAggiungi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bAnnulla)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tRigida)
-                    .addComponent(tNuovo)
-                    .addComponent(jLabel1)
-                    .addComponent(tQuantita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tFlessibile)
-                    .addComponent(tUsato)
-                    .addComponent(jLabel2)
-                    .addComponent(tPrezzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tKindle)
-                    .addComponent(tRicondizionato)
-                    .addComponent(bAnnulla)
-                    .addComponent(bAggiungi)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tRigida)
+                            .addComponent(tNuovo)
+                            .addComponent(jLabel1)
+                            .addComponent(tQuantita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tFlessibile)
+                            .addComponent(tUsato)
+                            .addComponent(jLabel2)
+                            .addComponent(tPrezzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tRicondizionato)
+                            .addComponent(tKindle))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bAggiungi)
+                            .addComponent(bAnnulla))
+                        .addContainerGap())))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tKindleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tKindleActionPerformed
+        impostaAbilitazione(false);
+    }//GEN-LAST:event_tKindleActionPerformed
+
+    private void tRigidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tRigidaActionPerformed
+        impostaAbilitazione(true);
+    }//GEN-LAST:event_tRigidaActionPerformed
+
+    private void tFlessibileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tFlessibileActionPerformed
+        impostaAbilitazione(true);
+    }//GEN-LAST:event_tFlessibileActionPerformed
+
+    private void bAggiungiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAggiungiActionPerformed
+        aggiungiLibro();
+    }//GEN-LAST:event_bAggiungiActionPerformed
+
+    private void tQuantitaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tQuantitaFocusLost
+        verificaValore(tQuantita);
+    }//GEN-LAST:event_tQuantitaFocusLost
+
+    private void tPrezzoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tPrezzoFocusLost
+        verificaValore(tPrezzo);
+    }//GEN-LAST:event_tPrezzoFocusLost
+
+    private void bAnnullaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAnnullaActionPerformed
+        setVisible(false);
+        dispose();
+    }//GEN-LAST:event_bAnnullaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

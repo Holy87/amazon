@@ -586,6 +586,17 @@ public class DBConnection {
        
    }
    
+   public static ResultSet visualizzaListinoLibri(int formato) throws SQLException {
+        //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI WHERE FORMATO_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, formato);
+       return pstmt.executeQuery();
+       
+   }
+   
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
        //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        PreparedStatement pstmt;
@@ -695,15 +706,15 @@ public class DBConnection {
     }
    
    
-   public static void inserisciLibroMagazzino(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
+   public static void inserisciLibroMagazzino(int venditoreID, String isbn, int formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
        //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
        pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO_LIBRI VALUES(?, ?, ?, ?, ?, ?)");
-       pstmt.setString(1, venditoreID);
+       pstmt.setInt(1, venditoreID);
        pstmt.setString(2, isbn);
-       pstmt.setString(3, formatoID);
+       pstmt.setInt(3, formatoID);
        pstmt.setString(4, tipoCondizione);
        pstmt.setString(5, pezziDisp);
        pstmt.setString(6, prezzo);
