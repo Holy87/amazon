@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
+import java.util.Hashtable;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -174,7 +176,7 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static double applicaSconto(String codiciSconto[], String codice) throws SQLException {
+   public static void applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
        ResultSet rs;
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -182,11 +184,19 @@ public class DBConnection {
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setString(1, codice);
        
-       //APPLICARE ALL'ESTERNO CONDIZIONE DI ESISTENZA
-       
        rs=pstmt.executeQuery();
-       return rs.getDouble(1);
+       
+        try {
+            rs.last();
+        }
+        catch(Exception ex) {
+            //APPLICARE MESSAGGIO A FINESTRA
+        }
+        
+        tabellaSconti.put(codice, rs.getDouble(1));       
    }
+   
+   
    
    public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario
@@ -215,32 +225,6 @@ public class DBConnection {
        pstmt2.setString(4, modpagamento);
        
    }
-   
-  public static ResultSet applicaSconto(String codPromo, String codSalva[], int i) throws SQLException {
-      //PARLARE CON FRANCESCO PER LA CHIAMATA AL METODO
-       //Restituisce lo sconto da applicare in ScontoCompl oppure un messaggio d'errore se non è presente
-       
-       //Esempio: CODPROMO = HUAKE72LE037;
-       /*RISULTATO QUERY:
-            SCONTO
-            10
-       */
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE '?' AND ORDINE_ID IS null",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setString(1, codPromo);
-       if (pstmt.executeQuery()==null)  {
-           System.out.println("Codice Promo già usata o non valida");
-       }
-       else {
-           //Inserire codice per la visualizzazione in finestra dello sconto applicato (possibile applicarlo fuori da questo metodo)
-           //Es: "Sconto convalidato: 10€"
-           codSalva[i]=codPromo; //Salvataggio dei codice valido nell'array passato per parametro
-       }
-       
-       return pstmt.executeQuery();
-   } 
    
    public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
@@ -529,6 +513,17 @@ public class DBConnection {
        
    }
    
+   public static ResultSet visualizzaListinoLibri(int formato) throws SQLException {
+        //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI WHERE FORMATO_ID = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, formato);
+       return pstmt.executeQuery();
+       
+   }
+   
    public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
        //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        PreparedStatement pstmt;
@@ -549,7 +544,6 @@ public class DBConnection {
             LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
             Hunger Games        Suzanne     Collins         Mondadori	9788804632238	Quando Katniss urla "Mi offro volontaria, mi offro volontaria come tributo!" sa di aver appena firmato la sua condanna a morte.     Fantascienza    370         399         14-MAG-13       (null)
        */
-       System.out.println(""+Long.parseLong(isbn));
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFOLIBRO WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -575,8 +569,9 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-       
-       return pstmt.executeQuery();
+       ResultSet rs =  pstmt.executeQuery();
+       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
+       return rs;
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
@@ -596,7 +591,10 @@ public class DBConnection {
        pstmt.setString(1, isbn);
        pstmt.setInt(2, Integer.parseInt(venditoreID));
        
-       return pstmt.executeQuery();   
+       //return pstmt.executeQuery();   
+       ResultSet rs =  pstmt.executeQuery();
+       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
+       return rs;
    }
    
    public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String tipoCondizione, String quantita) throws SQLException {
@@ -635,15 +633,15 @@ public class DBConnection {
     }
    
    
-   public static void inserisciLibroMagazzino(String venditoreID, String isbn, String formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
+   public static void inserisciLibroMagazzino(int venditoreID, String isbn, int formatoID, String tipoCondizione, String pezziDisp, String prezzo) throws SQLException {
        //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
        pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO_LIBRI VALUES(?, ?, ?, ?, ?, ?)");
-       pstmt.setString(1, venditoreID);
+       pstmt.setInt(1, venditoreID);
        pstmt.setString(2, isbn);
-       pstmt.setString(3, formatoID);
+       pstmt.setInt(3, formatoID);
        pstmt.setString(4, tipoCondizione);
        pstmt.setString(5, pezziDisp);
        pstmt.setString(6, prezzo);
