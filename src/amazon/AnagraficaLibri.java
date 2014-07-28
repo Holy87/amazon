@@ -121,7 +121,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     }
     
     private void apriLibro() {
-        FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(null, false, modelloTabella.getValueAt(cursore-1, 0).toString());
+        FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(null, false, modelloTabella.getValueAt(cursore-1, 1).toString());
         finestraDettagli.setVisible(true);
     }
 
