@@ -66,6 +66,7 @@ public class MainWindow extends javax.swing.JFrame {
         nomeUtente = nome;
         lUtente.setText(nome);
         mAcquisto.setEnabled(true);
+        mCarrello.setEnabled(true);
         JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
     }
     
@@ -121,7 +122,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         mAcquisto = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        Carrello = new javax.swing.JMenuItem();
+        mCarrello = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gruppo 26 - Amazon");
@@ -135,7 +136,7 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
+            .addComponent(tabUtenti, javax.swing.GroupLayout.PREFERRED_SIZE, 781, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -209,10 +210,15 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem4.setEnabled(false);
         jMenu3.add(jMenuItem4);
 
-        Carrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        Carrello.setText("Vai al carrello");
-        Carrello.setEnabled(false);
-        jMenu3.add(Carrello);
+        mCarrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mCarrello.setText("Vai al carrello");
+        mCarrello.setEnabled(false);
+        mCarrello.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCarrelloActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mCarrello);
 
         jMenuBar1.add(jMenu3);
 
@@ -222,7 +228,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 802, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 802, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -271,6 +277,11 @@ public class MainWindow extends javax.swing.JFrame {
         AnagraficaLibri anaLibri = new AnagraficaLibri(this, false);
         anaLibri.setVisible(true);
     }//GEN-LAST:event_mAcquistoActionPerformed
+
+    private void mCarrelloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCarrelloActionPerformed
+        FinestraOrdine finestra = new FinestraOrdine(this, false, utenteID);
+        finestra.setVisible(true);
+    }//GEN-LAST:event_mCarrelloActionPerformed
 
     /**
      * 
@@ -341,7 +352,6 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem Carrello;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -355,6 +365,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
     private javax.swing.JMenuItem mAcquisto;
+    private javax.swing.JMenuItem mCarrello;
     private amazon.TabOggetti tabAutori;
     private amazon.TabOggetti tabEditori;
     private amazon.TabOggetti tabLibri;

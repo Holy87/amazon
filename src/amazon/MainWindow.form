@@ -73,7 +73,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="Carrello">
+            <MenuItem class="javax.swing.JMenuItem" name="mCarrello">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+Alt+C"/>
@@ -81,6 +81,9 @@
                 <Property name="text" type="java.lang.String" value="Vai al carrello"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mCarrelloActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

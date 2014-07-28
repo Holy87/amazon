@@ -104,6 +104,18 @@ public class DBTableModel extends AbstractTableModel {
         return ob;
     }
     
+    public int getColumnSum(int columnIndex) {
+        int sum = 0;
+        for (int i = 0; i < getRowCount(); i++) {
+            try {
+                sum += Integer.parseInt(getValueAt(i,columnIndex).toString());
+            } catch (NumberFormatException ex) {
+                //NULLA
+            }
+        }
+        return sum;
+    }
+    
     @Override
     public void setValueAt(Object aValue, int row, int column) {
         //devo metterci qua qualcosa
