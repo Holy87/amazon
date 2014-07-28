@@ -9,7 +9,9 @@ package amazon;
 import static amazon.DBConnection.applicaSconto;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,10 +43,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private int cursoreArticoli = 1;
     private int cursoreSconti = 1;
-    private String[] indirizzi;
-    private String[] metodiPagamento;
-    private String[] comboIndirizzi;
-    private String[] comboMetodi;
+    private ArrayList<LinkedList> indirizzi = new ArrayList();
+    private ArrayList<LinkedList> metodiPagamento = new ArrayList();
     
     private int idUtente;
     
@@ -80,7 +80,24 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void impostaIndirizzi() {
-        ResultSet indirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
+        try {
+            ResultSet indirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
+            cSpedizione.removeAllItems();
+            indirizzi.first();
+            while (indirizzi.next()) {
+                LinkedList<String> lista = new LinkedList();
+                lista.add(indirizzi.getNString(0)); //id contatto;
+                lista.add(indirizzi.getNString(1)); //noe contatto
+                lista.add(indirizzi.getNString(2)); //cognome
+                lista.add(indirizzi.getNString(3)); //indirizzo 1
+                lista.add(indirizzi.getNString(4)); //indirizzo 2
+                this.indirizzi.add(lista);
+                String stringa = lista.get(1) + " " + lista.get(2) + " in " + lista.get(3) + " " + lista.get(4);
+                cSpedizione.addItem(stringa);
+            }
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
         
         
     }
