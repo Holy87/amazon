@@ -217,7 +217,7 @@ public class DBConnection {
    
    
    
-   public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento) throws SQLException {
+   public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento, Scontotemp sconti[]) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
@@ -242,6 +242,9 @@ public class DBConnection {
        pstmt2.setString(2, idOrder);
        pstmt2.setString(3, sped);
        pstmt2.setString(4, modpagamento);
+       
+       if (sconti!=null)
+           applicaScontoOrdine(sconti, idOrder);
        
    }
    
