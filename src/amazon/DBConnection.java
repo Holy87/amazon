@@ -192,7 +192,7 @@ public class DBConnection {
    }
    
    
-   public static void applicaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+   public static void verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -215,7 +215,25 @@ public class DBConnection {
              
    }
    
-   
+   public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
+        PreparedStatement pstmt;
+        int contatore=0;
+        String codPromo;
+        
+        while(sconti[contatore]!=null)    {
+            codPromo=sconti[contatore].codPromo;
+            
+            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?",
+                         ResultSet.TYPE_SCROLL_INSENSITIVE,
+                         ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+            pstmt.setString(1, ordineId);
+            pstmt.setString(2, codPromo);
+            
+            pstmt.executeUpdate();
+            contatore++;
+            pstmt.close();
+        }  
+   }
    
    public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario

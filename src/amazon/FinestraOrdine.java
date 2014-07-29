@@ -6,7 +6,7 @@
 
 package amazon;
 
-import static amazon.DBConnection.applicaSconto;
+import static amazon.DBConnection.verificaSconto;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
      * Creates new form FinestraOrdine
      */
     public Scontotemp sconti[]=new Scontotemp[20];;
-    int contatore=0;
+    static int contatore=0;
     
     
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
@@ -61,8 +61,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void inserisciCodice() {
         String codice = codiceSconto.getText();
         try {
-            applicaSconto(sconti, codice, contatore);
-            contatore++;
+            verificaSconto(sconti, codice, contatore);
+            contatore++; //con 'static' diventa una variabile globale; applicare a fine ordine contatore=0;
         } catch (SQLException ex) {
             Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
         }
