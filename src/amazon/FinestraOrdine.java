@@ -29,6 +29,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
     /**
      * Creates new form FinestraOrdine
      */
+    public Scontotemp sconti[]=new Scontotemp[20];;
+    int contatore=0;
+    
     
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
@@ -56,14 +59,14 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private final int SPEDRAP = 3;
     
     private void inserisciCodice() {
-//        String codice = codiceSconto.getText();
-//        try {
-//            applicaSconto(sconti, codice);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        codiceSconto.setText("");
-        //MATRICE
+        String codice = codiceSconto.getText();
+        try {
+            applicaSconto(sconti, codice, contatore);
+            contatore++;
+        } catch (SQLException ex) {
+            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        codiceSconto.setText("");
     }
     
     private void impostaMetodiPagamento() {

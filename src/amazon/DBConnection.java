@@ -192,24 +192,27 @@ public class DBConnection {
    }
    
    
-   public static void applicaSconto(Hashtable tabellaSconti, String codice) throws SQLException {
-       ResultSet rs;
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
-       pstmt.setString(1, codice);
-       
-       rs=pstmt.executeQuery();
+   public static void applicaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+        ResultSet rs;
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
+                     ResultSet.TYPE_SCROLL_INSENSITIVE,
+                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+        pstmt.setString(1, codice);
+
+        rs=pstmt.executeQuery();
        
         try {
             rs.last();
         }
         catch(Exception ex) {
-            //APPLICARE MESSAGGIO A FINESTRA
+            //APPLICARE MESSAGGIO DI ERRORE A FINESTRA
+            return;
         }
         
-        tabellaSconti.put(codice, rs.getDouble(1));       
+        sconti[contatore].codPromo=codice;
+        sconti[contatore].sconto=rs.getDouble(1);
+             
    }
    
    
