@@ -46,6 +46,19 @@
         </Component>
       </SubComponents>
     </Container>
+    <Container class="javax.swing.JPopupMenu" name="jPopupMenu1">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+      <SubComponents>
+        <MenuItem class="javax.swing.JMenuItem" name="elimina">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Rimuovi"/>
+          </Properties>
+        </MenuItem>
+      </SubComponents>
+    </Container>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
@@ -70,9 +83,23 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" min="-2" pref="401" max="-2" attributes="0"/>
-                  <Component id="cPagamento" min="-2" pref="287" max="-2" attributes="0"/>
+                  <Component id="jLabel9" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="391" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel7" min="-2" pref="74" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="tScadenzaCarta" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel5" min="-2" pref="74" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="tIntestatario" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="cPagamento" alignment="0" min="-2" pref="287" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -138,10 +165,6 @@
               <Component id="jButton2" min="-2" pref="143" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="jLabel9" min="-2" pref="178" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -174,8 +197,8 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
@@ -187,26 +210,36 @@
                           <Component id="tSpedizione" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tSconto" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                          <Component id="tTotale" pref="34" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="jButton2" min="-2" pref="53" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="cPagamento" min="-2" pref="32" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tIntestatario" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tScadenzaCarta" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="tSconto" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
-                  <Component id="tTotale" pref="34" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace pref="12" max="32767" attributes="0"/>
-              <Component id="jButton2" min="-2" pref="53" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -249,6 +282,9 @@
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cSpedizioneActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -413,6 +449,29 @@
             <StringItem index="3" value="Item 4"/>
           </StringArray>
         </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cPagamentoActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel5">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Intestato a:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="tIntestatario">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel7">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Scadenza:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="tScadenzaCarta">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" "/>
       </Properties>
     </Component>
   </SubComponents>

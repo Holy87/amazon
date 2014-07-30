@@ -10,9 +10,7 @@ import static amazon.DBConnection.verificaSconto;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -41,6 +39,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
         impostaIndirizzi();
         impostaMetodiPagamento();
         aggiornaTotale();
+        aggiornaPagamentoSelezionato();
+        aggiornaIndirizzoSelezionato();
     }
     
     private ResultSet rsArticoli;
@@ -48,6 +48,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private int cursoreArticoli = 1;
     private int cursoreSconti = 1;
+    private int indirizzoSelezionato, pagamentoSelezionato;
     private ArrayList<LinkedList> indirizzi = new ArrayList();
     private ArrayList<LinkedList> metodiPagamento = new ArrayList();
     
@@ -73,16 +74,17 @@ public class FinestraOrdine extends javax.swing.JDialog {
         try {
             ResultSet pagamenti = DBConnection.sceltaModPagamento(""+idUtente);
             cPagamento.removeAllItems();
-            pagamenti.first();
+            System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
+            //pagamenti.first();
             LinkedList<String> elementi = new LinkedList();
             while (pagamenti.next()) {
                 LinkedList<String> lista = new LinkedList();
-                lista.add(pagamenti.getNString(0));//id metodo
-                lista.add(pagamenti.getNString(1));//nome
-                lista.add(pagamenti.getNString(2));//cognome
-                lista.add(pagamenti.getNString(3));//tipo
-                lista.add(pagamenti.getNString(4));//numero
-                lista.add(pagamenti.getNString(5));//data
+                lista.add(pagamenti.getString(1));//id metodo
+                lista.add(pagamenti.getString(2));//nome
+                lista.add(pagamenti.getString(3));//cognome
+                lista.add(pagamenti.getString(4));//tipo
+                lista.add(pagamenti.getString(5));//numero
+                lista.add(pagamenti.getString(6));//data
                 String numcarta = lista.get(4);
                 String stringa = lista.get(3) + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
                 elementi.add(stringa);
@@ -113,20 +115,23 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void impostaIndirizzi() {
         try {
-            ResultSet indirizzi = DBConnection.visualizzaRubricaUtente(""+idUtente);
+            ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(""+idUtente);
             cSpedizione.removeAllItems();
-            indirizzi.first();
-            while (indirizzi.next()) {
+            System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
+            //indirizzi.first();
+            while (rsIndirizzi.next()) {
+                System.out.println("provolo");
                 LinkedList<String> lista = new LinkedList();
-                lista.add(indirizzi.getNString(0)); //id contatto;
-                lista.add(indirizzi.getNString(1)); //noe contatto
-                lista.add(indirizzi.getNString(2)); //cognome
-                lista.add(indirizzi.getNString(3)); //indirizzo 1
-                lista.add(indirizzi.getNString(4)); //indirizzo 2
-                this.indirizzi.add(lista);
-                String stringa = lista.get(1) + " " + lista.get(2) + " in " + lista.get(3) + " " + lista.get(4);
+                lista.add(rsIndirizzi.getString(1)); //id contatto;
+                lista.add(rsIndirizzi.getString(2)); //nome contatto
+                lista.add(rsIndirizzi.getString(3)); //cognome
+                lista.add(rsIndirizzi.getString(4)); //indirizzo 1
+                lista.add(rsIndirizzi.getString(5)); //indirizzo 2
+                indirizzi.add(lista);
+                String stringa = lista.get(1) + " " + lista.get(2) + " in " + lista.get(3);
                 cSpedizione.addItem(stringa);
             }
+            cSpedizione.setSelectedIndex(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -221,6 +226,21 @@ public class FinestraOrdine extends javax.swing.JDialog {
             mostraErrore(ex);
         }
     }
+    
+    private void aggiornaIndirizzoSelezionato() {
+        System.out.println(cSpedizione.getSelectedIndex());
+        System.out.println(indirizzi.size());
+        Object pippo = indirizzi.get(0);
+        //System.out.println(indirizzi.get(0).toString());
+        //indirizzoSelezionato = Integer.parseInt(rsIndirizzi.get(cSpedizione.getSelectedIndex()).get(0).toString());
+    }
+    
+    private void aggiornaPagamentoSelezionato() {
+        //LinkedList pagamento = metodiPagamento.get(cPagamento.getSelectedIndex());
+        //pagamentoSelezionato = Integer.parseInt(pagamento.get(0).toString());
+        //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());
+        //tScadenzaCarta.setText(pagamento.get(5).toString());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -236,6 +256,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jTable2 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        elimina = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabellaArticoli = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -261,6 +283,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         cPagamento = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
+        tIntestatario = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        tScadenzaCarta = new javax.swing.JLabel();
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -288,6 +314,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
         ));
         jScrollPane3.setViewportView(jTable3);
 
+        elimina.setText("Rimuovi");
+        jPopupMenu1.add(elimina);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tabellaArticoli.setModel(new javax.swing.table.DefaultTableModel(
@@ -306,6 +335,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel1.setText("Indirizzo di spedizione:");
 
         cSpedizione.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cSpedizione.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cSpedizioneActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Tipo di spedizione:");
 
@@ -400,15 +434,39 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel9.setText("Seleziona il metodo di pagamento:");
 
         cPagamento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cPagamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cPagamentoActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Intestato a:");
+
+        tIntestatario.setText(" ");
+
+        jLabel7.setText("Scadenza:");
+
+        tScadenzaCarta.setText(" ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(tScadenzaCarta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(tIntestatario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cPagamento, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -457,9 +515,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -488,7 +543,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -498,22 +553,30 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(tSpedizione))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(tSconto))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel10)
+                            .addComponent(tTotale, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(tSconto))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10)
-                    .addComponent(tTotale, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(tIntestatario))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(tScadenzaCarta))
+                        .addGap(101, 101, 101))))
         );
 
         pack();
@@ -543,21 +606,33 @@ public class FinestraOrdine extends javax.swing.JDialog {
         aggiornaTotale();
     }//GEN-LAST:event_rb3ActionPerformed
 
+    private void cSpedizioneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cSpedizioneActionPerformed
+        aggiornaIndirizzoSelezionato();
+    }//GEN-LAST:event_cSpedizioneActionPerformed
+
+    private void cPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cPagamentoActionPerformed
+        aggiornaPagamentoSelezionato();
+    }//GEN-LAST:event_cPagamentoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cPagamento;
     private javax.swing.JComboBox cSpedizione;
     private javax.swing.JTextField codiceSconto;
+    private javax.swing.JMenuItem elimina;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -569,7 +644,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JRadioButton rb1;
     private javax.swing.JRadioButton rb2;
     private javax.swing.JRadioButton rb3;
+    private javax.swing.JLabel tIntestatario;
     private javax.swing.JLabel tNetto;
+    private javax.swing.JLabel tScadenzaCarta;
     private javax.swing.JLabel tSconto;
     private javax.swing.JLabel tSpedizione;
     private javax.swing.JLabel tTotale;

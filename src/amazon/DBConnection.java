@@ -782,5 +782,18 @@ public class DBConnection {
        
        return pstmt.executeQuery();
    }
+   
+   public static int contaRigheResultSet(ResultSet resultSet) {
+       int size = 0;
+    try {
+        resultSet.last();
+        size = resultSet.getRow();
+        resultSet.beforeFirst();
+    }
+    catch(Exception ex) {
+        return 0;
+    }
+    return size;
+   }
 }
 
