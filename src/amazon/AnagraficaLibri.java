@@ -26,11 +26,19 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         impostaTabella();
+        bPulisci.setVisible(false);
     }
     
     private ResultSet rs;
     private DBTableModel modelloTabella;
     private int cursore = 1;
+    
+    private final int FLESSIBILE = 2001;
+    private final int RIGIDA = 2002;
+    private final int EBOOK = 2003;
+    private final int ALL = 0;
+    
+    private String parolaCercata = "";
     
     @SuppressWarnings("Convert2Lambda")
     public void impostaTabella() {
@@ -66,17 +74,28 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     }
     
     private void eseguiRicerca(){
+        parolaCercata = searchBox.getText();
         searchBox.setText(null);
         searchButton.setEnabled(false);
+        tTitoloRicerca.setText("Ricerca su " + parolaCercata);
+        bPulisci.setVisible(true);
         try {
-            modelloTabella.setRS(resultSetRicerca(searchBox.getText()));
+            modelloTabella.setRS(resultSetRicerca());
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
     }
     
-    private ResultSet resultSetRicerca(String query) throws SQLException {
-        return DBConnection.visualizzaListinoLibri(query);
+    private void aggiornaRicerca() {
+        try {
+            modelloTabella.setRS(resultSetRicerca());
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
+    private ResultSet resultSetRicerca() throws SQLException {
+        return DBConnection.visualizzaListinoLibri(parolaCercata, getSelezioneFormato(), getPrezzoMinimo(), getPrezzoMassimo());
     }
     
     protected ResultSet resultSetAggiorna() throws SQLException {
@@ -124,6 +143,39 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(null, false, modelloTabella.getValueAt(cursore-1, 1).toString());
         finestraDettagli.setVisible(true);
     }
+    
+    private int getPrezzoMinimo() {
+        int prezzo = 0;
+        try {
+            prezzo = Integer.parseInt(tPrezzoMin.getText());
+        } catch (NumberFormatException ex) {
+            System.out.println(tPrezzoMin.getText()+" non è un valore accettabile");
+            tPrezzoMin.setText("");
+        }
+        return prezzo;
+    }
+    
+    private int getPrezzoMassimo() {
+        int prezzo = 0;
+        try {
+            prezzo = Integer.parseInt(tPrezzoMax.getText());
+            if (prezzo < getPrezzoMinimo())
+                prezzo = getPrezzoMinimo();
+        } catch (NumberFormatException ex) {
+            tPrezzoMax.setText("");
+        }
+        return prezzo;
+    }
+    
+    private int getSelezioneFormato() {
+        if (rbFlessibile.isSelected())
+            return FLESSIBILE;
+        else if (rbRigida.isSelected())
+            return RIGIDA;
+        else if (rbEBook.isSelected())
+            return EBOOK;
+        else return ALL;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -144,18 +196,24 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         rbEBook = new javax.swing.JRadioButton();
         rbTutti = new javax.swing.JRadioButton();
         jSeparator1 = new javax.swing.JSeparator();
-        rbNuovo = new javax.swing.JRadioButton();
-        rbUsato = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
-        rbTutti2 = new javax.swing.JRadioButton();
-        jLabel2 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        rbRicondizionato = new javax.swing.JRadioButton();
         rbRigida = new javax.swing.JRadioButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        tPrezzoMin = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        tPrezzoMax = new javax.swing.JTextField();
+        tTitoloRicerca = new javax.swing.JLabel();
+        bPulisci = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Listino");
 
+        searchBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBoxActionPerformed(evt);
+            }
+        });
         searchBox.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 searchBoxKeyTyped(evt);
@@ -163,6 +221,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         });
 
         searchButton.setText("Cerca");
+        searchButton.setEnabled(false);
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchButtonActionPerformed(evt);
@@ -189,31 +248,67 @@ public class AnagraficaLibri extends javax.swing.JDialog {
 
         formatoLibri.add(rbFlessibile);
         rbFlessibile.setText("Copertina flessibile");
+        rbFlessibile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbFlessibileActionPerformed(evt);
+            }
+        });
 
         formatoLibri.add(rbEBook);
         rbEBook.setText("eBook digitale");
+        rbEBook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbEBookActionPerformed(evt);
+            }
+        });
 
         formatoLibri.add(rbTutti);
+        rbTutti.setSelected(true);
         rbTutti.setText("Tutti");
-
-        condizioniLibri.add(rbNuovo);
-        rbNuovo.setText("Nuovo");
-
-        condizioniLibri.add(rbUsato);
-        rbUsato.setText("Usato");
+        rbTutti.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbTuttiActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Formato");
 
-        condizioniLibri.add(rbTutti2);
-        rbTutti2.setText("Tutti");
-
-        jLabel2.setText("Condizioni");
-
-        condizioniLibri.add(rbRicondizionato);
-        rbRicondizionato.setText("Ricondizionato");
-
         formatoLibri.add(rbRigida);
         rbRigida.setText("Copertina rigida");
+        rbRigida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbRigidaActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Prezzi");
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Da €");
+
+        tPrezzoMin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tPrezzoMinActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("a €");
+
+        tPrezzoMax.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tPrezzoMaxActionPerformed(evt);
+            }
+        });
+
+        tTitoloRicerca.setFont(new java.awt.Font("Tahoma", 2, 14)); // NOI18N
+
+        bPulisci.setText("Pulisci");
+        bPulisci.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bPulisciActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -222,21 +317,25 @@ public class AnagraficaLibri extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(rbTutti, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(jSeparator2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(117, 117, 117))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rbFlessibile)
-                            .addComponent(jLabel1)
-                            .addComponent(rbNuovo)
-                            .addComponent(rbUsato)
-                            .addComponent(rbRicondizionato)
-                            .addComponent(rbTutti2)
                             .addComponent(rbRigida)
-                            .addComponent(rbEBook))
+                            .addComponent(rbEBook)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tPrezzoMin, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tPrezzoMax)))))
                         .addGap(0, 54, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -244,7 +343,11 @@ public class AnagraficaLibri extends javax.swing.JDialog {
                         .addComponent(searchBox, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(tTitoloRicerca, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bPulisci, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -254,10 +357,9 @@ public class AnagraficaLibri extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(searchBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(searchButton))
-                        .addGap(13, 13, 13))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGap(0, 3, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(rbFlessibile)
@@ -269,20 +371,23 @@ public class AnagraficaLibri extends javax.swing.JDialog {
                         .addComponent(rbTutti)
                         .addGap(1, 1, 1)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
-                        .addGap(1, 1, 1)
-                        .addComponent(rbNuovo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbUsato)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(tPrezzoMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbRicondizionato)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rbTutti2)
-                        .addGap(1, 1, 1)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(tPrezzoMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tTitoloRicerca, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bPulisci))
+                        .addGap(11, 11, 11)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))))
         );
 
         pack();
@@ -300,25 +405,62 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         apriLibro();
     }//GEN-LAST:event_tabellaMouseClicked
 
+    private void searchBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBoxActionPerformed
+        eseguiRicerca();
+    }//GEN-LAST:event_searchBoxActionPerformed
+
+    private void bPulisciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPulisciActionPerformed
+        bPulisci.setVisible(false);
+        tTitoloRicerca.setText("");
+        aggiornaTabella();
+        rbTutti.setSelected(true);
+        parolaCercata = "";
+    }//GEN-LAST:event_bPulisciActionPerformed
+
+    private void rbFlessibileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbFlessibileActionPerformed
+        aggiornaRicerca();
+    }//GEN-LAST:event_rbFlessibileActionPerformed
+
+    private void rbRigidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRigidaActionPerformed
+        aggiornaRicerca();
+    }//GEN-LAST:event_rbRigidaActionPerformed
+
+    private void rbEBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbEBookActionPerformed
+        aggiornaRicerca();
+    }//GEN-LAST:event_rbEBookActionPerformed
+
+    private void rbTuttiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbTuttiActionPerformed
+        aggiornaRicerca();
+    }//GEN-LAST:event_rbTuttiActionPerformed
+
+    private void tPrezzoMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tPrezzoMinActionPerformed
+        aggiornaRicerca();
+    }//GEN-LAST:event_tPrezzoMinActionPerformed
+
+    private void tPrezzoMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tPrezzoMaxActionPerformed
+        aggiornaRicerca();
+    }//GEN-LAST:event_tPrezzoMaxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bPulisci;
     private javax.swing.ButtonGroup condizioniLibri;
     private javax.swing.ButtonGroup formatoLibri;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JRadioButton rbEBook;
     private javax.swing.JRadioButton rbFlessibile;
-    private javax.swing.JRadioButton rbNuovo;
-    private javax.swing.JRadioButton rbRicondizionato;
     private javax.swing.JRadioButton rbRigida;
     private javax.swing.JRadioButton rbTutti;
-    private javax.swing.JRadioButton rbTutti2;
-    private javax.swing.JRadioButton rbUsato;
     private javax.swing.JTextField searchBox;
     private javax.swing.JButton searchButton;
+    private javax.swing.JTextField tPrezzoMax;
+    private javax.swing.JTextField tPrezzoMin;
+    private javax.swing.JLabel tTitoloRicerca;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables
 }

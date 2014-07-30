@@ -194,13 +194,13 @@ return size;
           cursore2 = rs2.getRow();
           tabellaFormati.getSelectionModel().setSelectionInterval(cursore2 - 1,cursore2 - 1);
           tabellaFormati.setRowSelectionInterval(cursore2 - 1, cursore2 - 1);
-          prezzo = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 2).toString());
+          prezzo = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 3).toString());
           disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 1).toString());
-          aggiornaDatiLibro();
+          //aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          System.out.println("mostraDati2 " + ex.getMessage());
       }
     }
     
