@@ -22,17 +22,18 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     /**
      * Creates new form FinestraRecensioneLibro
      */
-    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, String id) {
+    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int id, String isbn) {
         super(parent, modal);
-        this.id = id;
+        idUtente = id; //dovevi impostare l'id dell'utente!
         initComponents();
         impostaTabella();
     }
     
     private ResultSet rs;
     private DBTableModel modelloTabella;
+    private int idUtente;
     private int cursore = 1;
-    protected String id;
+    protected String isbn;
     
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {
@@ -64,7 +65,10 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
         
     }
     
-    protected abstract ResultSet resultSetAggiorna() throws SQLException;
+    public ResultSet resultSetAggiorna() {
+        return null;//Aggiustare con il resultset adatto
+    }
+    
     
     private void mostraDati() {
       try {
@@ -98,6 +102,24 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    private void eseguiOk()
+    {
+        setVisible(false);
+        try {                                                                       //il voto va qui!
+            DBConnection.creaRecensione(idUtente, tCommento.getText(), true , isbn, jVoto.getValue());
+            chiudiFinestra();
+        } catch(SQLException ex){
+            mostraErrore(ex);
+            setVisible(true);
+        }
+        
+    }
+    
+    private void chiudiFinestra() {
+        setVisible(false);
+        dispose();
     }
 
     /**
@@ -215,7 +237,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     }//GEN-LAST:event_bOkActionPerformed
 
     private void bEscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEscActionPerformed
-        chiudiFinestra();
+        
     }//GEN-LAST:event_bEscActionPerformed
 
 

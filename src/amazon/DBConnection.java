@@ -11,8 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.JOptionPane;
-import java.util.Hashtable;
 import oracle.jdbc.pool.*;
 /**
  *
@@ -63,14 +61,6 @@ public class DBConnection {
         
         //createTables();
     }
-    
-    private static void createTables() {
-        ListaTipi tipi = new ListaTipi();
-        //tabelle = tipi.getTipi();
-    }
-    
-    
-    
     
     public static void reConnect() throws SQLException {
         if (conn != null){
@@ -284,7 +274,7 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static void creaRecensione(String idUtente, String commento, boolean libroRec, String target, String voto) throws SQLException {
+   public static void creaRecensione(int idUtente, String commento, boolean libroRec, String target, int voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
        **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
        **               VALUES ('423572', 'Un libro meraviglioso, con forti spunti di riflessione. Da consigliare a tutti', '1', ‘5’)
@@ -297,10 +287,10 @@ public class DBConnection {
        else
            pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, VENDITORE_ID, VOTO) VALUES ('?', '?', '?', '?')");
        
-       pstmt.setString(1, idUtente);
+       pstmt.setInt(1, idUtente);
        pstmt.setString(2, commento);
        pstmt.setString(3, target);
-       pstmt.setString(4, voto);
+       pstmt.setInt(4, voto);
        
        pstmt.executeUpdate();
    }
