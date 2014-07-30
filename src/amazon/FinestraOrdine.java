@@ -29,6 +29,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
      */
     public Scontotemp sconti[]=new Scontotemp[20];;
     static int contatore=0;
+    static double scontoCompl=0;
     
     
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
@@ -62,7 +63,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void inserisciCodice() {
         String codice = codiceSconto.getText();
         try {
-            verificaSconto(sconti, codice, contatore);
+            scontoCompl+=verificaSconto(sconti, codice, contatore);
             contatore++; //con 'static' diventa una variabile globale; applicare a fine ordine contatore=0;
         } catch (SQLException ex) {
             Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
