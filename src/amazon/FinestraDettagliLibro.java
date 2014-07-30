@@ -8,9 +8,6 @@ package amazon;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -24,6 +21,9 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
 
     /**
      * Creates new form FinestraDettagliLibro
+     * @param parent la finestra chiamante
+     * @param modal sempre false
+     * @param isbn il codice ISBN del libro da visualizzare
      */
     public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn) {
         super(parent, modal);
@@ -112,6 +112,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             tPeso.setText("Peso: " + peso);
             tAnno.setText("Data uscita: " + data);
             tVoto.setText("Voto medio: " + voto + "/5");
+            tCodice.setText(isbn);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
