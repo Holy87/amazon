@@ -151,6 +151,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
         
     }
     
+    /**
+     * Aggiorna il testo del totale
+     */
     private void aggiornaTotale() {
         totale = 0;
         totale += netto();
@@ -231,6 +234,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (Exception ex) {
             indirizzoSelezionato = 0;
         }
+    }
+    
+    private void completaAcquisto() {
+        //MI SERVE IL COMANDO IN DBCONNECTION
     }
     
     private void aggiornaPagamentoSelezionato() {
@@ -440,6 +447,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 153, 153));
         jButton2.setText("Completa l'acquisto");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Seleziona il metodo di pagamento:");
 
@@ -517,8 +529,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addComponent(jSeparator1)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(tTotale, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -623,6 +635,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void cPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cPagamentoActionPerformed
         aggiornaPagamentoSelezionato();
     }//GEN-LAST:event_cPagamentoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        completaAcquisto();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

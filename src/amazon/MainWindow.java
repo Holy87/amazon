@@ -136,6 +136,11 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        mNuovo = new javax.swing.JMenu();
+        mUtente = new javax.swing.JMenuItem();
+        mLibro = new javax.swing.JMenuItem();
+        mEditore = new javax.swing.JMenuItem();
+        mVenditore = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
@@ -198,6 +203,43 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem3);
+
+        mNuovo.setText("Nuovo");
+        mNuovo.setEnabled(false);
+
+        mUtente.setText("Utente");
+        mUtente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mUtenteActionPerformed(evt);
+            }
+        });
+        mNuovo.add(mUtente);
+
+        mLibro.setText("Libro");
+        mLibro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mLibroActionPerformed(evt);
+            }
+        });
+        mNuovo.add(mLibro);
+
+        mEditore.setText("Editore");
+        mEditore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mEditoreActionPerformed(evt);
+            }
+        });
+        mNuovo.add(mEditore);
+
+        mVenditore.setText("Venditore");
+        mVenditore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mVenditoreActionPerformed(evt);
+            }
+        });
+        mNuovo.add(mVenditore);
+
+        jMenu1.add(mNuovo);
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem2.setText("Esci");
@@ -302,6 +344,22 @@ public class MainWindow extends javax.swing.JFrame {
         finestra.setVisible(true);
     }//GEN-LAST:event_mCarrelloActionPerformed
 
+    private void mUtenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mUtenteActionPerformed
+        finestraUtente.show(ADDN, null, tabUtenti);
+    }//GEN-LAST:event_mUtenteActionPerformed
+
+    private void mLibroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mLibroActionPerformed
+        finestraLibro.show(ADDN, null, tabLibri);
+    }//GEN-LAST:event_mLibroActionPerformed
+
+    private void mEditoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mEditoreActionPerformed
+        finestraEditore.show(ADDN, null, tabEditori);
+    }//GEN-LAST:event_mEditoreActionPerformed
+
+    private void mVenditoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mVenditoreActionPerformed
+        finestraVenditore.show(ADDN, null, tabVenditori);
+    }//GEN-LAST:event_mVenditoreActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -310,6 +368,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem1.setEnabled(!state);
         jMenuItem3.setEnabled(state);
         jTabbedPane1.setVisible(state);
+        mNuovo.setEnabled(state);
         if (state == true)
             connettiTutto();
     }
@@ -388,6 +447,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lUtente;
     private javax.swing.JMenuItem mAcquisto;
     private javax.swing.JMenuItem mCarrello;
+    private javax.swing.JMenuItem mEditore;
+    private javax.swing.JMenuItem mLibro;
+    private javax.swing.JMenu mNuovo;
+    private javax.swing.JMenuItem mUtente;
+    private javax.swing.JMenuItem mVenditore;
     private amazon.TabOggetti tabAutori;
     private amazon.TabOggetti tabEditori;
     private amazon.TabOggetti tabLibri;

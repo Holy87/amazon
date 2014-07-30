@@ -106,7 +106,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             try {
             voto = Long.parseLong(libro.getString(11));
             } catch(NumberFormatException ex) {
-                System.out.println("VOTO   " + ex);
+                voto = 0;
             }
             tTitolo.setText(titolo);
             tAutore.setText("di "+autore);

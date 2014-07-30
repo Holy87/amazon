@@ -16,8 +16,8 @@ public class FinestraLibro extends EditForm {
 
     /**
      * Creates new form FinestraUtente
-     * @param parent
-     * @param modal
+     * @param parent finestra principale
+     * @param modal 1 se è un'aggiunta, 2 se è una modifica
      */
     public FinestraLibro(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
