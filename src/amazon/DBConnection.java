@@ -192,7 +192,7 @@ public class DBConnection {
    }
    
    
-   public static void verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+   public static double verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -207,12 +207,13 @@ public class DBConnection {
         }
         catch(Exception ex) {
             //APPLICARE MESSAGGIO DI ERRORE A FINESTRA
-            return;
+            return 0;
         }
         
         sconti[contatore].codPromo=codice;
         sconti[contatore].sconto=rs.getDouble(1);
-             
+        
+        return rs.getDouble(1);
    }
    
    public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
