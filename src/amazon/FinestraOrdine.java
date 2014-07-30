@@ -436,6 +436,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
         tTotale.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         tTotale.setText("10€");
 
+        jButton2.setBackground(new java.awt.Color(0, 255, 204));
+        jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(0, 153, 153));
         jButton2.setText("Completa l'acquisto");
 
         jLabel9.setText("Seleziona il metodo di pagamento:");
@@ -520,7 +523,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

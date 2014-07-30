@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
@@ -25,8 +26,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * @param modal sempre false
      * @param isbn il codice ISBN del libro da visualizzare
      */
-    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn) {
+    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn, java.awt.Dialog padre, int idUtente) {
         super(parent, modal);
+        this.padre = padre;
+        this.idUtente = idUtente;
+        this.padre.setVisible(false);
         try {
             libro = DBConnection.visualizzaInfoLibro(isbn);
         } catch (SQLException ex) {
@@ -39,8 +43,9 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     }
     
     private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
-    private int disponibilita, pagine;
+    private int disponibilita, pagine, idUtente, venditoreId, formatoId;
     private long voto; 
+    private java.awt.Dialog padre;
     
     private ResultSet rs, rs2, libro;
     private DBTableModel modelloTabellaVenditori;
@@ -80,7 +85,6 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     private void assegnaDettagliLibro() {
         try {
-            //JOptionPane.showMessageDialog(null, "Dimensione: " + conteggio());
             libro.first();
             titolo = libro.getString(1);
             autore = libro.getString(2) + " " + libro.getString(3);
@@ -104,7 +108,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                 System.out.println("VOTO   " + ex);
             }
             tTitolo.setText(titolo);
-            tAutore.setText(autore);
+            tAutore.setText("di "+autore);
             tEditore.setText("Editore: " + editore);
             tDescrizione.setText(descrizione);
             tGenere.setText("Genere: " + genere);
@@ -117,19 +121,6 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             mostraErrore(ex);
         }
         
-    }
-    
-    private int conteggio() {
-        int size = 0;
-try {
-    libro.last();
-    size = libro.getRow();
-    libro.beforeFirst();
-}
-catch(Exception ex) {
-    return 0;
-}
-return size;
     }
     
     /**
@@ -197,7 +188,6 @@ return size;
           int cur = cursore2 - 1;
           tabellaFormati.getSelectionModel().setSelectionInterval(cur, cur);
           tabellaFormati.setRowSelectionInterval(cur, cur);
-          System.out.println(modelloTabellaFormati.getValueAt(cur, 4).toString());
           prezzo = modelloTabellaFormati.getValueAt(cur, 4).toString();
           if (modelloTabellaFormati.getValueAt(cur, 3) == null) {
               disponibilita = -1;
@@ -205,11 +195,11 @@ return size;
               disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 3).toString());
           stato = modelloTabellaFormati.getValueAt(cur, 2).toString();
           formato = modelloTabellaFormati.getValueAt(cur, 1).toString();
+          formatoId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 0).toString());
           aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          //System.out.println("mostraDati2 " + ex.getMessage());
       }
     }
     
@@ -230,6 +220,7 @@ return size;
         try {
             rs.absolute(tabellaVenditori.getSelectionModel().getMinSelectionIndex() + 1);
             mostraDati();
+            venditoreId = Integer.parseInt(modelloTabellaVenditori.getValueAt(cursore - 1, 0).toString());
             aggiornaTabella2();
         } catch (SQLException ex) {
             mostraErrore(ex);
@@ -243,6 +234,42 @@ return size;
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    /**
+     * Aggiunge il libro al carrello
+     */
+    private void aggiungiACarrello() {
+        if (getQuantita() > disponibilita && disponibilita >= 0)
+            JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili");
+        setVisible(false);
+        try {
+            DBConnection.inserisciArticoloCarrello(idUtente, isbn, formatoId, venditoreId, stato, getQuantita());
+            dispose();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+            setVisible(true);
+        }
+    }
+    
+    private int getQuantita() {
+        int prezzo = 0;
+        try {
+            prezzo = Integer.parseInt(tQuantita.getText());
+            if (prezzo < 0) {
+                prezzo = 1;
+                tQuantita.setText("1");
+            }
+        } catch (NumberFormatException ex) {
+            System.out.println(tQuantita.getText()+" non è un valore accettabile");
+            tQuantita.setText("1");
+        }
+        return prezzo;
+    }
+    
+    public void dispose() {
+        super.dispose();
+        padre.setVisible(true);
     }
 
     /**
@@ -281,12 +308,14 @@ return size;
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
         setResizable(false);
 
-        tTitolo.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        tTitolo.setForeground(new java.awt.Color(150, 200, 25));
+        tTitolo.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        tTitolo.setForeground(new java.awt.Color(153, 153, 0));
         tTitolo.setText("TITOLO");
 
+        tAutore.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
         tAutore.setText("Autore");
 
         tVoto.setText("Voto: 5/5");
@@ -304,7 +333,7 @@ return size;
             }
         });
 
-        tPrezzo.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        tPrezzo.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         tPrezzo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         tPrezzo.setText("€10.00");
         tPrezzo.setToolTipText("");
@@ -480,7 +509,7 @@ return size;
     }// </editor-fold>//GEN-END:initComponents
 
     private void bCarrelloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCarrelloActionPerformed
-        // TODO add your handling code here:
+        aggiungiACarrello();
     }//GEN-LAST:event_bCarrelloActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

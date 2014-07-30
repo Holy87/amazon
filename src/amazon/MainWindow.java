@@ -293,7 +293,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void mAcquistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAcquistoActionPerformed
-        AnagraficaLibri anaLibri = new AnagraficaLibri(this, false);
+        AnagraficaLibri anaLibri = new AnagraficaLibri(this, false, utenteID);
         anaLibri.setVisible(true);
     }//GEN-LAST:event_mAcquistoActionPerformed
 

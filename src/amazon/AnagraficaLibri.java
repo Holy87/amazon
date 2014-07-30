@@ -22,8 +22,9 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     /**
      * Creates new form AnagraficaLibri
      */
-    public AnagraficaLibri(java.awt.Frame parent, boolean modal) {
+    public AnagraficaLibri(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
+        this.idUtente = idUtente;
         initComponents();
         impostaTabella();
         bPulisci.setVisible(false);
@@ -31,7 +32,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     
     private ResultSet rs;
     private DBTableModel modelloTabella;
-    private int cursore = 1;
+    private int cursore = 1, idUtente;
     
     private final int FLESSIBILE = 2001;
     private final int RIGIDA = 2002;
@@ -140,7 +141,10 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     }
     
     private void apriLibro() {
-        FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(null, false, modelloTabella.getValueAt(cursore-1, 1).toString());
+        FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(
+                (java.awt.Frame)super.getParent(), false, 
+                modelloTabella.getValueAt(cursore-1, 1).toString(), this,
+                idUtente);
         finestraDettagli.setVisible(true);
     }
     
@@ -208,6 +212,7 @@ public class AnagraficaLibri extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Listino");
+        setLocationByPlatform(true);
 
         searchBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
