@@ -20,7 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class FinestraOrdine extends javax.swing.JDialog {
 

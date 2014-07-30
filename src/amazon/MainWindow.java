@@ -19,7 +19,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class MainWindow extends javax.swing.JFrame {
     private final int ADDN = 2;
     /**
-     * Creates new form MainWindow
+     * Avvio della finestra senza parametri in ingresso
      */
     public MainWindow() {
         initComponents();
@@ -27,6 +27,12 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
     
+    /**
+     * Avvio dell'applicazione con parametri di collegamento in ingresso
+     * per la connessione automatica
+     * @param username nome utente
+     * @param password password della connessione
+     */
     public MainWindow(String username, String password) {
         initComponents();
         initCustomComponents();
@@ -42,8 +48,14 @@ public class MainWindow extends javax.swing.JFrame {
     private FinestraLibro finestraLibro;
     private FinestraVenditore finestraVenditore;
     
-    
-    
+    /**
+     * Inizializzazione dei componenti:
+     * finestraUtente: scheda dell'elenco degli utenti
+     * finestraAutore: scheda dell'elenco degli autori
+     * finestraEditore: scheda dell'elenco degli editori
+     * finestraLibri: scheda dell'elenco dei libri
+     * finestraVenditore: scheda dell'elenco dei venditori
+     */
     private void initCustomComponents() {
         jTabbedPane1.setVisible(false);
         finestraUtente = new FinestraUtente(this, false);
@@ -58,6 +70,9 @@ public class MainWindow extends javax.swing.JFrame {
         tabVenditori.impostaInterfaccia("VENDITORI", finestraVenditore, this);
     }
     
+    /**
+     * Connessione delle tabelle
+     */
     private void connettiTutto()
     {
         tabUtenti.connectTable();
@@ -67,6 +82,12 @@ public class MainWindow extends javax.swing.JFrame {
         tabVenditori.connectTable();
     }
     
+    /**
+     * Il metodo seleziona l'utente attivo per le operazioni di acquisto,
+     * visualizzazione del carrello e voto ai prodotti
+     * @param id id dell'utente
+     * @param nome nome per la visualizzazione
+     */
     public void impostaUtente(int id, String nome) {
         utenteID = id;
         nomeUtente = nome;
@@ -86,6 +107,12 @@ public class MainWindow extends javax.swing.JFrame {
         */
     }
     
+    /**
+     * Il metodo viene eseguito automaticamente quando vengono dati parametri
+     * all'avvio dell'applicazione
+     * @param user stringa dell'username
+     * @param pass stringa della password
+     */
     private void connessioneAutomatica(String user, String pass) {
         DBConnection.tempUser = user;
         DBConnection.tempPass = pass;

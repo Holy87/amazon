@@ -14,13 +14,16 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 /**
- *
- * @author frbos_000
+ * Questa classe è astratta e serve a implementare finestre che mostrano una
+ * tabella di un set di risultati da una query. Contiene anche uno spazio per
+ * la ricerca.
+ * @author Francesco
  */
 public abstract class FinestraComposita extends javax.swing.JDialog {
 
     /**
      * Creates new form FinestraComposita
+     * @param id è l'ID dell'elemento da inserire nella query per il resultS.
      */
     public FinestraComposita(java.awt.Frame parent, boolean modal, String id) {
         super(parent, modal);
@@ -34,6 +37,9 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private int cursore = 1;
     protected String id;
     
+    /**
+     * Impostazione della tabella sul resultSet.
+     */
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {
         modelloTabella = new DBTableModel(rs);
@@ -67,6 +73,9 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
         
     }
     
+    /**
+     * Procedura del tasto cerca per avviare una ricerca specifica.
+     */
     private void eseguiRicerca(){
         searchBox.setText(null);
         searchButton.setEnabled(false);
@@ -77,8 +86,19 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
         }
     }
     
+    /**
+     * Dev'essere implementato per la ricerca di una stringa particolare.
+     * @param query la stringa immessa dall'utente
+     * @return ResultSet della query da inserire nella tabella
+     * @throws SQLException 
+     */
     protected abstract ResultSet resultSetRicerca(String query) throws SQLException;
     
+    /**
+     * Implementato per il normale riempimento della tabella.
+     * @return resultSet di dati della tabella
+     * @throws SQLException 
+     */
     protected abstract ResultSet resultSetAggiorna() throws SQLException;
     
     /**

@@ -17,7 +17,7 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class AggiungiLibriVenditore extends javax.swing.JDialog {
 

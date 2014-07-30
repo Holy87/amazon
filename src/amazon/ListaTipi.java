@@ -7,11 +7,12 @@
 package amazon;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Hashtable;
 
 /**
- *
+ * Questa classe serve per memorizzare i tipi di dati delle colonne in modo
+ * da eseguire query intelligenti e automatiche dalla tabOggetti. Il metodo
+ * viene chiamato in TabOggeti al metodo eseguiQuerySuTabella.
  * @author Francesco
  */
 public class ListaTipi {
@@ -27,7 +28,12 @@ public class ListaTipi {
     }
     
     private void inizializzaTipi(){
-        tabella = new Hashtable<String, LinkedList>();
+        /*
+        i: tipo intero
+        s: tipo stringa
+        f: con la virgola
+        */
+        tabella = new Hashtable();
         LinkedList utenti = new LinkedList();
         utenti.add('i');
         utenti.add('s');

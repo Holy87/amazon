@@ -12,15 +12,16 @@ import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 /**
- *
+ * Questa classe viene utilizzata per creare sottoclassi di modifica dei
+ * record di una tabella.
  * @author Francesco
  */
 public abstract class EditForm extends javax.swing.JDialog {
-    protected final int EDIT = 1;
-    protected final int ADDN = 2;
-    protected int mode;
-    protected List dati;
-    protected TabOggetti scheda;
+    protected final int EDIT = 1;   //modalità di modifica
+    protected final int ADDN = 2;   //modalità di aggiunta
+    protected int mode;             //memorizza la modalità selezionata
+    protected List dati;            //lista delle colonne del record
+    protected TabOggetti scheda;    //scheda da aggiornare alla modifica
 
     /**
      * Creates new form EditForm
@@ -33,6 +34,12 @@ public abstract class EditForm extends javax.swing.JDialog {
         //initComponents();
     }
     
+    /**
+     * Apre la finestra impostando i dati
+     * @param mode      modalità di apertura (ADDN o EDIT)
+     * @param dati      lista ordinata delle colonne del record
+     * @param scheda    la scheda da aggiornare alla chiusura
+     */
     public void show(int mode, List dati, TabOggetti scheda)
     {
         this.scheda = scheda;
@@ -60,15 +67,30 @@ public abstract class EditForm extends javax.swing.JDialog {
         JOptionPane.showMessageDialog(this, "Errore: " + errore, null, ERROR_MESSAGE);
     }
     
+    /**
+     * Metodo astratto da implementare nelle sottoclassi. Viene chiamato quando
+     * la finestra viene aperta in modalità modifica e si occupa di riempire
+     * le caselle di testo con i dati del record.
+     */
     protected abstract void fillContents();
     
+    /**
+     * Metodo astratto da implementare nelle sottoclassi. Viene chiamato quando
+     * la finestra viene aperta in modalità aggiunta e si occupa di impostare
+     * le caselle di testo vuote.
+     */
     protected abstract void cleanContents();
     
+    /**
+     * Chiusura della finestra. L'utilità del metodo è l'aggiornamento
+     * automatico della tabella nella scheda chiamante.
+     */
     protected void chiudiFinestra() {
         setVisible(false);
         scheda.aggiornaTabellaConQuery();
     }
     
+    // Titoli della finestra in modifica e aggiunta
     protected abstract String titoloNuovo();
     protected abstract String titoloModifica();
     

@@ -11,13 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.YES_NO_OPTION;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class FinestraDettagliLibro extends javax.swing.JDialog {
 
@@ -26,6 +25,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * @param parent la finestra chiamante
      * @param modal sempre false
      * @param isbn il codice ISBN del libro da visualizzare
+     * @param padre è la classe che crea la finestra
+     * @param idUtente è l'ID dell'utente attivo per l'acquisto
      */
     public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn, java.awt.Dialog padre, int idUtente) {
         super(parent, modal);
@@ -48,12 +49,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private long voto; 
     private java.awt.Dialog padre;
     
-    private ResultSet rs, rs2, libro;
+    private ResultSet rs, rs2, libro;//libro è il resultset a 1 riga
     private DBTableModel modelloTabellaVenditori;
     private DBTableModel modelloTabellaFormati;
-    private int cursore = 1;
-    private int cursore2 = 1;
-    protected String id;
+    private int cursore = 1;    //cursore della prima tabella
+    private int cursore2 = 1;   //cursore della seconda tabella       
     
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {
@@ -84,6 +84,10 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         aggiornaTabella2();
     }
     
+    /**
+     * Operazione di stampa di tutte le informazioni del libro sulla
+     * finestra.
+     */
     private void assegnaDettagliLibro() {
         try {
             libro.first();
@@ -139,9 +143,15 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         }
     }
     
+    /**
+     * Metodo di aggiornamento della tabella dei formati del libro disponibili
+     * per il venditore. Viene chiamato all'avvio della finestra e ogni volta
+     * che si seleziona un venditore.
+     */
     private void aggiornaTabella2() {
         try {
-            rs2 = DBConnection.visualizzaFormatoLibroVenditore(isbn, modelloTabellaVenditori.getValueAt(cursore-1, 0).toString());
+            rs2 = DBConnection.visualizzaFormatoLibroVenditore(isbn,
+                    modelloTabellaVenditori.getValueAt(cursore-1, 0).toString());
             modelloTabellaFormati.setRS(rs2);
             cursore2 = 1;
             rs2.absolute(cursore2);
@@ -152,6 +162,10 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         
     }
     
+    /**
+     * Aggiorna le informazioni variabili sul formato. Viene chiamato ogni
+     * volta che si cambia la selezione del formato.
+     */
     private void aggiornaDatiLibro() {
         tPrezzo.setText("€"+prezzo);
         tFormato.setText("Formato: " + formato);
@@ -159,6 +173,14 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         tDisponibile.setText("Disponibilità: " + getDisponibilita());
     }
     
+    /**
+     * Viene chiamato all'aggiornamento della selezione del formato. Restituisce
+     * una stringa da mostrare in base alla disponibilità
+     * @return stringa variabile sulla disponibilità. Se è maggiore di 10 non
+     * indica il numero.
+     * Il metodo cambia anche colore del testo a seconda della disponibilità del
+     * prodotto.
+     */
     private String getDisponibilita() {
         if (disponibilita < 0) {
             tDisponibile.setForeground(Color.GREEN);
@@ -173,8 +195,6 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             tDisponibile.setForeground(Color.RED);
             return "Non disponibile";
           }
-            
-            
     }
     
     /**
@@ -213,6 +233,10 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
       }
     }
     
+    /**
+     * Mostra l'errore della connessione al database in finestra popup.
+     * @param ex eccezione da mostrare
+     */
     private void mostraErrore(SQLException ex) {
         String errore = "(Finestra dettagli libro) Errore di connessione al database";
         errore += "\nCodice: " + ex.getErrorCode();
@@ -237,6 +261,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         }
     }
     
+    /**
+     * Metodo che viene chiamato all'evento della selezione della tabella dei
+     * formati.
+     * A sua volta aggiorna le informaizoni su schermo del formato, prezzo e disp.
+     */
     private void tableSelectionChanged2() {
         try {
             rs2.absolute(tabellaFormati.getSelectionModel().getMinSelectionIndex() + 1);
@@ -254,7 +283,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili.\nVerrà comunque aggiunto al carrello.");
         setVisible(false);
         try {
-            DBConnection.inserisciArticoloCarrello(idUtente, isbn, formatoId, venditoreId, stato, getQuantita());
+            DBConnection.inserisciArticoloCarrello(idUtente, isbn, formatoId,
+                    venditoreId, stato, getQuantita());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
@@ -262,6 +292,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         }
     }
     
+    /**
+     * Questo metodo è necessario per evitare che l'utente immetta valori
+     * errati nella quantità, come numeri negativi o lettere.
+     * @return quantità scelta dell'oggetto
+     */
     private int getQuantita() {
         int prezzo = 0;
         try {
@@ -277,6 +312,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         return prezzo;
     }
     
+    /**
+     * Override per far tornare visibile la finestra della scelta dei libri alla
+     * chiusura di questa finestra.
+     */
+    @Override
     public void dispose() {
         super.dispose();
         padre.setVisible(true);
