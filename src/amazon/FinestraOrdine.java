@@ -324,6 +324,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jPopupMenu1.add(elimina);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         tabellaArticoli.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
