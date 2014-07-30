@@ -192,7 +192,7 @@ public class DBConnection {
    }
    
    
-   public static void verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+   public static double verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -207,12 +207,13 @@ public class DBConnection {
         }
         catch(Exception ex) {
             //APPLICARE MESSAGGIO DI ERRORE A FINESTRA
-            return;
+            return 0;
         }
         
         sconti[contatore].codPromo=codice;
         sconti[contatore].sconto=rs.getDouble(1);
-             
+        
+        return rs.getDouble(1);
    }
    
    public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
@@ -692,11 +693,11 @@ public class DBConnection {
        */
        PreparedStatement pstmt;
        //ho inserito anche ISBN e VENDITORE_ID nei risultati perché c'è bisogno di loro quando seleziono il libro
-       pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-       pstmt.setInt(2, Integer.parseInt(venditoreID));
+       pstmt.setString(2, venditoreID);
        return pstmt.executeQuery();
    }
    
