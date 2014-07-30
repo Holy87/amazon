@@ -34,7 +34,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         }
         this.isbn = isbn;
         initComponents();
-        assegnaDettagliLibro();
+        //assegnaDettagliLibro();
         impostaTabella();
     }
     
