@@ -29,6 +29,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
      */
     public Scontotemp sconti[]=new Scontotemp[20];;
     static int contatore=0;
+    static double scontoCompl=0;
     
     
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
@@ -49,8 +50,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private int cursoreArticoli = 1;
     private int cursoreSconti = 1;
     private int indirizzoSelezionato, pagamentoSelezionato;
-    private ArrayList<LinkedList> indirizzi = new ArrayList();
-    private ArrayList<LinkedList> metodiPagamento = new ArrayList();
+    private LinkedList<String[]> indirizzi;
+    private ArrayList<String[]> metodiPagamento = new ArrayList();
     
     private int idUtente;
     private double totale;
@@ -62,7 +63,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void inserisciCodice() {
         String codice = codiceSconto.getText();
         try {
-            verificaSconto(sconti, codice, contatore);
+            scontoCompl+=verificaSconto(sconti, codice, contatore);
             contatore++; //con 'static' diventa una variabile globale; applicare a fine ordine contatore=0;
         } catch (SQLException ex) {
             Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
@@ -76,21 +77,19 @@ public class FinestraOrdine extends javax.swing.JDialog {
             cPagamento.removeAllItems();
             System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
             //pagamenti.first();
-            LinkedList<String> elementi = new LinkedList();
             while (pagamenti.next()) {
-                LinkedList<String> lista = new LinkedList();
-                lista.add(pagamenti.getString(1));//id metodo
-                lista.add(pagamenti.getString(2));//nome
-                lista.add(pagamenti.getString(3));//cognome
-                lista.add(pagamenti.getString(4));//tipo
-                lista.add(pagamenti.getString(5));//numero
-                lista.add(pagamenti.getString(6));//data
-                String numcarta = lista.get(4);
-                String stringa = lista.get(3) + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
-                elementi.add(stringa);
+                String[] lista = {pagamenti.getString(1),//id metodo
+                pagamenti.getString(2),//nome
+                pagamenti.getString(3),//cognome
+                pagamenti.getString(4),//tipo
+                pagamenti.getString(5),//numero
+                pagamenti.getString(6)};//data
+                String numcarta = lista[4];
+                String stringa = lista[3] + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
                 metodiPagamento.add(lista);
                 cPagamento.addItem(stringa);
             }
+            cPagamento.setSelectedIndex(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -117,18 +116,17 @@ public class FinestraOrdine extends javax.swing.JDialog {
         try {
             ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(""+idUtente);
             cSpedizione.removeAllItems();
+            indirizzi = new LinkedList();
             System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
             //indirizzi.first();
             while (rsIndirizzi.next()) {
-                System.out.println("provolo");
-                LinkedList<String> lista = new LinkedList();
-                lista.add(rsIndirizzi.getString(1)); //id contatto;
-                lista.add(rsIndirizzi.getString(2)); //nome contatto
-                lista.add(rsIndirizzi.getString(3)); //cognome
-                lista.add(rsIndirizzi.getString(4)); //indirizzo 1
-                lista.add(rsIndirizzi.getString(5)); //indirizzo 2
+                String[] lista = {rsIndirizzi.getString(1), //id contatto;
+                rsIndirizzi.getString(2), //nome contatto
+                rsIndirizzi.getString(3), //cognome
+                rsIndirizzi.getString(4), //indirizzo 1
+                rsIndirizzi.getString(5)}; //indirizzo 2
                 indirizzi.add(lista);
-                String stringa = lista.get(1) + " " + lista.get(2) + " in " + lista.get(3);
+                String stringa = lista[1] + " " + lista[2] + " in " + lista[3];
                 cSpedizione.addItem(stringa);
             }
             cSpedizione.setSelectedIndex(0);
@@ -228,14 +226,22 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void aggiornaIndirizzoSelezionato() {
-        System.out.println(cSpedizione.getSelectedIndex());
-        System.out.println(indirizzi.size());
-        Object pippo = indirizzi.get(0);
-        //System.out.println(indirizzi.get(0).toString());
-        //indirizzoSelezionato = Integer.parseInt(rsIndirizzi.get(cSpedizione.getSelectedIndex()).get(0).toString());
+        try {
+            indirizzoSelezionato = Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
+        } catch (Exception ex) {
+            indirizzoSelezionato = 0;
+        }
     }
     
     private void aggiornaPagamentoSelezionato() {
+        try {
+            String[] pagamenti = metodiPagamento.get(cPagamento.getSelectedIndex());
+            pagamentoSelezionato = Integer.parseInt(pagamenti[0]);
+            tIntestatario.setText(pagamenti[1] + " " + pagamenti[2]);
+            tScadenzaCarta.setText(pagamenti[5]);
+        } catch (Exception ex) {
+            pagamentoSelezionato = 0;
+        }
         //LinkedList pagamento = metodiPagamento.get(cPagamento.getSelectedIndex());
         //pagamentoSelezionato = Integer.parseInt(pagamento.get(0).toString());
         //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());

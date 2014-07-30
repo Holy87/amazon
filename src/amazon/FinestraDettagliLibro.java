@@ -38,9 +38,9 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         impostaTabella();
     }
     
-    //private LinkedList libro;
-    private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione;
-    private int prezzo, disponibilita, pagine, peso, voto;
+    private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
+    private int disponibilita, pagine;
+    private long voto; 
     
     private ResultSet rs, rs2, libro;
     private DBTableModel modelloTabellaVenditori;
@@ -80,26 +80,26 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     private void assegnaDettagliLibro() {
         try {
-            JOptionPane.showMessageDialog(null, "Dimensione: " + conteggio());
+            //JOptionPane.showMessageDialog(null, "Dimensione: " + conteggio());
             libro.first();
-            titolo = libro.getNString(1);
-            autore = libro.getNString(2) + " " + libro.getNString(3);
-            editore = libro.getNString(4);
-            descrizione = libro.getNString(6);
-            genere = libro.getNString(7);
+            titolo = libro.getString(1);
+            autore = libro.getString(2) + " " + libro.getString(3);
+            editore = libro.getString(4);
+            descrizione = libro.getString(6);
+            genere = libro.getString(7);
             try {
-                pagine = Integer.parseInt(libro.getNString(8));
+                pagine = Integer.parseInt(libro.getString(8));
             } catch(NumberFormatException ex) {
                 System.out.println("PAGINE   " + ex);
             }
             try {
-                peso = Integer.parseInt(libro.getNString(9));
+                peso = libro.getString(9);
             } catch(NumberFormatException ex) {
                 System.out.println("PESO   " + ex);
             }
             data = libro.getNString(10);
             try {
-            voto = Integer.parseInt(libro.getNString(11));
+            voto = Long.parseLong(libro.getString(11));
             } catch(NumberFormatException ex) {
                 System.out.println("VOTO   " + ex);
             }
@@ -151,6 +151,7 @@ return size;
         try {
             rs2 = DBConnection.visualizzaFormatoLibroVenditore(isbn, modelloTabellaVenditori.getValueAt(cursore-1, 0).toString());
             modelloTabellaFormati.setRS(rs2);
+            cursore2 = 1;
             rs2.absolute(cursore2);
             mostraDati2();
         } catch (SQLException ex) {
@@ -186,22 +187,26 @@ return size;
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          System.out.println("mostraDati: " + ex.getMessage());
       }
     }
     
     private void mostraDati2() {
         try {
           cursore2 = rs2.getRow();
-          tabellaFormati.getSelectionModel().setSelectionInterval(cursore2 - 1,cursore2 - 1);
-          tabellaFormati.setRowSelectionInterval(cursore2 - 1, cursore2 - 1);
-          prezzo = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 2).toString());
-          disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cursore2-1, 1).toString());
+          int cur = cursore2 - 1;
+          tabellaFormati.getSelectionModel().setSelectionInterval(cur, cur);
+          tabellaFormati.setRowSelectionInterval(cur, cur);
+          System.out.println(modelloTabellaFormati.getValueAt(cur, 4).toString());
+          prezzo = modelloTabellaFormati.getValueAt(cur, 4).toString();
+          disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 3).toString());
+          stato = modelloTabellaFormati.getValueAt(cur, 2).toString();
+          formato = modelloTabellaFormati.getValueAt(cur, 1).toString();
           aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          //System.out.println("mostraDati2 " + ex.getMessage());
       }
     }
     
@@ -348,6 +353,7 @@ return size;
         tPeso.setText("Peso:");
 
         tDescrizione.setColumns(20);
+        tDescrizione.setLineWrap(true);
         tDescrizione.setRows(5);
         jScrollPane3.setViewportView(tDescrizione);
 
@@ -370,7 +376,7 @@ return size;
                                 .addComponent(tDisponibile, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)))
                         .addGap(71, 71, 71)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bCarrello, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                            .addComponent(bCarrello, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                             .addComponent(tPrezzo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -388,9 +394,9 @@ return size;
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addComponent(jScrollPane2))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(layout.createSequentialGroup()
@@ -416,7 +422,7 @@ return size;
                                             .addComponent(tCondizioni, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
                                             .addComponent(tGenere, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(10, 10, 10))))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

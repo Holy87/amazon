@@ -192,7 +192,7 @@ public class DBConnection {
    }
    
    
-   public static void verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+   public static double verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -207,12 +207,13 @@ public class DBConnection {
         }
         catch(Exception ex) {
             //APPLICARE MESSAGGIO DI ERRORE A FINESTRA
-            return;
+            return 0;
         }
         
         sconti[contatore].codPromo=codice;
         sconti[contatore].sconto=rs.getDouble(1);
-             
+        
+        return rs.getDouble(1);
    }
    
    public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
@@ -578,7 +579,7 @@ public class DBConnection {
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN FROM LIBRI",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN, FORMATO_NOME, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI NATURAL JOIN IMPOSTAZIONI",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -597,15 +598,51 @@ public class DBConnection {
        
    }
    
-   public static ResultSet visualizzaListinoLibri(String query) throws SQLException {
+   public static ResultSet visualizzaListinoLibri(String query, int formato, int prezzoMin, int prezzoMax) throws SQLException {
        //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
+       boolean cercaParola = false;
+       boolean cercaFormato = false;
+       boolean cercaPrezzoMin = false;
+       boolean cercaPrezzoMax = false;
+       int controllo = 0;
+       String ricerca = "SELECT LIBRO_NOME, ISBN, FORMATO_NOME, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI NATURAL JOIN IMPOSTAZIONI WHERE ";
+       if (query != "") {
+           ricerca += "LIBRI.LIBRO_NOME LIKE ?";
+           cercaParola = true;
+       } else
+           ricerca += "1=1";
+       if (formato > 0) {
+           cercaFormato = true;
+           ricerca += " AND FORMATO_ID = ?";
+       }
+       if (prezzoMin > 0) {
+           cercaPrezzoMin = true;
+           ricerca += " AND PREZZOLISTINO >= ?";
+       }
+       if (prezzoMax > 0) {
+           cercaPrezzoMax = true;
+           ricerca += " AND PREZZOLISTINO <= ?";
+       }
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN FROM LIBRI WHERE LIBRI.LIBRO_NOME LIKE ?",
+       pstmt = conn.prepareStatement(ricerca,
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       
-       pstmt.setString(1,query);
-       
+       if (cercaParola == true) {
+           controllo++;
+           pstmt.setString(controllo, "%"+query+"%");
+       }
+       if (cercaFormato == true) {
+           controllo++;
+           pstmt.setInt(controllo, formato);
+       }    
+       if (cercaPrezzoMin == true) {
+           controllo++;
+           pstmt.setInt(controllo, prezzoMin);
+       }
+       if (cercaPrezzoMax == true) {
+           controllo++;
+           pstmt.setInt(controllo, prezzoMax);
+       }
        return pstmt.executeQuery();
    }
    
@@ -642,9 +679,7 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-       ResultSet rs =  pstmt.executeQuery();
-       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
-       return rs;
+       return pstmt.executeQuery();
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
@@ -658,16 +693,12 @@ public class DBConnection {
        */
        PreparedStatement pstmt;
        //ho inserito anche ISBN e VENDITORE_ID nei risultati perché c'è bisogno di loro quando seleziono il libro
-       pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-       pstmt.setInt(2, Integer.parseInt(venditoreID));
-       
-       //return pstmt.executeQuery();   
-       ResultSet rs =  pstmt.executeQuery();
-       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
-       return rs;
+       pstmt.setString(2, venditoreID);
+       return pstmt.executeQuery();
    }
    
    public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String tipoCondizione, String quantita) throws SQLException {
