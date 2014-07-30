@@ -6,6 +6,7 @@
 
 package amazon;
 
+import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -160,11 +161,20 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     private String getDisponibilita() {
         if (disponibilita < 0) {
+            tDisponibile.setForeground(Color.GREEN);
             return "Illimitata";
-        } else if (disponibilita > 10)
-            return "più di 10 disponibili";
-          else  
-            return disponibilita + " disponibili";  
+        } else if (disponibilita > 10) {
+            tDisponibile.setForeground(Color.GREEN);
+            return "più di 10 disponibili";}
+          else  if (disponibilita <= 10) {
+            tDisponibile.setForeground(Color.yellow);
+            return disponibilita + " disponibili";
+        } else {
+            tDisponibile.setForeground(Color.RED);
+            return "Non disponibile";
+          }
+            
+            
     }
     
     /**
@@ -241,7 +251,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      */
     private void aggiungiACarrello() {
         if (getQuantita() > disponibilita && disponibilita >= 0)
-            JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili");
+            JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili.\nVerrà comunque aggiunto al carrello.");
         setVisible(false);
         try {
             DBConnection.inserisciArticoloCarrello(idUtente, isbn, formatoId, venditoreId, stato, getQuantita());
