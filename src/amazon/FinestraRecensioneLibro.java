@@ -111,7 +111,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
 
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableUtenti = new javax.swing.JTable();
+        tabella = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         tCommento = new javax.swing.JTextField();
         jVoto = new javax.swing.JSlider();
@@ -121,7 +121,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
 
         jLabel3.setText("Seleziona utente:");
 
-        jTableUtenti.setModel(new javax.swing.table.DefaultTableModel(
+        tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -132,7 +132,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTableUtenti);
+        jScrollPane1.setViewportView(tabella);
 
         jLabel2.setText("Commento (Max 255 caratteri):");
 
@@ -226,8 +226,8 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTableUtenti;
     private javax.swing.JSlider jVoto;
     private javax.swing.JTextField tCommento;
+    private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables
 }
