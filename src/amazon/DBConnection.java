@@ -643,9 +643,7 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-       ResultSet rs =  pstmt.executeQuery();
-       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
-       return rs;
+       return pstmt.executeQuery();
    }
    
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
@@ -664,11 +662,7 @@ public class DBConnection {
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
        pstmt.setInt(2, Integer.parseInt(venditoreID));
-       
-       //return pstmt.executeQuery();   
-       ResultSet rs =  pstmt.executeQuery();
-       JOptionPane.showMessageDialog(null, rs.getArray(rs.getRow()));
-       return rs;
+       return pstmt.executeQuery();
    }
    
    public static void inserisciArticoloCarrello(String utenteId, String isbn, String formatoId, String venditoreId, String tipoCondizione, String quantita) throws SQLException {
