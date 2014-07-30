@@ -656,7 +656,7 @@ public class DBConnection {
        */
        PreparedStatement pstmt;
        //ho inserito anche ISBN e VENDITORE_ID nei risultati perché c'è bisogno di loro quando seleziono il libro
-       pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, PERCSCONTO, TIPOCONDIZIONE FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT ISBN, VENDITORE_ID, FORMATO_NOME, PREZZOVENDITA, TIPOCONDIZIONE, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
