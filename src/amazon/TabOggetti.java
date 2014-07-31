@@ -218,9 +218,8 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     private void inserisciRecensioneLibro(java.awt.event.ActionEvent evt) {
-        int utenteID = mainWindow.utenteID;
-        FinestraRecensioneLibro finestra = new FinestraRecensioneLibro(mainWindow, false, utenteID, modelloTabella.getValueAt(cursore-1, 2).toString());
-        finestra.setVisible(true);
+        FinestraRecensioneLibro finestraLibro = new FinestraRecensioneLibro(mainWindow, false, mainWindow.utenteID, modelloTabella.getValueAt(cursore-1, 2).toString());
+        finestraLibro.setVisible(true);
     }
     
     /**

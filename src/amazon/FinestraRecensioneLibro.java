@@ -6,85 +6,51 @@
 
 package amazon;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author Giuseppe
+ * @author frbos_000
  */
 public class FinestraRecensioneLibro extends javax.swing.JDialog {
 
     /**
      * Creates new form FinestraRecensioneLibro
      */
-    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int id, String isbn) {
+    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int idUtente, String isbn) {
         super(parent, modal);
-        idUtente = id; //dovevi impostare l'id dell'utente!
+        this.idUtente = idUtente;
         this.isbn = isbn;
         initComponents();
-        impostaTabella();
     }
     
-    private ResultSet rs;
-    private DBTableModel modelloTabella;
     private int idUtente;
-    private int cursore = 1;
-    protected String isbn;
+    private String isbn;
     
-    @SuppressWarnings("Convert2Lambda")
-    public final void impostaTabella() {
-        modelloTabella = new DBTableModel(rs);
-        tabella.setModel(modelloTabella); //metto il modellotabella nel
-        tabella.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
-        tabella.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                tableSelectionChanged();
-            }
-        } 
-                
-        );
-        aggiornaTabella();
-    }
-    
-    public void aggiornaTabella()
-    {
+    private void inserisciRecensione() {
+        setVisible(false);
         try {
-            rs = resultSetAggiorna();
-            modelloTabella.setRS(rs);
-            rs.absolute(cursore);
-            mostraDati();
+            DBConnection.creaRecensione(idUtente, isbn, true, tCommento.getText(), sVoto.getValue());
+            dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
+            setVisible(true);
         }
-        
     }
     
-    public ResultSet resultSetAggiorna() throws SQLException {
-        return DBConnection.visualizzaUtenti();
+    private void annullaRecensione() {
+        setVisible(false);
+        dispose();
     }
     
-    
-    private void mostraDati() {
-      try {
-          cursore = rs.getRow();
-          tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
-          tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-      } catch (SQLException ex) {
-          mostraErrore(ex);
-      } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
-      }
-    }
-    
+    /**
+     * Mostra il messaggio d'errore
+     * @param ex eccezione da mostrare
+     */
     private void mostraErrore(SQLException ex) {
         String errore = "Errore di connessione al database";
         errore += "\nCodice: " + ex.getErrorCode();
@@ -93,37 +59,6 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
         JOptionPane.showMessageDialog(this, "Errore: " + errore, null, ERROR_MESSAGE);
     }
     
-    /**
-     * Metodo che viene chiamato quando si clica il mouse sulla tabella
-     * cambiando la selezione
-     */
-    private void tableSelectionChanged() 
-    {
-        try {
-            rs.absolute(tabella.getSelectionModel().getMinSelectionIndex() + 1);
-            mostraDati();
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-    }
-    
-    private void eseguiOk()
-    {
-        setVisible(false);
-        try {                                                                       //il voto va qui!
-            DBConnection.creaRecensione(idUtente, tCommento.getText(), true , isbn, jVoto.getValue());
-            chiudiFinestra();
-        } catch(SQLException ex){
-            mostraErrore(ex);
-            setVisible(true);
-        }
-        
-    }
-    
-    private void chiudiFinestra() {
-        setVisible(false);
-        dispose();
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,125 +69,111 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabella = new javax.swing.JTable();
+        tCommento = new javax.swing.JTextArea();
+        sVoto = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        bInserisci = new javax.swing.JButton();
+        bAnnulla = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        tCommento = new javax.swing.JTextField();
-        jVoto = new javax.swing.JSlider();
-        jLabel7 = new javax.swing.JLabel();
-        bOk = new javax.swing.JButton();
-        bEsc = new javax.swing.JButton();
 
-        jLabel3.setText("Seleziona utente:");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Inserisci recensione");
+        setLocationByPlatform(true);
+        setResizable(false);
 
-        tabella.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(tabella);
+        tCommento.setColumns(20);
+        tCommento.setLineWrap(true);
+        tCommento.setRows(5);
+        tCommento.setToolTipText("Inserisci la tua recensione");
+        jScrollPane1.setViewportView(tCommento);
+        tCommento.getAccessibleContext().setAccessibleName("");
 
-        jLabel2.setText("Commento (Max 255 caratteri):");
+        sVoto.setMajorTickSpacing(1);
+        sVoto.setMaximum(5);
+        sVoto.setMinimum(1);
+        sVoto.setMinorTickSpacing(1);
+        sVoto.setPaintLabels(true);
+        sVoto.setPaintTicks(true);
+        sVoto.setToolTipText("");
+        sVoto.setValue(3);
 
-        jVoto.setMajorTickSpacing(1);
-        jVoto.setMaximum(5);
-        jVoto.setMinimum(1);
-        jVoto.setMinorTickSpacing(1);
-        jVoto.setPaintLabels(true);
-        jVoto.setPaintTicks(true);
-        jVoto.setToolTipText("");
+        jLabel1.setText("Voto:");
 
-        jLabel7.setText("Voto:");
-
-        bOk.setText("OK");
-        bOk.addActionListener(new java.awt.event.ActionListener() {
+        bInserisci.setText("Inserisci");
+        bInserisci.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bOkActionPerformed(evt);
+                bInserisciActionPerformed(evt);
             }
         });
 
-        bEsc.setText("Annulla");
-        bEsc.addActionListener(new java.awt.event.ActionListener() {
+        bAnnulla.setText("Annulla");
+        bAnnulla.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bEscActionPerformed(evt);
+                bAnnullaActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        jLabel2.setText("Recensione (max 255 caratteri)");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tCommento, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jVoto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(sVoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(13, 180, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(bOk, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bInserisci)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bEsc)))
+                        .addComponent(bAnnulla))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sVoto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addGap(5, 5, 5)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(tCommento, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jVoto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bEsc)
-                    .addComponent(bOk)))
+                    .addComponent(bInserisci)
+                    .addComponent(bAnnulla))
+                .addContainerGap())
         );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOkActionPerformed
-        eseguiOk();
-    }//GEN-LAST:event_bOkActionPerformed
+    private void bInserisciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bInserisciActionPerformed
+        inserisciRecensione();
+    }//GEN-LAST:event_bInserisciActionPerformed
 
-    private void bEscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEscActionPerformed
-        
-    }//GEN-LAST:event_bEscActionPerformed
+    private void bAnnullaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAnnullaActionPerformed
+        annullaRecensione();
+    }//GEN-LAST:event_bAnnullaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bEsc;
-    private javax.swing.JButton bOk;
+    private javax.swing.JButton bAnnulla;
+    private javax.swing.JButton bInserisci;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSlider jVoto;
-    private javax.swing.JTextField tCommento;
-    private javax.swing.JTable tabella;
+    private javax.swing.JSlider sVoto;
+    private javax.swing.JTextArea tCommento;
     // End of variables declaration//GEN-END:variables
 }
