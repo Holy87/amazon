@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package amazon;
+package amazon.modelliTabelle;
 
+import amazon.DBConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;

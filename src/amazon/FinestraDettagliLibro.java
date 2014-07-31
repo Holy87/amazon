@@ -6,6 +6,7 @@
 
 package amazon;
 
+import amazon.modelliTabelle.DBTableModel;
 import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,7 +70,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } 
                 
         );
-        
+        //nasconde l'ID del venditore
         modelloTabellaFormati = new DBTableModel(rs2);
         tabellaFormati.setModel(modelloTabellaFormati);
         tabellaFormati.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -80,6 +81,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                 tableSelectionChanged2();
             }
         });
+        
         aggiornaTabella();
         aggiornaTabella2();
     }
@@ -138,6 +140,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             modelloTabellaVenditori.setRS(rs);
             rs.absolute(cursore);
             mostraDati();
+            tabellaVenditori.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaVenditori.getColumnModel().getColumn(0).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -156,6 +160,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             cursore2 = 1;
             rs2.absolute(cursore2);
             mostraDati2();
+            tabellaFormati.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaFormati.getColumnModel().getColumn(0).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -184,15 +190,20 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private String getDisponibilita() {
         if (disponibilita < 0) {
             tDisponibile.setForeground(Color.GREEN);
+            tQuantita.setEnabled(false);
+            tQuantita.setText("1");
             return "Illimitata";
         } else if (disponibilita > 10) {
             tDisponibile.setForeground(Color.GREEN);
+            tQuantita.setEnabled(true);
             return "più di 10 disponibili";}
           else  if (disponibilita <= 10 && disponibilita > 0) {
             tDisponibile.setForeground(Color.ORANGE);
+            tQuantita.setEnabled(true);
             return disponibilita + " disponibili";
         } else {
             tDisponibile.setForeground(Color.RED);
+            tQuantita.setEnabled(true);
             return "Non disponibile";
           }
     }

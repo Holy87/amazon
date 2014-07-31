@@ -7,6 +7,11 @@
 package amazon;
 
 import static amazon.DBConnection.verificaSconto;
+import amazon.exceptions.CodeAlreadyUsedException;
+import amazon.exceptions.CodeNotValidException;
+import amazon.exceptions.TooMuchDealsException;
+import amazon.modelliTabelle.DBTableModel;
+import amazon.modelliTabelle.ScontiModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,16 +33,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
     /**
      * Creates new form FinestraOrdine
      */
-    public Scontotemp sconti[]=new Scontotemp[20];;
-    static int contatore=0;
-    static double scontoCompl=0;
-    
-    
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
         this.idUtente = idUtente;
         initComponents();
         impostaTabella();
+        impostaTabella2();
         impostaIndirizzi();
         impostaMetodiPagamento();
         aggiornaTotale();
@@ -47,29 +48,60 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private ResultSet rsArticoli;
     private DBTableModel modelloTabellaArticoli;
+    private ScontiModel modelloTabellaSconti;
     
     private int cursoreArticoli = 1;
     private int cursoreSconti = 1;
     private int indirizzoSelezionato, pagamentoSelezionato;
     private LinkedList<String[]> indirizzi;
     private ArrayList<String[]> metodiPagamento = new ArrayList();
+    private LinkedList<Scontotemp> sconti = new LinkedList();
     
     private int idUtente;
-    private double totale;
+    private double totale = 0;
+    static double scontoCompl = 0;
     
     private final int SPEDECO = 1;
     private final int SPEDMID = 2;
     private final int SPEDRAP = 3;
     
     private void inserisciCodice() {
-        String codice = codiceSconto.getText();
-        try {
-            scontoCompl+=verificaSconto(sconti, codice, contatore);
-            contatore++; //con 'static' diventa una variabile globale; applicare a fine ordine contatore=0;
-        } catch (SQLException ex) {
-            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String codice = codiceSconto.getText().toUpperCase();
         codiceSconto.setText("");
+        try {
+            controllaSeGiaInserito(codice);
+            double sconto = verificaSconto(codice);
+            scontoCompl = sommaSconti();
+            sconti.add(new Scontotemp(codice, sconto));
+            modelloTabellaSconti.setSconti(sconti);
+            aggiornaTotale();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        } catch (CodeAlreadyUsedException ex) {
+            JOptionPane.showMessageDialog(this, "Questo codice è già stato inserito nel carrello!", null, ERROR_MESSAGE);
+        } catch (CodeNotValidException ex) {
+            JOptionPane.showMessageDialog(this, "Il codice sconto inserito è già stato usato o non è valido.", null, ERROR_MESSAGE);
+        } catch (TooMuchDealsException ex) {
+            JOptionPane.showMessageDialog(this, "Il totale dei codici sconto supera il prezzo degli articoli.", null, ERROR_MESSAGE);
+        }
+    }
+    
+    private double sommaSconti() throws TooMuchDealsException {
+        double scontoTotale = 0.0;
+        for (Scontotemp sconto : sconti) {
+            scontoTotale += sconto.getSconto();
+        }
+        if (scontoTotale > netto())
+            throw new TooMuchDealsException();
+        return scontoTotale;
+    }
+    
+    private void controllaSeGiaInserito(String codice) throws CodeAlreadyUsedException {
+        for (Scontotemp sconto : sconti) {
+            if (sconto.getcodPromo().equals(codice)) {
+                throw new CodeAlreadyUsedException();
+            }
+        }
     }
     
     private void impostaMetodiPagamento() {
@@ -111,6 +143,23 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 
         );
         aggiornaTabella();
+        
+    }
+    
+    private final void impostaTabella2(){
+        modelloTabellaSconti = new ScontiModel(sconti);
+        tabellaSconti.setModel(modelloTabellaSconti);
+        tabellaSconti.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
+        tabellaSconti.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                tableSelectionChanged2();
+            }
+        } 
+                
+        );
+        aggiornaTabella();
     }
     
     private void impostaIndirizzi() {
@@ -142,10 +191,16 @@ public class FinestraOrdine extends javax.swing.JDialog {
     public void aggiornaTabella()
     {
         try {
-            rsArticoli = DBConnection.visualizzaCarrello(""+idUtente);
+            rsArticoli = DBConnection.visualizzaCarrello(idUtente);
             modelloTabellaArticoli.setRS(rsArticoli);
             rsArticoli.absolute(cursoreArticoli);
             mostraDati();
+            tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(2).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(2).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -156,18 +211,22 @@ public class FinestraOrdine extends javax.swing.JDialog {
      * Aggiorna il testo del totale
      */
     private void aggiornaTotale() {
-        totale = 0;
-        totale += netto();
-        tNetto.setText(netto()+"€");
-        totale += costoSpedizione();
-        tSpedizione.setText(costoSpedizione()+"€");
-        totale -= bonusSconto();
-        tSconto.setText("-"+bonusSconto()+"€");
-        tTotale.setText(totale + "€");
+        try {
+            totale = 0;
+            totale += netto();
+            tNetto.setText(netto()+"€");
+            totale += costoSpedizione();
+            tSpedizione.setText(costoSpedizione()+"€");
+            totale -= sommaSconti();
+            tSconto.setText("-"+sommaSconti()+"€");
+            tTotale.setText(totale + "€");
+        } catch (TooMuchDealsException ex) {
+            System.out.println(ex.toString());
+        }
     }
     
     private double netto() {
-        return modelloTabellaArticoli.getColumnSum(3);
+        return modelloTabellaArticoli.getColumnSum(6);
     }
     
     private double costoSpedizione() {
@@ -177,10 +236,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
             case SPEDRAP: return 8.0;
             default: return 0;
         }
-    }
-    
-    private double bonusSconto() {
-        return 0; //DA SISTEMARE!!!
     }
     
     private int getSelectedSpedition() {
@@ -230,6 +285,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
         }
     }
     
+    private void tableSelectionChanged2() {
+        cursoreSconti = tabellaArticoli.getSelectedRow();
+        tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreSconti - 1,cursoreSconti - 1);
+        tabellaArticoli.setRowSelectionInterval(cursoreSconti - 1, cursoreSconti - 1);
+    }
+    
     private void aggiornaIndirizzoSelezionato() {
         try {
             indirizzoSelezionato = Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
@@ -239,7 +300,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void completaAcquisto() {
-        //MI SERVE IL COMANDO IN DBCONNECTION
+        //
     }
     
     private void aggiornaPagamentoSelezionato() {
@@ -256,6 +317,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
         //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());
         //tScadenzaCarta.setText(pagamento.get(5).toString());
     }
+    
+    private void clickDestro(java.awt.event.MouseEvent evt) {
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -271,7 +338,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jTable2 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
+        popupMenu = new javax.swing.JPopupMenu();
         elimina = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabellaArticoli = new javax.swing.JTable();
@@ -330,7 +397,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jScrollPane3.setViewportView(jTable3);
 
         elimina.setText("Rimuovi");
-        jPopupMenu1.add(elimina);
+        popupMenu.add(elimina);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -346,6 +413,14 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabellaArticoli.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabellaArticoliMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabellaArticoliMouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabellaArticoli);
 
         jLabel1.setText("Indirizzo di spedizione:");
@@ -401,21 +476,20 @@ public class FinestraOrdine extends javax.swing.JDialog {
 
         tabellaSconti.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
+        tabellaSconti.setColumnSelectionAllowed(true);
         tabellaSconti.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabellaScontiMouseClicked(evt);
             }
         });
         jScrollPane4.setViewportView(tabellaSconti);
+        tabellaSconti.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -587,10 +661,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel10)
                             .addComponent(tTotale, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                         .addComponent(cPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -642,6 +717,14 @@ public class FinestraOrdine extends javax.swing.JDialog {
         completaAcquisto();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void tabellaArticoliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseClicked
+
+    }//GEN-LAST:event_tabellaArticoliMouseClicked
+
+    private void tabellaArticoliMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseReleased
+        clickDestro(evt);
+    }//GEN-LAST:event_tabellaArticoliMouseReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -660,7 +743,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -668,6 +750,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JButton pulsanteCodiceSconto;
     private javax.swing.JRadioButton rb1;
     private javax.swing.JRadioButton rb2;

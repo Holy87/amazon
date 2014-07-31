@@ -6,6 +6,8 @@
 
 package amazon;
 
+import amazon.exceptions.CodeAlreadyUsedException;
+import amazon.exceptions.CodeNotValidException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -142,15 +144,14 @@ public class DBConnection {
        return rs;
    }
       
-   public static ResultSet visualizzaCarrello(String idUtente) throws SQLException {
+   public static ResultSet visualizzaCarrello(int idUtente) throws SQLException {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
        
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.ISBN, VIEW_INFO.FORMATO_ID, VIEW_INFO.VENDITORE_ID, VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID = ? AND ORDINE_ID = 0",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
-       System.out.println(idUtente);
-       pstmt.setString(1, idUtente);
+       pstmt.setInt(1, idUtente);
        //pstmt.setInt(1, Integer.parseInt(idUtente));
        //pstmt.setInt(2, 0);
        return pstmt.executeQuery();
@@ -196,7 +197,7 @@ public class DBConnection {
    }
    
    
-   public static double verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+   public static double verificaSconto(String codice) throws SQLException, CodeNotValidException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -205,19 +206,17 @@ public class DBConnection {
         pstmt.setString(1, codice);
 
         rs=pstmt.executeQuery();
-       
+        rs.last();
+        double ritorno = 0.0;
         try {
-            rs.last();
+            rs.first();
+            ritorno = rs.getDouble(1);
         }
-        catch(Exception ex) {
-            //APPLICARE MESSAGGIO DI ERRORE A FINESTRA
-            return 0;
-        }
-        
-        sconti[contatore].codPromo=codice;
-        sconti[contatore].sconto=rs.getDouble(1);
-        
-        return rs.getDouble(1);
+        catch(SQLException ex) {
+            //MANDA UNA ECCEZIONE DI CODICE GIA USATO.
+            throw new CodeNotValidException();
+        }     
+        return ritorno;
    }
    
    public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
@@ -226,11 +225,9 @@ public class DBConnection {
         String codPromo;
         
         while(sconti[contatore]!=null)    {
-            codPromo=sconti[contatore].codPromo;
+            codPromo=sconti[contatore].getcodPromo();
             
-            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?",
-                         ResultSet.TYPE_SCROLL_INSENSITIVE,
-                         ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?"); //INSERIRE QUERY
             pstmt.setString(1, ordineId);
             pstmt.setString(2, codPromo);
             

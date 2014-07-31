@@ -11,8 +11,8 @@ package amazon;
  * @author pixel89
  */
 public class Scontotemp {
-    public String codPromo;
-    public double sconto;
+    private String codPromo;
+    private double sconto;
     
     public Scontotemp(String codPromo, double sconto)   {
         this.codPromo=codPromo;
@@ -21,5 +21,9 @@ public class Scontotemp {
     
     public String getcodPromo()    {
         return codPromo;
+    }
+    
+    public double getSconto() {
+        return sconto;
     }
 }
