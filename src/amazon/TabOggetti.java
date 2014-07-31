@@ -171,6 +171,11 @@ public final class TabOggetti extends javax.swing.JPanel {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciLibro(evt);}});
                 break;
+            case "LIBRI": serviceButton2.setText("Aggiungi recensione al libro");
+                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciRecensioneLibro(evt);}});
+                break;
             default: serviceButton2.setVisible(false);
         }
     }
@@ -210,6 +215,10 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void inserisciLibro(java.awt.event.ActionEvent evt) {
         AggiungiLibriVenditore finestra = new AggiungiLibriVenditore(mainWindow, false, Integer.parseInt(getSelectedID()));
         finestra.setVisible(true);
+    }
+    
+    private void inserisciRecensioneLibro(java.awt.event.ActionEvent evt) {
+        
     }
     
     /**
