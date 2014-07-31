@@ -146,13 +146,27 @@ public class DBConnection {
        //Visualizza l'attuale carrello dell'utente dato il suo ID
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID = ? AND ORDINE_ID = 0",
+       pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.ISBN, VIEW_INFO.FORMATO_ID, VIEW_INFO.VENDITORE_ID, VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID = ? AND ORDINE_ID = 0",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
        pstmt.setInt(1, idUtente);
        //pstmt.setInt(1, Integer.parseInt(idUtente));
        //pstmt.setInt(2, 0);
        return pstmt.executeQuery();
+   }
+   
+   public static void eliminaArticoloCarrello(int idUtente, String isbn, int formatoID, int venditoreID, String tipo) throws SQLException {
+       //Elimina un articolo dal carrello in base ai dati in ingresso specificati nel metodo
+       
+       PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND ISBN=? AND FORMATO_ID=? AND VENDITORE_ID=? AND TIPOCONDIZIONE LIKE ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+        pstmt.setInt(1, idUtente);
+        pstmt.setString(2, isbn);
+        pstmt.setInt(3, formatoID);
+        pstmt.setInt(4, venditoreID);
+        pstmt.setString(5, tipo);
    }
    
    public static ResultSet visualizzaOrdiniUtente(String idUtente) throws SQLException {
@@ -271,17 +285,6 @@ public class DBConnection {
        pstmt.setString(1, utenteId);
        
        return pstmt.executeQuery();
-   }
-   
-   public static ResultSet visualizzaUtenti() throws SQLException {
-       
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT UTENTE_ID, (NOME||' '||COGNOME) AS NOME_COGNOME FROM UTENTI",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       
-       return pstmt.executeQuery();
-       
    }
    
    public static void creaRecensione(int idUtente, String commento, boolean libroRec, String target, int voto) throws SQLException {
