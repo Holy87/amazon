@@ -9,6 +9,9 @@ package amazon;
 import static amazon.DBConnection.verificaSconto;
 import amazon.exceptions.CodeAlreadyUsedException;
 import amazon.exceptions.CodeNotValidException;
+import amazon.exceptions.TooMuchDealsException;
+import amazon.modelliTabelle.DBTableModel;
+import amazon.modelliTabelle.ScontiModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         this.idUtente = idUtente;
         initComponents();
         impostaTabella();
+        impostaTabella2();
         impostaIndirizzi();
         impostaMetodiPagamento();
         aggiornaTotale();
@@ -44,6 +48,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private ResultSet rsArticoli;
     private DBTableModel modelloTabellaArticoli;
+    private ScontiModel modelloTabellaSconti;
     
     private int cursoreArticoli = 1;
     private int cursoreSconti = 1;
@@ -61,20 +66,34 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private final int SPEDRAP = 3;
     
     private void inserisciCodice() {
-        String codice = codiceSconto.getText();
-        
+        String codice = codiceSconto.getText().toUpperCase();
+        codiceSconto.setText("");
         try {
             controllaSeGiaInserito(codice);
-            double sconto = verificaSconto(codice.toUpperCase());
+            double sconto = verificaSconto(codice);
+            scontoCompl = sommaSconti();
             sconti.add(new Scontotemp(codice, sconto));
+            modelloTabellaSconti.setSconti(sconti);
+            aggiornaTotale();
         } catch (SQLException ex) {
             mostraErrore(ex);
         } catch (CodeAlreadyUsedException ex) {
             JOptionPane.showMessageDialog(this, "Questo codice è già stato inserito nel carrello!", null, ERROR_MESSAGE);
         } catch (CodeNotValidException ex) {
             JOptionPane.showMessageDialog(this, "Il codice sconto inserito è già stato usato o non è valido.", null, ERROR_MESSAGE);
+        } catch (TooMuchDealsException ex) {
+            JOptionPane.showMessageDialog(this, "Il totale dei codici sconto supera il prezzo degli articoli.", null, ERROR_MESSAGE);
         }
-        codiceSconto.setText("");
+    }
+    
+    private double sommaSconti() throws TooMuchDealsException {
+        double scontoTotale = 0.0;
+        for (Scontotemp sconto : sconti) {
+            scontoTotale += sconto.getSconto();
+        }
+        if (scontoTotale > netto())
+            throw new TooMuchDealsException();
+        return scontoTotale;
     }
     
     private void controllaSeGiaInserito(String codice) throws CodeAlreadyUsedException {
@@ -127,6 +146,22 @@ public class FinestraOrdine extends javax.swing.JDialog {
         
     }
     
+    private final void impostaTabella2(){
+        modelloTabellaSconti = new ScontiModel(sconti);
+        tabellaSconti.setModel(modelloTabellaSconti);
+        tabellaSconti.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
+        tabellaSconti.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                tableSelectionChanged2();
+            }
+        } 
+                
+        );
+        aggiornaTabella();
+    }
+    
     private void impostaIndirizzi() {
         try {
             ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(""+idUtente);
@@ -176,18 +211,22 @@ public class FinestraOrdine extends javax.swing.JDialog {
      * Aggiorna il testo del totale
      */
     private void aggiornaTotale() {
-        totale = 0;
-        totale += netto();
-        tNetto.setText(netto()+"€");
-        totale += costoSpedizione();
-        tSpedizione.setText(costoSpedizione()+"€");
-        totale -= bonusSconto();
-        tSconto.setText("-"+bonusSconto()+"€");
-        tTotale.setText(totale + "€");
+        try {
+            totale = 0;
+            totale += netto();
+            tNetto.setText(netto()+"€");
+            totale += costoSpedizione();
+            tSpedizione.setText(costoSpedizione()+"€");
+            totale -= sommaSconti();
+            tSconto.setText("-"+sommaSconti()+"€");
+            tTotale.setText(totale + "€");
+        } catch (TooMuchDealsException ex) {
+            System.out.println(ex.toString());
+        }
     }
     
     private double netto() {
-        return modelloTabellaArticoli.getColumnSum(3);
+        return modelloTabellaArticoli.getColumnSum(6);
     }
     
     private double costoSpedizione() {
@@ -197,10 +236,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
             case SPEDRAP: return 8.0;
             default: return 0;
         }
-    }
-    
-    private double bonusSconto() {
-        return 0; //DA SISTEMARE!!!
     }
     
     private int getSelectedSpedition() {
@@ -248,6 +283,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    private void tableSelectionChanged2() {
+        cursoreSconti = tabellaArticoli.getSelectedRow();
+        tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreSconti - 1,cursoreSconti - 1);
+        tabellaArticoli.setRowSelectionInterval(cursoreSconti - 1, cursoreSconti - 1);
     }
     
     private void aggiornaIndirizzoSelezionato() {
@@ -435,21 +476,20 @@ public class FinestraOrdine extends javax.swing.JDialog {
 
         tabellaSconti.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
+        tabellaSconti.setColumnSelectionAllowed(true);
         tabellaSconti.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabellaScontiMouseClicked(evt);
             }
         });
         jScrollPane4.setViewportView(tabellaSconti);
+        tabellaSconti.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

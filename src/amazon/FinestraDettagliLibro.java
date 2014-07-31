@@ -6,6 +6,7 @@
 
 package amazon;
 
+import amazon.modelliTabelle.DBTableModel;
 import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;

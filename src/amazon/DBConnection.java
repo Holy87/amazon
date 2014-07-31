@@ -206,15 +206,17 @@ public class DBConnection {
         pstmt.setString(1, codice);
 
         rs=pstmt.executeQuery();
-       
+        rs.last();
+        double ritorno = 0.0;
         try {
-            rs.last();
+            rs.first();
+            ritorno = rs.getDouble(1);
         }
-        catch(Exception ex) {
+        catch(SQLException ex) {
             //MANDA UNA ECCEZIONE DI CODICE GIA USATO.
             throw new CodeNotValidException();
-        }      
-        return rs.getDouble(1);
+        }     
+        return ritorno;
    }
    
    public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
@@ -225,9 +227,7 @@ public class DBConnection {
         while(sconti[contatore]!=null)    {
             codPromo=sconti[contatore].getcodPromo();
             
-            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?",
-                         ResultSet.TYPE_SCROLL_INSENSITIVE,
-                         ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?"); //INSERIRE QUERY
             pstmt.setString(1, ordineId);
             pstmt.setString(2, codPromo);
             
