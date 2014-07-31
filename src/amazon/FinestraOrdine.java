@@ -7,6 +7,8 @@
 package amazon;
 
 import static amazon.DBConnection.verificaSconto;
+import amazon.exceptions.CodeAlreadyUsedException;
+import amazon.exceptions.CodeNotValidException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,11 +30,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
     /**
      * Creates new form FinestraOrdine
      */
-    public Scontotemp sconti[]=new Scontotemp[20];;
-    static int contatore=0;
-    static double scontoCompl=0;
-    
-    
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
         this.idUtente = idUtente;
@@ -53,9 +50,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private int indirizzoSelezionato, pagamentoSelezionato;
     private LinkedList<String[]> indirizzi;
     private ArrayList<String[]> metodiPagamento = new ArrayList();
+    private LinkedList<Scontotemp> sconti = new LinkedList();
     
     private int idUtente;
-    private double totale;
+    private double totale = 0;
+    static double scontoCompl = 0;
     
     private final int SPEDECO = 1;
     private final int SPEDMID = 2;
@@ -63,13 +62,27 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void inserisciCodice() {
         String codice = codiceSconto.getText();
+        
         try {
-            scontoCompl+=verificaSconto(sconti, codice, contatore);
-            contatore++; //con 'static' diventa una variabile globale; applicare a fine ordine contatore=0;
+            controllaSeGiaInserito(codice);
+            double sconto = verificaSconto(codice.toUpperCase());
+            sconti.add(new Scontotemp(codice, sconto));
         } catch (SQLException ex) {
-            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
+            mostraErrore(ex);
+        } catch (CodeAlreadyUsedException ex) {
+            JOptionPane.showMessageDialog(this, "Questo codice è già stato inserito nel carrello!", null, ERROR_MESSAGE);
+        } catch (CodeNotValidException ex) {
+            JOptionPane.showMessageDialog(this, "Il codice sconto inserito è già stato usato o non è valido.", null, ERROR_MESSAGE);
         }
         codiceSconto.setText("");
+    }
+    
+    private void controllaSeGiaInserito(String codice) throws CodeAlreadyUsedException {
+        for (Scontotemp sconto : sconti) {
+            if (sconto.getcodPromo().equals(codice)) {
+                throw new CodeAlreadyUsedException();
+            }
+        }
     }
     
     private void impostaMetodiPagamento() {
@@ -246,7 +259,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void completaAcquisto() {
-        //MI SERVE IL COMANDO IN DBCONNECTION
+        //
     }
     
     private void aggiornaPagamentoSelezionato() {

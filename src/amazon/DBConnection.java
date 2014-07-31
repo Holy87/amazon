@@ -6,6 +6,8 @@
 
 package amazon;
 
+import amazon.exceptions.CodeAlreadyUsedException;
+import amazon.exceptions.CodeNotValidException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -195,7 +197,7 @@ public class DBConnection {
    }
    
    
-   public static double verificaSconto(Scontotemp sconti[], String codice, int contatore) throws SQLException {
+   public static double verificaSconto(String codice) throws SQLException, CodeNotValidException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
@@ -209,13 +211,9 @@ public class DBConnection {
             rs.last();
         }
         catch(Exception ex) {
-            //APPLICARE MESSAGGIO DI ERRORE A FINESTRA
-            return 0;
-        }
-        
-        sconti[contatore].codPromo=codice;
-        sconti[contatore].sconto=rs.getDouble(1);
-        
+            //MANDA UNA ECCEZIONE DI CODICE GIA USATO.
+            throw new CodeNotValidException();
+        }      
         return rs.getDouble(1);
    }
    
@@ -225,7 +223,7 @@ public class DBConnection {
         String codPromo;
         
         while(sconti[contatore]!=null)    {
-            codPromo=sconti[contatore].codPromo;
+            codPromo=sconti[contatore].getcodPromo();
             
             pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?",
                          ResultSet.TYPE_SCROLL_INSENSITIVE,
