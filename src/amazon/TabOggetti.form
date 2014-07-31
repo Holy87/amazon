@@ -57,7 +57,9 @@
                       <Component id="serviceButton2" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="214" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="serviceButton3" min="-2" pref="128" max="-2" attributes="0"/>
+              <EmptySpace pref="80" max="32767" attributes="0"/>
           </Group>
           <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
       </Group>
@@ -84,6 +86,7 @@
                       <Component id="searchButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="serviceButton2" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="serviceButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="serviceButton3" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -215,6 +218,11 @@
     <Component class="javax.swing.JButton" name="serviceButton1">
       <Properties>
         <Property name="text" type="java.lang.String" value="serviceButton1"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="serviceButton3">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="serviceButton3"/>
       </Properties>
     </Component>
   </SubComponents>

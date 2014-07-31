@@ -94,6 +94,8 @@ public class MainWindow extends javax.swing.JFrame {
         lUtente.setText(nome);
         mAcquisto.setEnabled(true);
         mCarrello.setEnabled(true);
+        tabVenditori.attivaServiceButton3();
+        tabLibri.attivaServiceButton2();
         JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
     }
     

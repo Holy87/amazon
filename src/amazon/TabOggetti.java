@@ -72,6 +72,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         mainWindow = mainW;
         setService();
         setService2();
+        setService3();
     }
     
 //    public void impostaInterfaccia(int tipoResultSe) {
@@ -172,12 +173,33 @@ public final class TabOggetti extends javax.swing.JPanel {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciLibro(evt);}});
                 break;
             case "LIBRI": serviceButton2.setText("Aggiungi recensione al libro");
+                serviceButton2.setEnabled(false);
                 serviceButton2.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciRecensioneLibro(evt);}});
                 break;
             default: serviceButton2.setVisible(false);
         }
+    }
+    
+    private void setService3() {
+        switch (nomeTabella) {
+            case "VENDITORI": serviceButton3.setText("Recensisci venditore");
+                serviceButton3.setEnabled(false);
+                serviceButton3.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciRecensioneVenditore(evt);}});
+                break;
+            default: serviceButton3.setVisible(false);
+        }
+    }
+    
+    public void attivaServiceButton2() {
+        serviceButton2.setEnabled(true);
+    }
+    
+    public void attivaServiceButton3() {
+        serviceButton3.setEnabled(true);
     }
     
     private void impostaUtente(java.awt.event.ActionEvent evt) {
@@ -220,6 +242,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void inserisciRecensioneLibro(java.awt.event.ActionEvent evt) {
         FinestraRecensioneLibro finestraLibro = new FinestraRecensioneLibro(mainWindow, false, mainWindow.utenteID, modelloTabella.getValueAt(cursore-1, 2).toString());
         finestraLibro.setVisible(true);
+    }
+    
+    private void inserisciRecensioneVenditore(java.awt.event.ActionEvent evt) {
+        FinestraRecensioneVenditore finestraVenditore = new FinestraRecensioneVenditore(mainWindow, false, mainWindow.utenteID, getSelectedID());
+        finestraVenditore.setVisible(true);
     }
     
     /**
@@ -491,6 +518,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         serviceButton2 = new javax.swing.JButton();
         serviceButton1 = new javax.swing.JButton();
+        serviceButton3 = new javax.swing.JButton();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -591,6 +619,8 @@ public final class TabOggetti extends javax.swing.JPanel {
 
         serviceButton1.setText("serviceButton1");
 
+        serviceButton3.setText("serviceButton3");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -625,7 +655,9 @@ public final class TabOggetti extends javax.swing.JPanel {
                         .addComponent(serviceButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(serviceButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(214, 214, 214))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(serviceButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(80, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
@@ -648,7 +680,8 @@ public final class TabOggetti extends javax.swing.JPanel {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(searchButton)
                         .addComponent(serviceButton2)
-                        .addComponent(serviceButton1)))
+                        .addComponent(serviceButton1)
+                        .addComponent(serviceButton3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE))
         );
@@ -740,6 +773,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     private javax.swing.JButton searchButton;
     private javax.swing.JButton serviceButton1;
     private javax.swing.JButton serviceButton2;
+    private javax.swing.JButton serviceButton3;
     private javax.swing.JTable tabella;
     private javax.swing.JButton updateTable;
     // End of variables declaration//GEN-END:variables

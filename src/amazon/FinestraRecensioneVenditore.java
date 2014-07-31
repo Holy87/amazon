@@ -7,8 +7,6 @@
 package amazon;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -16,15 +14,15 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
  *
  * @author frbos_000
  */
-public class FinestraRecensioneLibro extends javax.swing.JDialog {
+public class FinestraRecensioneVenditore extends javax.swing.JDialog {
 
     /**
      * Creates new form FinestraRecensioneLibro
      */
-    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int idUtente, String isbn) {
+    public FinestraRecensioneVenditore(java.awt.Frame parent, boolean modal, int idUtente, String venditoreID) {
         super(parent, modal);
         this.idUtente = idUtente;
-        this.isbn = isbn;
+        this.isbn = venditoreID;
         initComponents();
     }
     
@@ -34,7 +32,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     private void inserisciRecensione() {
         setVisible(false);
         try {
-            DBConnection.creaRecensione(idUtente, tCommento.getText(), true, isbn, sVoto.getValue());
+            DBConnection.creaRecensione(idUtente, tCommento.getText(), false, isbn, sVoto.getValue());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
