@@ -46,7 +46,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPopupMenu" name="jPopupMenu1">
+    <Container class="javax.swing.JPopupMenu" name="popupMenu">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
@@ -264,6 +264,9 @@
               </Table>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tabellaArticoliMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

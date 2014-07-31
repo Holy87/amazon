@@ -184,15 +184,20 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private String getDisponibilita() {
         if (disponibilita < 0) {
             tDisponibile.setForeground(Color.GREEN);
+            tQuantita.setEnabled(false);
+            tQuantita.setText("1");
             return "Illimitata";
         } else if (disponibilita > 10) {
             tDisponibile.setForeground(Color.GREEN);
+            tQuantita.setEnabled(true);
             return "più di 10 disponibili";}
           else  if (disponibilita <= 10 && disponibilita > 0) {
             tDisponibile.setForeground(Color.ORANGE);
+            tQuantita.setEnabled(true);
             return disponibilita + " disponibili";
         } else {
             tDisponibile.setForeground(Color.RED);
+            tQuantita.setEnabled(true);
             return "Non disponibile";
           }
     }

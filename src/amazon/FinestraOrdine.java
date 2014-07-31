@@ -256,6 +256,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
         //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());
         //tScadenzaCarta.setText(pagamento.get(5).toString());
     }
+    
+    private void clickDestro(java.awt.event.MouseEvent evt) {
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -271,7 +277,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jTable2 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
+        popupMenu = new javax.swing.JPopupMenu();
         elimina = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabellaArticoli = new javax.swing.JTable();
@@ -330,7 +336,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jScrollPane3.setViewportView(jTable3);
 
         elimina.setText("Rimuovi");
-        jPopupMenu1.add(elimina);
+        popupMenu.add(elimina);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -346,6 +352,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabellaArticoli.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabellaArticoliMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabellaArticoli);
 
         jLabel1.setText("Indirizzo di spedizione:");
@@ -642,6 +653,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
         completaAcquisto();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void tabellaArticoliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseClicked
+        clickDestro(evt);
+    }//GEN-LAST:event_tabellaArticoliMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -660,7 +675,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -668,6 +682,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JButton pulsanteCodiceSconto;
     private javax.swing.JRadioButton rb1;
     private javax.swing.JRadioButton rb2;
