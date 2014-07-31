@@ -312,6 +312,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      * Metodo che viene chiamato quando è cliccato il pulsante cerca
      * Cerca il valore o parte in tutti i campi
      * Il % prima e dopo una stringa commette un LIKE
+     * Si adatta al ResultSet leggendo i nomi delle colonne.
      */
     private void eseguiQuerySuTabella(String query){
         LinkedList tab = new ListaTipi().getTipi().get(getTableName());
@@ -459,11 +460,6 @@ public final class TabOggetti extends javax.swing.JPanel {
             }
         }
         return dati;
-    }
-    
-    private void pulsanteDiServizio()
-    {
-        //non serve a nulla
     }
     
     @SuppressWarnings("unchecked")
