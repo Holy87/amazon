@@ -274,6 +274,17 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static ResultSet visualizzaUtenti() throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT UTENTE_ID, (NOME||' '||COGNOME) AS NOME_COGNOME FROM UTENTI",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       
+       return pstmt.executeQuery();
+       
+   }
+   
    public static void creaRecensione(int idUtente, String commento, boolean libroRec, String target, int voto) throws SQLException {
        /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
        **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
