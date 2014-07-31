@@ -69,7 +69,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } 
                 
         );
-        
+        //nasconde l'ID del venditore
+        tabellaVenditori.getColumnModel().getColumn(0).setMaxWidth(0);
         modelloTabellaFormati = new DBTableModel(rs2);
         tabellaFormati.setModel(modelloTabellaFormati);
         tabellaFormati.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -80,6 +81,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                 tableSelectionChanged2();
             }
         });
+        tabellaFormati.getColumnModel().getColumn(0).setMaxWidth(0);
         aggiornaTabella();
         aggiornaTabella2();
     }

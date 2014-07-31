@@ -142,7 +142,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     public void aggiornaTabella()
     {
         try {
-            rsArticoli = DBConnection.visualizzaCarrello(""+idUtente);
+            rsArticoli = DBConnection.visualizzaCarrello(idUtente);
             modelloTabellaArticoli.setRS(rsArticoli);
             rsArticoli.absolute(cursoreArticoli);
             mostraDati();
@@ -355,6 +355,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
         tabellaArticoli.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabellaArticoliMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabellaArticoliMouseReleased(evt);
             }
         });
         jScrollPane1.setViewportView(tabellaArticoli);
@@ -598,10 +601,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel10)
                             .addComponent(tTotale, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                         .addComponent(cPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -654,8 +658,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tabellaArticoliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseClicked
-        clickDestro(evt);
+
     }//GEN-LAST:event_tabellaArticoliMouseClicked
+
+    private void tabellaArticoliMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseReleased
+        clickDestro(evt);
+    }//GEN-LAST:event_tabellaArticoliMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
