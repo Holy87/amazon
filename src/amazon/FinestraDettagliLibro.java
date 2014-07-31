@@ -438,6 +438,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         jScrollPane3.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         tDescrizione.setColumns(20);
+        tDescrizione.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         tDescrizione.setLineWrap(true);
         tDescrizione.setRows(5);
         jScrollPane3.setViewportView(tDescrizione);
