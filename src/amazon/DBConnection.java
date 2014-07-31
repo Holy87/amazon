@@ -294,9 +294,9 @@ public class DBConnection {
        PreparedStatement pstmt;
        
        if ( libroRec )
-           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, ISBN, VOTO) VALUES ('?', '?', '?', '?')");
+           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, ISBN, VOTO) VALUES (?, ?, ?, ?)");
        else
-           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, VENDITORE_ID, VOTO) VALUES ('?', '?', '?', '?')");
+           pstmt = conn.prepareStatement("INSERT INTO RECENSIONI (UTENTE_ID, COMMENTO, VENDITORE_ID, VOTO) VALUES (?, ?, ?, ?)");
        
        pstmt.setInt(1, idUtente);
        pstmt.setString(2, commento);
