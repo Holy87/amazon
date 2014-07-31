@@ -111,6 +111,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
                 
         );
         aggiornaTabella();
+        
     }
     
     private void impostaIndirizzi() {
@@ -146,6 +147,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
             modelloTabellaArticoli.setRS(rsArticoli);
             rsArticoli.absolute(cursoreArticoli);
             mostraDati();
+            tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(2).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(2).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
