@@ -369,7 +369,7 @@ public final class TabOggetti extends javax.swing.JPanel {
             num ++;
             
         }
-        if (preQuery.substring(preQuery.length()-4, preQuery.length()) == " OR ")
+        if (" OR ".equals(preQuery.substring(preQuery.length()-4, preQuery.length())))
             preQuery = preQuery.substring(0, preQuery.length()-4);
         System.out.println(preQuery);
         try {

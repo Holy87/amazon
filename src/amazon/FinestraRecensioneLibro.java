@@ -25,6 +25,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int id, String isbn) {
         super(parent, modal);
         idUtente = id; //dovevi impostare l'id dell'utente!
+        this.isbn = isbn;
         initComponents();
         impostaTabella();
     }
