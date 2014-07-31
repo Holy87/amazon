@@ -48,7 +48,7 @@ public class ListaTipi {
         autori.add('s');
         
         LinkedList libri = new LinkedList();
-        libri.add('i');
+        libri.add('s');//verifica che si tratti dell'ISBN
         libri.add('s');
         libri.add('i');
         libri.add('i');

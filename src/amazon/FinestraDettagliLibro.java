@@ -188,8 +188,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } else if (disponibilita > 10) {
             tDisponibile.setForeground(Color.GREEN);
             return "più di 10 disponibili";}
-          else  if (disponibilita <= 10) {
-            tDisponibile.setForeground(Color.yellow);
+          else  if (disponibilita <= 10 && disponibilita > 0) {
+            tDisponibile.setForeground(Color.ORANGE);
             return disponibilita + " disponibili";
         } else {
             tDisponibile.setForeground(Color.RED);
