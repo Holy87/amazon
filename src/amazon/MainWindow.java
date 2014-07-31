@@ -40,7 +40,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private FinestraUtente finestraUtente;
-    private int utenteID;
+    public int utenteID;
     private String nomeUtente;
     
     private FinestraAutore finestraAutore;
