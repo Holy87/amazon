@@ -23,6 +23,8 @@ public class FinestraLibro extends EditForm {
         super(parent, modal);
         initComponents();
     }
+    
+    private String oldISBN;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -106,6 +108,7 @@ public class FinestraLibro extends EditForm {
 
         tDescrizione.setColumns(20);
         tDescrizione.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        tDescrizione.setLineWrap(true);
         tDescrizione.setRows(5);
         jScrollPane1.setViewportView(tDescrizione);
 
@@ -234,6 +237,7 @@ public class FinestraLibro extends EditForm {
 
     @Override
     protected void fillContents() {
+        oldISBN=dati.get(2).toString();
         tNomeLibro.setText((String)dati.get(0));
         tNEdizione.setText((String)dati.get(1));
         tISBN.setText((String)dati.get(2));
@@ -246,7 +250,6 @@ public class FinestraLibro extends EditForm {
 
     @Override
     protected void cleanContents() {
-        tID.setText("");
         tNomeLibro.setText("");
         tNEdizione.setText("");
         tISBN.setText("");
@@ -265,7 +268,7 @@ public class FinestraLibro extends EditForm {
             if (mode == ADDN)
                 DBConnection.creaLibro(tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
             else
-                DBConnection.aggiornaLibro(tID.getText(), tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
+                DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
             chiudiFinestra();
         }
         catch(SQLException ex){

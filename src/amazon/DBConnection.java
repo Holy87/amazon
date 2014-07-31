@@ -403,11 +403,11 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   public static void aggiornaLibro(String id, String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
+   public static void aggiornaLibro(String oldISBN, String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = ? WHERE ISBN = ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS') WHERE ISBN LIKE ?");
        pstmt.setString(1, nomeLibro);
        pstmt.setString(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -416,7 +416,7 @@ public class DBConnection {
        pstmt.setString(6, nPagine);
        pstmt.setString(7, pesoSped);
        pstmt.setString(8, dataUscita);
-       pstmt.setString(9, id);
+       pstmt.setString(9, oldISBN);
        
        pstmt.executeUpdate();
    }
@@ -435,9 +435,9 @@ public class DBConnection {
    public static void aggiornaEditore(String idEditore, String nomeEditore) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE EDITORI SET EDI_NOME = ?, WHERE EDI_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE EDITORI SET EDI_NOME = ? WHERE EDI_ID = ?");
        pstmt.setString(1, nomeEditore);
-       pstmt.setString(2, idEditore);
+       pstmt.setInt(2, Integer.parseInt(idEditore));
        
        pstmt.executeUpdate();
    }
@@ -456,7 +456,7 @@ public class DBConnection {
    public static void aggiornaVenditore(String idVenditore, String nomeVenditore) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE VENDITORI SET VENDITORE_NOME = ?, WHERE VENDITORE_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE VENDITORI SET VENDITORE_NOME = ? WHERE VENDITORE_ID = ?");
        pstmt.setString(1, nomeVenditore);
        pstmt.setString(2, idVenditore);
        
@@ -709,9 +709,7 @@ public class DBConnection {
         //Viene effettuato l'inserimento nel carrello di un articolo
  
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Tipocondizione, Quantità) VALUES(?,?,?,?,?,?)",
-        ResultSet.TYPE_SCROLL_INSENSITIVE,
-        ResultSet.CONCUR_READ_ONLY);
+        pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Tipocondizione, Quantità) VALUES(?,?,?,?,?,?)");
         pstmt.setInt(1, utenteId);
         pstmt.setString(2, isbn);
         pstmt.setInt(3, formatoId);
@@ -721,6 +719,39 @@ public class DBConnection {
         
         pstmt.executeQuery(); 
  }
+   
+   public static void creaListaDesideri(int utenteID, String nomelista, String privacy) throws SQLException {
+       //INSERT INTO LISTA_DESIDERI(UTENTE_ID, LISTA_NOME) VALUES(?, ?)
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI VALUES(?,?,?)");
+       pstmt.setInt(1, utenteID);
+       pstmt.setString(2, nomelista);
+       pstmt.setString(3, privacy);
+       
+       pstmt.executeQuery();
+   }
+   
+   public static void modificaListaDesideri(int utenteID, String nomelista, String privacy) throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET UTENTE_ID=?, LISTA_NOME=?, LISTA_PRIVACY=? WHERE UTENTE_ID=? AND LISTA_NOME LIKE ?");
+       pstmt.setInt(1, utenteID);
+       pstmt.setString(2, nomelista);
+       pstmt.setString(3, privacy);
+       
+       pstmt.executeQuery();
+   }
+   
+   public static void eliminaListaDesideri(int utenteID, String nomelista) throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("DELETE FROM LISTA_DESIDERI WHERE UTENTE_ID=? AND LISTA_NOME LIKE ?");
+       pstmt.setInt(1, utenteID);
+       pstmt.setString(2, nomelista);
+       
+       pstmt.executeQuery();
+   }   
    
    public static void inserisciArticoloLista(String utenteId, String listaNome, String isbn, String formatoId, String venditoreId, String tipoCond, String dataPrezzo) throws SQLException {
         //Viene effettuato l'inserimento nel carrello di un articolo
@@ -739,6 +770,22 @@ public class DBConnection {
         
         pstmt.executeQuery(); 
     }
+   
+   public static void rimuoviArticoloLista(int utenteId, String listaNome, String isbn, int formatoId, int venditoreId, String tipoCond, String dataPrezzo) throws SQLException {
+        //Viene effettuato l'inserimento nel carrello di un articolo
+ 
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("DELETE FROM COMPLISTA_DESIDERI WHERE UTENTE_ID=? AND LISTA_NOME LIKE ? AND ISBN LIKE ? AND FORMATO_ID=? AND VENDITORE_ID=? AND TIPOCONDIZIONE LIKE ?");
+        pstmt.setInt(1, utenteId);
+        pstmt.setString(2, listaNome);
+        pstmt.setString(3, isbn);
+        pstmt.setInt(4, formatoId);
+        pstmt.setInt(5, venditoreId);
+        pstmt.setString(6, tipoCond);  
+        
+        pstmt.executeQuery(); 
+    }
+   
    
    
    public static void inserisciLibroMagazzino(int venditoreID, String isbn, int formatoID, String tipoCondizione, int pezziDisp, double prezzo) throws SQLException {
