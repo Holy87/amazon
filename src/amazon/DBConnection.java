@@ -156,6 +156,20 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static void eliminaArticoloCarrello(int idUtente, String isbn, int formatoID, int venditoreID, String tipo) throws SQLException {
+       //DELETE FROM COMPARTICOLI WHERE UTENTE_ID=423574 AND ISBN=9788807884245 AND FORMATO_ID=2001 AND VENDITORE_ID=6317 AND TIPOCONDIZIONE LIKE 'Ricondizionato'
+       
+       PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND ISBN=? AND FORMATO_ID=? AND VENDITORE_ID=? AND TIPOCONDIZIONE LIKE ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+        pstmt.setInt(1, idUtente);
+        pstmt.setString(2, isbn);
+        pstmt.setInt(3, formatoID);
+        pstmt.setInt(4, venditoreID);
+        pstmt.setString(5, tipo);
+   }
+   
    public static ResultSet visualizzaOrdiniUtente(String idUtente) throws SQLException {
        //Visualizza gli ordini effettuati dall'utente dato il suo ID
        
@@ -272,17 +286,6 @@ public class DBConnection {
        pstmt.setString(1, utenteId);
        
        return pstmt.executeQuery();
-   }
-   
-   public static ResultSet visualizzaUtenti() throws SQLException {
-       
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT UTENTE_ID, (NOME||' '||COGNOME) AS NOME_COGNOME FROM UTENTI",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       
-       return pstmt.executeQuery();
-       
    }
    
    public static void creaRecensione(int idUtente, String commento, boolean libroRec, String target, int voto) throws SQLException {
