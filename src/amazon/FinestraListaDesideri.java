@@ -9,6 +9,8 @@ package amazon;
 import amazon.modelliTabelle.DBTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -175,6 +177,9 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
           cursoreDesideri = rsDesideri.getRow();
           tabellaDesideri.getSelectionModel().setSelectionInterval(cursoreDesideri - 1,cursoreDesideri - 1);
           tabellaDesideri.setRowSelectionInterval(cursoreDesideri - 1, cursoreDesideri - 1);
+          tabellaDesideri.getColumnModel().getColumn(0).setMinWidth(0);
+          tabellaDesideri.getColumnModel().getColumn(0).setMaxWidth(0);
+          aggiornaCheckBox();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -190,6 +195,8 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
           cursoreArticoli = rsArticoli.getRow();
           tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
+          tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
+          tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -198,23 +205,41 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     }
     
     private void eliminaLista() {
-        //DBConnection.eliminaListaDesideri(listaID());
-        aggiornaTabella();
+        try {
+            DBConnection.eliminaListaDesideri(idLista());
+            aggiornaTabella();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
         controllaSeUltima();
     }
     
     private void rinominaLista() {
         String nuovoNome = JOptionPane.showInputDialog(this, "Inserisci il nuovo nome per la lista");
-        DBConnection.rinominaListaDesideri(nuovoNome);
+        try {
+            DBConnection.rinominaListaDesideri(idLista(), nuovoNome);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
         aggiornaTabella();
     }
     
     private void aggiungiLista() {
         String nome = JOptionPane.showInputDialog(this, "Inserisci il nome per la nuova lista");
         try {
-            DBConnection.creaListaDesideri(utenteID, nome, null);
+            DBConnection.creaListaDesideri(utenteID, nome, false);
             controllaSeUltima();
         } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
+    private void modificaPrivacy() {
+        boolean selezione = checkPubblica.isSelected();
+        try {
+            DBConnection.modificaListaDesideri(idLista(), selezione);
+        } catch (SQLException ex) {
+            checkPubblica.setSelected(selezione);
             mostraErrore(ex);
         }
     }
@@ -225,6 +250,10 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         } else {
             bElimina.setEnabled(true);
         }
+    }
+    
+    private void aggiornaCheckBox() {
+        
     }
     
     /**
@@ -258,8 +287,11 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         bElimina = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        checkPubblica = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Liste dei desideri");
+        setLocationByPlatform(true);
 
         tabellaDesideri.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -319,18 +351,28 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
 
         jButton4.setText("Rimuovi articolo");
 
+        checkPubblica.setText("Rendi la lista pubblica");
+        checkPubblica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkPubblicaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bElimina, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(bElimina, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(checkPubblica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -338,7 +380,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -351,8 +393,10 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(checkPubblica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
@@ -382,8 +426,13 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         aggiungiLista();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void checkPubblicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkPubblicaActionPerformed
+        modificaPrivacy();
+    }//GEN-LAST:event_checkPubblicaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bElimina;
+    private javax.swing.JCheckBox checkPubblica;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;

@@ -717,68 +717,121 @@ public class DBConnection {
         pstmt.executeQuery(); 
  }
    
-   public static void creaListaDesideri(int utenteID, String nomelista, String privacy) throws SQLException {
+   /**
+    * Creazione della lista dei desideri
+    * @param utenteID intero, id del proprietario della lista
+    * @param nomeLista stringa, nome della lista
+    * @param privacy true: pubblica, false: privata
+    * @throws SQLException 
+    */
+   public static void creaListaDesideri(int utenteID, String nomeLista, boolean privacy) throws SQLException {
        //INSERT INTO LISTA_DESIDERI(UTENTE_ID, LISTA_NOME) VALUES(?, ?)
-       
+       String nomePrivacy;
+       if (privacy)
+           nomePrivacy = "Pubblica";
+       else
+           nomePrivacy = "Privata";
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI VALUES(?,?,?)");
+       pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI (UTENTE_ID, LISTA_NOME, LISTA_PRIVACY) VALUES(?,?,?)");
        pstmt.setInt(1, utenteID);
-       pstmt.setString(2, nomelista);
-       pstmt.setString(3, privacy);
+       pstmt.setString(2, nomeLista);
+       pstmt.setString(3, nomePrivacy);
        
        pstmt.executeQuery();
    }
    
-   public static void modificaListaDesideri(int utenteID, String nomelista, String privacy) throws SQLException {
+   /**
+    * Modifica della privacy della lista dei desideri
+    * @param listaID id lista da modificare
+    * @param privacy true: pubblica, false: privata
+    * @throws SQLException 
+    */
+   public static void modificaListaDesideri(int listaID, boolean privacy) throws SQLException {
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET UTENTE_ID=?, LISTA_NOME=?, LISTA_PRIVACY=? WHERE UTENTE_ID=? AND LISTA_NOME LIKE ?");
-       pstmt.setInt(1, utenteID);
-       pstmt.setString(2, nomelista);
-       pstmt.setString(3, privacy);
+       String nomePrivacy;
+       if (privacy)
+           nomePrivacy = "Pubblica";
+       else
+           nomePrivacy = "Privata";
+       pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET LISTA_PRIVACY=? WHERE LISTA_ID = ?");
+       pstmt.setString(1, nomePrivacy);
+       pstmt.setInt(2, listaID);
        
        pstmt.executeQuery();
    }
    
-   public static void eliminaListaDesideri(int utenteID, String nomelista) throws SQLException {
+   /**
+    * Eliminazione della lista dei desideri
+    * @param listaID
+    * @throws SQLException 
+    */
+   public static void eliminaListaDesideri(int listaID) throws SQLException {
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("DELETE FROM LISTA_DESIDERI WHERE UTENTE_ID=? AND LISTA_NOME LIKE ?");
-       pstmt.setInt(1, utenteID);
-       pstmt.setString(2, nomelista);
+       pstmt = conn.prepareStatement("DELETE FROM LISTA_DESIDERI WHERE LISTA_ID=?");
+       pstmt.setInt(1, listaID);
        
        pstmt.executeQuery();
    }   
    
-   public static void inserisciArticoloLista(String utenteId, String listaNome, String isbn, String formatoId, String venditoreId, String tipoCond, String dataPrezzo) throws SQLException {
-        //Viene effettuato l'inserimento nel carrello di un articolo
- 
+   /**
+    * Rinomina della lista dei desideri
+    * @param listaID
+    * @param nuovoNome
+    * @throws SQLException 
+    */
+   static void rinominaListaDesideri(int listaID, String nuovoNome) throws SQLException {
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("INSERT INTO COMPLISTADESIDERI(UTENTE_ID, LISTA_NOME, ISBN, Formato_ID, Venditore_ID, TIPOCONDIZIONE, DATAAGGIUNTA_PREZZO) VALUES(?,?,?,?,?,?,?)",
+       pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET LISTA_NOME = ? WHERE LISTA_ID = ?");
+       pstmt.setString(1, nuovoNome);
+       pstmt.setInt(2, listaID);
+       
+       pstmt.executeQuery();
+    }
+   
+   /**
+    * Inserimento dell'articolo nella lista desideri
+    * @param listaID intero, id della lista desideri
+    * @param isbn stringa, identificatore del libtro
+    * @param formatoId intero, formato (2001, 2002 o 2003)
+    * @param venditoreId intero, id del venditore
+    * @param tipoCond stringa, "Nuovo", "Usato" o "Ricondizionato"
+    * @param dataPrezzo stringa, in formato dd-MES-aaaa
+    * @throws SQLException 
+    */
+   public static void inserisciArticoloLista(int listaID, String isbn, int formatoId, int venditoreId, String tipoCond, String dataPrezzo) throws SQLException {
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("INSERT INTO COMPLISTADESIDERI(LISTA_ID, ISBN, Formato_ID, Venditore_ID, TIPOCONDIZIONE, DATAAGGIUNTA_PREZZO) VALUES(?,?,?,?,?,?,?)",
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
-        pstmt.setInt(1, Integer.parseInt(utenteId));
-        pstmt.setString(2, listaNome);
-        pstmt.setString(3, isbn);
-        pstmt.setInt(4, Integer.parseInt(formatoId));
-        pstmt.setInt(5, Integer.parseInt(venditoreId));
-        pstmt.setString(6, tipoCond);
-        pstmt.setString(7, dataPrezzo);   
+        pstmt.setInt(1, listaID);
+        pstmt.setString(2, isbn);
+        pstmt.setInt(3, formatoId);
+        pstmt.setInt(4, venditoreId);
+        pstmt.setString(5, tipoCond);
+        pstmt.setString(6, dataPrezzo);   
         
         pstmt.executeQuery(); 
     }
    
-   public static void rimuoviArticoloLista(int utenteId, String listaNome, String isbn, int formatoId, int venditoreId, String tipoCond, String dataPrezzo) throws SQLException {
-        //Viene effettuato l'inserimento nel carrello di un articolo
- 
+/**
+ * Rimozione di un elemento nella lista desideri
+ * @param listaID intero, id della lista
+ * @param isbn stringa, identificatore del libro
+ * @param formatoId intero, formato (2001, 2002 o 2003)
+ * @param venditoreId intero, id del venditore
+ * @param tipoCond stringa, "Nuovo", "Usato" o "Ricondizionato"
+ * @throws SQLException 
+ */
+   public static void rimuoviArticoloLista(int listaID, String isbn, int formatoId, int venditoreId, String tipoCond) throws SQLException {
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("DELETE FROM COMPLISTA_DESIDERI WHERE UTENTE_ID=? AND LISTA_NOME LIKE ? AND ISBN LIKE ? AND FORMATO_ID=? AND VENDITORE_ID=? AND TIPOCONDIZIONE LIKE ?");
-        pstmt.setInt(1, utenteId);
-        pstmt.setString(2, listaNome);
-        pstmt.setString(3, isbn);
-        pstmt.setInt(4, formatoId);
-        pstmt.setInt(5, venditoreId);
-        pstmt.setString(6, tipoCond);  
+        pstmt = conn.prepareStatement("DELETE FROM COMPLISTA_DESIDERI WHERE LISTA_ID=? AND ISBN LIKE ? AND FORMATO_ID=? AND VENDITORE_ID=? AND TIPOCONDIZIONE LIKE ?");
+        pstmt.setInt(1, listaID);
+        pstmt.setString(2, isbn);
+        pstmt.setInt(3, formatoId);
+        pstmt.setInt(4, venditoreId);
+        pstmt.setString(5, tipoCond);  
         
         pstmt.executeQuery(); 
     }
@@ -874,9 +927,5 @@ public class DBConnection {
     }
     return size;
    }
-
-    static void rinominaListaDesideri(String nuovoNome) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
 
