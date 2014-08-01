@@ -128,8 +128,9 @@ public final class TabOggetti extends javax.swing.JPanel {
                 /*serviceButton2.addActionListener(new java.awt.event.ActionListener() {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaUtente(evt);}});
+                     */
                 break;
-                    */
+                   
 
 
 
