@@ -124,7 +124,18 @@ public final class TabOggetti extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     private void setService2() {
         switch (nomeTabella) {
-//            case "UTENTI": serviceButton2.setText("Gestione utente");
+                case "UTENTI": serviceButton2.setText("Gestione utente");
+                /*serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaUtente(evt);}});
+                     */
+                break;
+                   
+
+
+
+
+//            
 //                /*GESTIONE METODO: Apre una finestra dove selezionare 5 cose:
 //                **1) Visualizza liste desideri
 //                **2) Visualizza carrello
@@ -200,7 +211,12 @@ public final class TabOggetti extends javax.swing.JPanel {
         String nome = (String)utente.get(1) + " " + (String)utente.get(2);
         mainWindow.impostaUtente(id, nome);
     }
-    
+    /*
+    private void visualizzaUtente(java.awt.event.ActionEvent evt) {
+        FinestraInfoUtente utente = new FinestraInfoUtente(mainWindow, false, getSelectedID());
+        utente.setVisible(true);
+    }
+    */
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
         FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, false, getSelectedID());
         libriAutore.setVisible(true);
