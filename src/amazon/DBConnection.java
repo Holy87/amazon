@@ -824,7 +824,7 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaListeUtente(String utenteId) throws SQLException   {
+   public static ResultSet visualizzaListeUtente(int utenteId) throws SQLException   {
        //In questo campo compaiono le liste dei desideri di un singolo utente
        
        //Esempio: UTENTE_ID = 423570;
@@ -838,7 +838,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT LISTA_NOME, LISTA_PRIVACY FROM LISTA_DESIDERI WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(utenteId));
+       pstmt.setInt(1, utenteId);
        
        return pstmt.executeQuery();
    }
@@ -874,5 +874,9 @@ public class DBConnection {
     }
     return size;
    }
+
+    static void rinominaListaDesideri(String nuovoNome) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 
