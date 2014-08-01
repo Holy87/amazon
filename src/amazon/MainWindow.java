@@ -173,7 +173,8 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mAcquisto = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        mDesideri = new javax.swing.JMenuItem();
+        mOrdini = new javax.swing.JMenuItem();
         mCarrello = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -292,9 +293,18 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(mAcquisto);
 
-        jMenuItem4.setText("Lista desideri");
-        jMenuItem4.setEnabled(false);
-        jMenu3.add(jMenuItem4);
+        mDesideri.setText("Lista desideri");
+        mDesideri.setEnabled(false);
+        jMenu3.add(mDesideri);
+
+        mOrdini.setText("Storico ordini");
+        mOrdini.setEnabled(false);
+        mOrdini.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mOrdiniActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mOrdini);
 
         mCarrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mCarrello.setText("Vai al carrello");
@@ -385,6 +395,10 @@ public class MainWindow extends javax.swing.JFrame {
         finestraVenditore.show(ADDN, null, tabVenditori);
     }//GEN-LAST:event_mVenditoreActionPerformed
 
+    private void mOrdiniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mOrdiniActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mOrdiniActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -465,15 +479,16 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
     private javax.swing.JMenuItem mAcquisto;
     private javax.swing.JMenuItem mCarrello;
+    private javax.swing.JMenuItem mDesideri;
     private javax.swing.JMenuItem mEditore;
     private javax.swing.JMenuItem mLibro;
     private javax.swing.JMenu mNuovo;
+    private javax.swing.JMenuItem mOrdini;
     private javax.swing.JMenuItem mUtente;
     private javax.swing.JMenuItem mVenditore;
     private amazon.TabOggetti tabAutori;

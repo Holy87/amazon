@@ -129,8 +129,6 @@ public final class TabOggetti extends javax.swing.JPanel {
 //                **1) Visualizza liste desideri
 //                **2) Visualizza carrello
 //                **3) Visualizza ordini già effettuati
-//                **4) Crea ordine
-//                **5) Crea recensione libro/venditore
 //            
 //                **1) Visualizza liste desideri chiamerà il metodo in DBConnection visualizzaListeDesideri,
 //                **   che riceverà in ingresso l'ID dell'utente selezionato.
@@ -139,13 +137,6 @@ public final class TabOggetti extends javax.swing.JPanel {
 //                **   in fondo alla pagina il costo complessivo in base alla somma dei costi degli articoli nel carrello.
 //                **3) Visualizza ordini chiamerà il metodo in DBConnection visualizzaOrdini,
 //                **   il quale riceverà sempre in ingresso l'ID dell'utente.
-//                **4) DA CREARE ALL'ULTIMO
-//                **5) Il metodo creaRecensione riceve in ingresso:
-//                     - IDUtente
-//                     - Il testo della recensione
-//                     - Il tipo di recensione tramite un valore TRUE se si recensisce un libro, FALSE se si recensisce un venditore
-//                     - L'ID del prodotto/venditore del prodotto che si vuole recensire (da visualizzare tramite le funzioni di visualizzazione dei prodotti/venditori)
-//                     - Il voto da 1 a 5
 //                */
 //                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
 //                    @Override
