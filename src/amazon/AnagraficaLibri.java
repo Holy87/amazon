@@ -18,7 +18,7 @@ import javax.swing.event.ListSelectionEvent;
  *
  * @author frbos_000
  */
-public class AnagraficaLibri extends javax.swing.JDialog {
+public final class AnagraficaLibri extends javax.swing.JDialog {
 
     /**
      * Creates new form AnagraficaLibri
@@ -33,7 +33,8 @@ public class AnagraficaLibri extends javax.swing.JDialog {
     
     private ResultSet rs;
     private DBTableModel modelloTabella;
-    private int cursore = 1, idUtente;
+    private int cursore = 1;
+    private final int idUtente;
     
     private final int FLESSIBILE = 2001;
     private final int RIGIDA = 2002;
@@ -149,10 +150,10 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         finestraDettagli.setVisible(true);
     }
     
-    private int getPrezzoMinimo() {
-        int prezzo = 0;
+    private double getPrezzoMinimo() {
+        double prezzo = 0;
         try {
-            prezzo = Integer.parseInt(tPrezzoMin.getText());
+            prezzo = Double.parseDouble(tPrezzoMin.getText());
         } catch (NumberFormatException ex) {
             System.out.println(tPrezzoMin.getText()+" non è un valore accettabile");
             tPrezzoMin.setText("");
@@ -160,10 +161,10 @@ public class AnagraficaLibri extends javax.swing.JDialog {
         return prezzo;
     }
     
-    private int getPrezzoMassimo() {
-        int prezzo = 0;
+    private double getPrezzoMassimo() {
+        double prezzo = 0;
         try {
-            prezzo = Integer.parseInt(tPrezzoMax.getText());
+            prezzo = Double.parseDouble(tPrezzoMax.getText());
             if (prezzo < getPrezzoMinimo())
                 prezzo = getPrezzoMinimo();
         } catch (NumberFormatException ex) {

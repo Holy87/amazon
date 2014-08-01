@@ -24,6 +24,9 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
 
     /**
      * Creates new form FinestraListaDesideri
+     * @param parent
+     * @param modal
+     * @param utente
      */
     public FinestraListaDesideri(java.awt.Frame parent, boolean modal, int utente) {
         super(parent, modal);
@@ -34,7 +37,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         controllaSeUltima();
     }
     
-    private int utenteID;
+    private final int utenteID;
     private ResultSet rsDesideri, rsArticoli; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private DBTableModel modelloArticoli;
@@ -117,8 +120,6 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         }
     }
     
-    
-    
     /**
      * Questo metodo restituisce il resultset necessario alla tabella
      * Modificatelo a seconda dei dati che volete visualizzare sulla tabella
@@ -129,11 +130,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     }
     
     private ResultSet ottieniArticoli(int idLista) throws SQLException {
-        return null;// DBConnection.visualizzaArticoliListaUtente(idLista);
-    }
-    
-    private String nomeLista() {
-        return modelloTabella.getValueAt(cursoreDesideri - 1, 1).toString();
+        return DBConnection.visualizzaArticoliListaUtente(idLista);
     }
     
     private int idLista() {
@@ -179,7 +176,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
           tabellaDesideri.setRowSelectionInterval(cursoreDesideri - 1, cursoreDesideri - 1);
           tabellaDesideri.getColumnModel().getColumn(0).setMinWidth(0);
           tabellaDesideri.getColumnModel().getColumn(0).setMaxWidth(0);
-          aggiornaCheckBox();
+          aggiornaComboPrivacy();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -208,6 +205,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         try {
             DBConnection.eliminaListaDesideri(idLista());
             aggiornaTabella();
+            controllaSeUltima();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -218,42 +216,89 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         String nuovoNome = JOptionPane.showInputDialog(this, "Inserisci il nuovo nome per la lista");
         try {
             DBConnection.rinominaListaDesideri(idLista(), nuovoNome);
+            aggiornaTabella();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         aggiornaTabella();
     }
     
+    /**
+     * Crea una nuova lista dei desideri. Avvia un JOptionPane.
+     */
     private void aggiungiLista() {
         String nome = JOptionPane.showInputDialog(this, "Inserisci il nome per la nuova lista");
         try {
-            DBConnection.creaListaDesideri(utenteID, nome, false);
+            DBConnection.creaListaDesideri(utenteID, nome, 0);
+            aggiornaTabella();
             controllaSeUltima();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
     }
     
+    /**
+     * Modifica la privacy. Viene chiamato dall'actionListener del comboBox.
+     */
     private void modificaPrivacy() {
-        boolean selezione = checkPubblica.isSelected();
+        int selezione = comboPrivacy.getSelectedIndex();
         try {
             DBConnection.modificaListaDesideri(idLista(), selezione);
         } catch (SQLException ex) {
-            checkPubblica.setSelected(selezione);
+            comboPrivacy.setSelectedIndex(ottieniPrivacy());
             mostraErrore(ex);
         }
     }
     
+    /**
+     * Converte la privacy in ID
+     * @return 0 se privata, 1 se condivisa, 2 se pubblica.
+     */
+    private int ottieniPrivacy() {
+        switch(modelloTabella.getValueAt(cursoreDesideri - 1, 2).toString()) {
+            case "Privata": return 0;
+            case "Condivisa": return 1;
+            case "Pubblica": return 2;
+            default: return 0;
+        }
+    }
+    
     private void controllaSeUltima() {
-        if (modelloTabella.getColumnCount() <= 1) {
+        int righe = modelloTabella.getColumnCount();
+        if (righe == 0) {
+            bRinomina.setEnabled(false);
+            comboPrivacy.setEnabled(false);
             bElimina.setEnabled(false);
         } else {
+            bRinomina.setEnabled(true);
+            comboPrivacy.setEnabled(true);
             bElimina.setEnabled(true);
         }
     }
     
-    private void aggiornaCheckBox() {
-        
+    private void rimuoviArticolo() {
+        try {
+            DBConnection.rimuoviArticoloLista(idLista(),
+                    modelloArticoli.getValueAt(cursoreArticoli - 1, 0).toString(),
+                    Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 2).toString()),
+                    Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 3).toString()),
+                    modelloArticoli.getValueAt(cursoreArticoli - 1, 4).toString());
+            aggiornaTabellaArticoli();
+            controllaSeArticoliVuoti();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
+    private void controllaSeArticoliVuoti() {
+        if (modelloArticoli.getRowCount() == 0)
+            bEliminaArticolo.setEnabled(false);
+        else
+            bEliminaArticolo.setEnabled(true);
+    }
+    
+    private void aggiornaComboPrivacy() {
+        comboPrivacy.setSelectedIndex(ottieniPrivacy());
     }
     
     /**
@@ -284,10 +329,11 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        bRinomina = new javax.swing.JButton();
         bElimina = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        checkPubblica = new javax.swing.JCheckBox();
+        bEliminaArticolo = new javax.swing.JButton();
+        comboPrivacy = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Liste dei desideri");
@@ -335,10 +381,10 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setText("Rinomina lista desideri");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        bRinomina.setText("Rinomina lista desideri");
+        bRinomina.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                bRinominaActionPerformed(evt);
             }
         });
 
@@ -349,14 +395,21 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
             }
         });
 
-        jButton4.setText("Rimuovi articolo");
-
-        checkPubblica.setText("Rendi la lista pubblica");
-        checkPubblica.addActionListener(new java.awt.event.ActionListener() {
+        bEliminaArticolo.setText("Rimuovi articolo");
+        bEliminaArticolo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                checkPubblicaActionPerformed(evt);
+                bEliminaArticoloActionPerformed(evt);
             }
         });
+
+        comboPrivacy.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Privato", "Condiviso", "Pubblico" }));
+        comboPrivacy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboPrivacyActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Privacy");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -364,22 +417,26 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bRinomina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(bElimina, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(checkPubblica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bElimina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(comboPrivacy, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(bEliminaArticolo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -389,17 +446,19 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
-                    .addComponent(jButton4))
+                    .addComponent(bEliminaArticolo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkPubblica)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboPrivacy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(bRinomina)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bElimina)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -418,26 +477,31 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         eliminaLista();
     }//GEN-LAST:event_bEliminaActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void bRinominaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRinominaActionPerformed
         rinominaLista();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_bRinominaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         aggiungiLista();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void checkPubblicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkPubblicaActionPerformed
+    private void comboPrivacyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPrivacyActionPerformed
         modificaPrivacy();
-    }//GEN-LAST:event_checkPubblicaActionPerformed
+    }//GEN-LAST:event_comboPrivacyActionPerformed
+
+    private void bEliminaArticoloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminaArticoloActionPerformed
+        rimuoviArticolo();
+    }//GEN-LAST:event_bEliminaArticoloActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bElimina;
-    private javax.swing.JCheckBox checkPubblica;
+    private javax.swing.JButton bEliminaArticolo;
+    private javax.swing.JButton bRinomina;
+    private javax.swing.JComboBox comboPrivacy;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tabellaArticoli;

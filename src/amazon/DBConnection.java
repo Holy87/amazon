@@ -6,7 +6,6 @@
 
 package amazon;
 
-import amazon.exceptions.CodeAlreadyUsedException;
 import amazon.exceptions.CodeNotValidException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -507,6 +506,13 @@ public class DBConnection {
        return pstmt.executeQuery();
     }
    
+   /**
+    * Cerca il libro di un editore dalla query
+    * @param idEditore editore
+    * @param query titolo del libro
+    * @return LIBRO_NOME
+    * @throws SQLException 
+    */
    public static ResultSet cercaLibroEditore(String idEditore, String query) throws SQLException {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI, EDITORI_LIB WHERE EDITORI_LIB.ISBN = LIBRI.ISBN AND EDI_ID = ? AND LIBRO_NOME LIKE ?",
@@ -518,25 +524,13 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   
-
-   /*public static ResultSet visualizzaMagazzino(String idVenditore) throws SQLException   {
-       //Vista sull'inventario di un magazzino di un venditore
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ?",
-               ResultSet.TYPE_SCROLL_INSENSITIVE,
-               ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(idVenditore));
-       
-       return pstmt.executeQuery();
-       /*RISULTATO QUERY: LIBRO_NOME    AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            VENDITORE_ID
-                          Fight Club	Chuck       Palahniuk       Mondadori	9788804508359	6318
-       
-   }*/
-   
-   public static ResultSet visualizzaMagazzino (String venditoreID) throws SQLException {
-       //Lista dei libri dettagliata che il venditore ha a disposizione
-       
+   /**
+    * Lista dei libri dettagliata che il venditore ha a disposizione
+    * @param venditoreID
+    * @return LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaMagazzino (String venditoreID) throws SQLException {       
        //Esempio: VENDITORE_ID = 6317;
        /*RISULTATO QUERY:
                         LIBRO_NOME                      FORMATO_NOME            TIPOCONDIZIONE  PEZZIDISPONIBILI    PREZZOVENDITA
@@ -560,11 +554,18 @@ public class DBConnection {
        
        return pstmt.executeQuery();
    }
-   //serve per la ricerca su un nome
+
+   /**
+    * Vista sull'inventario di un magazzino di un venditore
+    * serve per la ricerca su un nome
+    * @param idVenditore
+    * @param query parola da cercare
+    * @return VIEWMAGAZZINO
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaMagazzino(String idVenditore, String query) throws SQLException   {
-       //Vista sull'inventario di un magazzino di un venditore
        PreparedStatement pstmt;
-       query.replace('%', ' ');
+       query = query.replace('%', ' ');
        pstmt = conn.prepareStatement("SELECT * FROM VIEWMAGAZZINO WHERE VENDITORE_ID = ? AND LIBRI_NOME LIKE %?%",
                ResultSet.TYPE_SCROLL_INSENSITIVE,
                ResultSet.CONCUR_READ_ONLY);
@@ -588,8 +589,13 @@ public class DBConnection {
        
    }
    
+   /**
+    * Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
+    * @param formato
+    * @return
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaListinoLibri(int formato) throws SQLException {
-        //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT LIBRO_NOME, ISBN, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI WHERE FORMATO_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -599,7 +605,16 @@ public class DBConnection {
        
    }
    
-   public static ResultSet visualizzaListinoLibri(String query, int formato, int prezzoMin, int prezzoMax) throws SQLException {
+   /**
+    * Visualizza il listino dei libri secondo una ricerca avanzata dall'utente
+    * @param query          parola cercata (% vengono messe automaticamente)
+    * @param formato        2001, 2002 o 2003
+    * @param prezzoMin      prezzo minimo richiesto (DOUBLE)
+    * @param prezzoMax      limite massimo del prezzo (DOUBLE)
+    * @return LIBRO_NOME, ISBN, FORMATO_NOME, PREZZOLISTINO
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaListinoLibri(String query, int formato, double prezzoMin, double prezzoMax) throws SQLException {
        //Con una stringa possiamo cercare il nome di un libro presente nell'archivio
        boolean cercaParola = false;
        boolean cercaFormato = false;
@@ -607,7 +622,7 @@ public class DBConnection {
        boolean cercaPrezzoMax = false;
        int controllo = 0;
        String ricerca = "SELECT LIBRO_NOME, ISBN, FORMATO_NOME, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI NATURAL JOIN IMPOSTAZIONI WHERE ";
-       if (query != "") {
+       if (!"".equals(query)) {
            ricerca += "LIBRI.LIBRO_NOME LIKE ?";
            cercaParola = true;
        } else
@@ -638,18 +653,23 @@ public class DBConnection {
        }    
        if (cercaPrezzoMin == true) {
            controllo++;
-           pstmt.setInt(controllo, prezzoMin);
+           pstmt.setDouble(controllo, prezzoMin);
        }
        if (cercaPrezzoMax == true) {
            controllo++;
-           pstmt.setInt(controllo, prezzoMax);
+           pstmt.setDouble(controllo, prezzoMax);
        }
        return pstmt.executeQuery();
    }
    
+   
+   /**
+    * Compaiono le informazioni dettagliate dei libri presenti nell'archivio
+    * @param isbn
+    * @return LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN, DESCRIZIONE   
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {
-       //Compaiono le informazioni dettagliate dei libri presenti nell'archivio
-       
         //Esempio: ISBN = 9788804632238;
        /*RISULTATO QUERY:
             LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
@@ -665,16 +685,14 @@ public class DBConnection {
        
    }
    
+   /**
+    * In questo campo compaiono i venditori che hanno a disposizione il libro scelto, qualsiasi formato abbiano.
+    * VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO
+    * @param isbn
+    * @return ResultSet di informazioni
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
-       //In questo campo compaiono i venditori che hanno a disposizione il libro scelto, qualsiasi formato abbiano a disposizione
-       
-       //Esempio: ISBN = 9788804508359;
-       /*RISULTATO QUERY: 
-                        VENDITORE_NOME    PREZZOVENDITA_MINIM
-                        C.U.S.            4,99
-                        Libri.it          7,40
-       
-       */
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -683,17 +701,16 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   /**
+    * In questo campo compaiono i formati che il venditore ha a disposizione per il libro in questione
+    * FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA
+    * @param isbn libro
+    * @param venditoreID id del venditore
+    * @return ResultSet elenco dei formati con prezzo e tutto
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, String venditoreID) throws SQLException   {
-       //In questo campo compaiono i formati che il venditore ha a disposizione per il libro in questione
-
-       //Esempio: ISBN = 9788804508359 AND VENDITORE_ID = 6318;
-       /*RISULTATO QUERY: FORMATO_NOME           PREZZOVENDITA   TIPOCONDIZIONE
-                          Copertina Rigida	 7,65            Nuovo
-                          Copertina Rigida	 4,99            Usato
-                          Kindle        	 5,99            Nuovo
-       */
        PreparedStatement pstmt;
-       //ho inserito anche ISBN e VENDITORE_ID nei risultati perché c'è bisogno di loro quando seleziono il libro
        pstmt = conn.prepareStatement("SELECT FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
@@ -702,9 +719,17 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   /**
+    * Viene effettuato l'inserimento nel carrello di un articolo
+    * @param utenteId id dell'utente attivo
+    * @param isbn libro
+    * @param formatoId formato (2001, 2002 o 2003)
+    * @param venditoreId venditore
+    * @param tipoCondizione "Nuovo", "Usato" o "Ricondizionato"
+    * @param quantita intero, la quantità
+    * @throws SQLException 
+    */
    public static void inserisciArticoloCarrello(int utenteId, String isbn, int formatoId, int venditoreId, String tipoCondizione, int quantita) throws SQLException {
-        //Viene effettuato l'inserimento nel carrello di un articolo
- 
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("INSERT INTO COMPARTICOLI(UTENTE_ID, ISBN, Formato_ID, Venditore_ID, Tipocondizione, Quantità) VALUES(?,?,?,?,?,?)");
         pstmt.setInt(1, utenteId);
@@ -721,16 +746,20 @@ public class DBConnection {
     * Creazione della lista dei desideri
     * @param utenteID intero, id del proprietario della lista
     * @param nomeLista stringa, nome della lista
-    * @param privacy true: pubblica, false: privata
+    * @param privacy 0: privata, 1: condivisa, 2: pubblica
     * @throws SQLException 
     */
-   public static void creaListaDesideri(int utenteID, String nomeLista, boolean privacy) throws SQLException {
-       //INSERT INTO LISTA_DESIDERI(UTENTE_ID, LISTA_NOME) VALUES(?, ?)
+   public static void creaListaDesideri(int utenteID, String nomeLista, int privacy) throws SQLException {
        String nomePrivacy;
-       if (privacy)
-           nomePrivacy = "Pubblica";
-       else
-           nomePrivacy = "Privata";
+       switch (privacy) {
+           case 0: nomePrivacy = "Privata";
+           break;
+           case 1: nomePrivacy = "Condivisa";
+           break;
+           case 2: nomePrivacy = "Pubblica";
+           break;
+           default: nomePrivacy = "?";
+       }
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI (UTENTE_ID, LISTA_NOME, LISTA_PRIVACY) VALUES(?,?,?)");
        pstmt.setInt(1, utenteID);
@@ -743,17 +772,22 @@ public class DBConnection {
    /**
     * Modifica della privacy della lista dei desideri
     * @param listaID id lista da modificare
-    * @param privacy true: pubblica, false: privata
+    * @param privacy 0: privata, 1: condivisa, 2: pubblica
     * @throws SQLException 
     */
-   public static void modificaListaDesideri(int listaID, boolean privacy) throws SQLException {
+   public static void modificaListaDesideri(int listaID, int privacy) throws SQLException {
        
        PreparedStatement pstmt;
        String nomePrivacy;
-       if (privacy)
-           nomePrivacy = "Pubblica";
-       else
-           nomePrivacy = "Privata";
+       switch (privacy) {
+           case 0: nomePrivacy = "Privata";
+           break;
+           case 1: nomePrivacy = "Condivisa";
+           break;
+           case 2: nomePrivacy = "Pubblica";
+           break;
+           default: nomePrivacy = "?";
+       }
        pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET LISTA_PRIVACY=? WHERE LISTA_ID = ?");
        pstmt.setString(1, nomePrivacy);
        pstmt.setInt(2, listaID);
@@ -837,11 +871,18 @@ public class DBConnection {
     }
    
    
-   
+   /**
+    * Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
+    * @param venditoreID venditore
+    * @param isbn libro
+    * @param formatoID formato (2001, 2002 o 2003, rispettivamente copertina flessibile, copertina rigida o kindle)
+    * @param tipoCondizione "Nuovo", "Usato" o "Ricondizionato"
+    * @param pezziDisp null o -1 se kindle
+    * @param prezzo dev'essere minore del listino (non è obbligatorio, ma una prassi)
+    * @throws SQLException 
+    */
    public static void inserisciLibroMagazzino(int venditoreID, String isbn, int formatoID, String tipoCondizione, int pezziDisp, double prezzo) throws SQLException {
-       //Inserisce in un determinato venditore un libro selezionato precedentemente con determinate informazioni
-       
-       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       PreparedStatement pstmt;
        
        pstmt = conn.prepareStatement("INSERT INTO MAGAZZINO_LIBRI VALUES(?, ?, ?, ?, ?, ?)");
        pstmt.setInt(1, venditoreID);
@@ -858,8 +899,12 @@ public class DBConnection {
 //       } 
    }
    
+   /**
+    * Query (ridondante ma) utile per controllare la disponibilità di un libro nei magazzini
+    * @return VIEW_LIBRIDISPONIBILI
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaLibriDisponibili() throws SQLException {
-       //Query (ridondante ma) utile per controllare la disponibilità di un libro nei magazzini
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_LIBRIDISPONIBILI",
                ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -867,28 +912,33 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-      public static ResultSet visualizzaFormatoLibro(String venditoreID, String isbn) throws SQLException {
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT FORMATO_ID, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ? AND ISBN = ?",
-               ResultSet.TYPE_SCROLL_INSENSITIVE,
-               ResultSet.CONCUR_READ_ONLY);
-       pstmt.setString(1, venditoreID);
-       pstmt.setLong(2, Long.parseLong(isbn));
-       return pstmt.executeQuery();
+   /**
+    * Visualizza tutti i formati disponibili per il libro dal venditore
+    * @param venditoreID
+    * @param isbn
+    * @return FORMATO_ID, PEZZIDISPONIBILI, PREZZOVENDITA
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaFormatoLibro(String venditoreID, String isbn) throws SQLException {
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("SELECT FORMATO_ID, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ? AND ISBN = ?",
+           ResultSet.TYPE_SCROLL_INSENSITIVE,
+           ResultSet.CONCUR_READ_ONLY);
+        pstmt.setString(1, venditoreID);
+        pstmt.setLong(2, Long.parseLong(isbn));
+        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaListeUtente(int utenteId) throws SQLException   {
-       //In questo campo compaiono le liste dei desideri di un singolo utente
-       
-       //Esempio: UTENTE_ID = 423570;
-       /*RISULTATO QUERY: 
-                        LISTA_NOME              LISTA_PRIVACY
-                        CD da Acquistare	Pubblica
-                        Per mia Moglie          Privata
-       
+      /**
+       * In questo campo compaiono le liste dei desideri di un singolo utente
+       * LISTA_ID, LISTA_NOME, LISTA_PRIVACY
+       * @param utenteId intero, identificatore dell'utente
+       * @return resultset delle liste desideri dell'utente
+       * @throws SQLException 
        */
+   public static ResultSet visualizzaListeUtente(int utenteId) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LISTA_NOME, LISTA_PRIVACY FROM LISTA_DESIDERI WHERE UTENTE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT LISTA_ID, LISTA_NOME, LISTA_PRIVACY FROM LISTA_DESIDERI WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, utenteId);
@@ -896,27 +946,24 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaArticoliListaUtente(String utenteId, String listaNome) throws SQLException   {
-       //In questo campo compaiono i libri di una lista di un utente
-       
-       //Esempio: UTENTE_ID = 423572, LISTA_NOME LIKE 'Default';
-       /*RISULTATO QUERY: 
-                        LIBRO_NOME              FORMATO_NOME            TIPOCONDIZIONE      VENDITORE_NOME      PREZZOVENDITA
-                        Invito alla Biologia	Copertina Flessibile	Usato               Amazon.it           5,99
-       
-       */
+   /**
+    * In questo campo compaiono i libri di una lista di un utente
+    * @param listaID id della ista
+    * @return ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaArticoliListaUtente(int listaID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE UTENTE_ID = ? AND LISTA_NOME LIKE '?'",
+       pstmt = conn.prepareStatement("SELECT DISTINCT ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE LISTA_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, Integer.parseInt(utenteId));
-       pstmt.setInt(2, Integer.parseInt(listaNome));
+       pstmt.setInt(1, listaID);
        
        return pstmt.executeQuery();
    }
    
    public static int contaRigheResultSet(ResultSet resultSet) {
-       int size = 0;
+       int size;
     try {
         resultSet.last();
         size = resultSet.getRow();
