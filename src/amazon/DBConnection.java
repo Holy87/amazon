@@ -170,27 +170,26 @@ public class DBConnection {
         pstmt.setString(5, tipo);
    }
    
-   public static ResultSet visualizzaOrdiniUtente(String idUtente) throws SQLException {
+   public static ResultSet visualizzaOrdiniUtente(int idUtente) throws SQLException {
        //Visualizza gli ordini effettuati dall'utente dato il suo ID
        
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT ORDINE_ID, DATAORDINE, PREZZOTOTALE FROM ORDINI WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
-       pstmt.setString(1, idUtente);
+       pstmt.setInt(1, idUtente);
        
        return pstmt.executeQuery();
    }
    
-   public static ResultSet visualizzaArticoliOrdine(String idUtente, String idOrdine) throws SQLException {
+   public static ResultSet visualizzaArticoliOrdine(int idOrdine) throws SQLException {
        //Visualizza gli articoli presenti in un ordine di un utente
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, COMPARTICOLI.QUANTITÀ, COMPARTICOLI.PREZZOVENDITA FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID = ? AND ORDINE_ID=?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, COMPARTICOLI.QUANTITÀ, COMPARTICOLI.PREZZOVENDITA FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE ORDINE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
-       pstmt.setString(1, idUtente);
-       pstmt.setString(2, idOrdine);
+       pstmt.setInt(1, idOrdine);
        
        return pstmt.executeQuery();
    }

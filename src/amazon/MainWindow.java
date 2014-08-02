@@ -189,7 +189,7 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
+            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -284,7 +284,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3.setText("Azioni utente");
 
         mAcquisto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mAcquisto.setText("Acquisto libri");
+        mAcquisto.setText("Acquisto Libri");
         mAcquisto.setEnabled(false);
         mAcquisto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -293,11 +293,16 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(mAcquisto);
 
-        mDesideri.setText("Lista desideri");
+        mDesideri.setText("Lista Desideri");
         mDesideri.setEnabled(false);
+        mDesideri.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDesideriActionPerformed(evt);
+            }
+        });
         jMenu3.add(mDesideri);
 
-        mOrdini.setText("Storico ordini");
+        mOrdini.setText("Storico Ordini");
         mOrdini.setEnabled(false);
         mOrdini.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,7 +312,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3.add(mOrdini);
 
         mCarrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mCarrello.setText("Vai al carrello");
+        mCarrello.setText("Vai al Carrello");
         mCarrello.setEnabled(false);
         mCarrello.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -396,8 +401,14 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_mVenditoreActionPerformed
 
     private void mOrdiniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mOrdiniActionPerformed
-        // TODO add your handling code here:
+        FinestraStoricoOrdini finestraSO = new FinestraStoricoOrdini(this, false, utenteID);
+        finestraSO.setVisible(true);
     }//GEN-LAST:event_mOrdiniActionPerformed
+
+    private void mDesideriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDesideriActionPerformed
+        FinestraListaDesideri finestraLD = new FinestraListaDesideri(this, false, utenteID);
+        finestraLD.setVisible(true);
+    }//GEN-LAST:event_mDesideriActionPerformed
 
     /**
      * 
