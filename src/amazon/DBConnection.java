@@ -63,6 +63,11 @@ public class DBConnection {
         //createTables();
     }
     
+    /**
+     * chiude la connessione e riconnette l'applicazione al database con l'ultima
+     * configurazione di ID e password
+     * @throws SQLException 
+     */
     public static void reConnect() throws SQLException {
         if (conn != null){
             StartConnection();
@@ -97,8 +102,7 @@ public class DBConnection {
          rs = st.executeQuery(query);
          rs.next();
          obj = rs.getObject(1);
-      } catch (SQLException e) {  //nessuna azione
-      }
+      } catch (SQLException e) {}
       return obj;
    }
 
@@ -143,26 +147,35 @@ public class DBConnection {
        return rs;
    }
       
+   /**
+    * Visualizza l'attuale carrello dell'utente dato il suo ID
+    * @param idUtente
+    * @return ISBN, FORMATO_ID, VENDITORE_ID, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PREZZOVENDITA, VENDITORE_NOME, QUANTITÀ
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaCarrello(int idUtente) throws SQLException {
-       //Visualizza l'attuale carrello dell'utente dato il suo ID
-       
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.ISBN, VIEW_INFO.FORMATO_ID, VIEW_INFO.VENDITORE_ID, VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, VIEW_INFO.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, QUANTITÀ FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE UTENTE_ID = ? AND ORDINE_ID = 0",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+                    ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
-       //pstmt.setInt(1, Integer.parseInt(idUtente));
-       //pstmt.setInt(2, 0);
        return pstmt.executeQuery();
    }
    
+   /**
+    * Elimina un articolo dal carrello in base ai dati in ingresso specificati nel metodo
+    * @param idUtente intero, id utente
+    * @param isbn stringa, libro
+    * @param formatoID intero, 2001 2002 o 2003
+    * @param venditoreID intero, id del venditore
+    * @param tipo "Nuovo", "Usato" o "Ricondizionato"
+    * @throws SQLException 
+    */
    public static void eliminaArticoloCarrello(int idUtente, String isbn, int formatoID, int venditoreID, String tipo) throws SQLException {
-       //Elimina un articolo dal carrello in base ai dati in ingresso specificati nel metodo
-       
        PreparedStatement pstmt;
         pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND ISBN=? AND FORMATO_ID=? AND VENDITORE_ID=? AND TIPOCONDIZIONE LIKE ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+                    ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, idUtente);
         pstmt.setString(2, isbn);
         pstmt.setInt(3, formatoID);
@@ -170,37 +183,51 @@ public class DBConnection {
         pstmt.setString(5, tipo);
    }
    
+   /**
+    * Visualizza gli ordini effettuati dall'utente dato il suo ID
+    * @param idUtente
+    * @return ORDINE_ID, DATAORDINE, PREZZOTOTALE
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaOrdiniUtente(int idUtente) throws SQLException {
-       //Visualizza gli ordini effettuati dall'utente dato il suo ID
-       
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT ORDINE_ID, DATAORDINE, PREZZOTOTALE FROM ORDINI WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+                    ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
        
        return pstmt.executeQuery();
    }
    
+   /**
+    * Visualizza gli articoli presenti in un ordine di un utente
+    * @param idOrdine
+    * @return LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, QUANTITÀ, PREZZOVENDITA
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaArticoliOrdine(int idOrdine) throws SQLException {
-       //Visualizza gli articoli presenti in un ordine di un utente
-       
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, COMPARTICOLI.QUANTITÀ, COMPARTICOLI.PREZZOVENDITA FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.ISBN = COMPARTICOLI.ISBN AND VIEW_INFO.FORMATO_ID = COMPARTICOLI.FORMATO_ID AND VIEW_INFO.TIPOCONDIZIONE LIKE COMPARTICOLI.TIPOCONDIZIONE AND VIEW_INFO.VENDITORE_ID = COMPARTICOLI.VENDITORE_ID WHERE ORDINE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+                    ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idOrdine);
        
        return pstmt.executeQuery();
    }
    
-   
+   /**
+    * Restituisce il valore di sconto del codice, lancia eccezione se non valido
+    * @param codice
+    * @return SCONTO
+    * @throws SQLException
+    * @throws CodeNotValidException se il codice è già stato usato o non è valido
+    */
    public static double verificaSconto(String codice) throws SQLException, CodeNotValidException {
         ResultSet rs;
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO=? AND ORDINE_ID IS NULL",
                      ResultSet.TYPE_SCROLL_INSENSITIVE,
-                     ResultSet.CONCUR_READ_ONLY); //INSERIRE QUERY
+                     ResultSet.CONCUR_READ_ONLY);
         pstmt.setString(1, codice);
 
         rs=pstmt.executeQuery();
@@ -217,7 +244,13 @@ public class DBConnection {
         return ritorno;
    }
    
-   public static void applicaScontoOrdine(Scontotemp sconti[], String ordineId) throws SQLException {
+   /**
+    * Collega i codici promozionali utilizzati all'ordine dell'utente.
+    * @param sconti Array di sconti(codice sconto, sconto)
+    * @param ordineId id dell'ordine
+    * @throws SQLException 
+    */
+   public static void applicaScontoOrdine(Scontotemp sconti[], int ordineId) throws SQLException {
         PreparedStatement pstmt;
         int contatore=0;
         String codPromo;
@@ -225,8 +258,8 @@ public class DBConnection {
         while(sconti[contatore]!=null)    {
             codPromo=sconti[contatore].getcodPromo();
             
-            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?"); //INSERIRE QUERY
-            pstmt.setString(1, ordineId);
+            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO=?");
+            pstmt.setInt(1, ordineId);
             pstmt.setString(2, codPromo);
             
             pstmt.executeUpdate();
@@ -235,40 +268,53 @@ public class DBConnection {
         }  
    }
    
-   public static void creaOrdine (String idUtente, String sped, String sconto, String modpagamento, Scontotemp sconti[]) throws SQLException {
+   /**
+    * Converte il carrello dell'utente in un ordine da spedire
+    * @param idUtente id dell'utente, intero
+    * @param sped ????
+    * @param sconto valore complessivo dello sconto
+    * @param modpagamento id del metodo di pagamento
+    * @param sconti codici di sconto
+    * @throws SQLException 
+    */
+   public static void creaOrdine (int idUtente, String sped, double sconto, int modpagamento, Scontotemp sconti[]) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       String idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
-       pstmt.setString(1, idUtente);
+       pstmt.setInt(1, idUtente);
        pstmt.setString(2, sped);
-       pstmt.setDouble(3, Double.parseDouble(sconto));
-       pstmt.setInt(4, Integer.parseInt(modpagamento));
+       pstmt.setDouble(3, sconto);
+       pstmt.setInt(4, modpagamento);
        
        rs=pstmt.executeQuery();
-       idOrder=rs.getString(2);//Ottenimento ORDINE_ID riga inserita
+       idOrder=rs.getInt(2);//Ottenimento ORDINE_ID riga inserita
        pstmt.close();
        
        PreparedStatement pstmt2; //Statement per il richiamo della funzione per il completamento
        
        pstmt2 = conn.prepareStatement("BEGIN CREA_ORDINE_PART_2(?,?,?,?); END;");
-       pstmt2.setString(1, idUtente);
-       pstmt2.setString(2, idOrder);
+       pstmt2.setInt(1, idUtente);
+       pstmt2.setInt(2, idOrder);
        pstmt2.setString(3, sped);
-       pstmt2.setString(4, modpagamento);
+       pstmt2.setInt(4, modpagamento);
        
        if (sconti!=null)
            applicaScontoOrdine(sconti, idOrder);
        
    }
    
-   public static ResultSet sceltaModPagamento (String utenteId) throws SQLException {
-       //Su un sottomenu a tendina compaiono le modalità di pagamento disponibili per l'utente attivo
-       
+   /**
+    * Su un sottomenu a tendina compaiono le modalità di pagamento disponibili per l'utente attivo
+    * @param utenteId id dell'utente
+    * @return MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA
+    * @throws SQLException 
+    */
+   public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
        //Esempio: UTENTE_ID = 423575;
        /*RISULTATO QUERY:
                     TITOLARECARTA_NOME      TITOLARECARTA_COGNOME   TIPOCARTA   NUMEROCARTACREDITO      DATASCADENZA
@@ -278,17 +324,30 @@ public class DBConnection {
        pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM MOD_PAGAMENTO WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setString(1, utenteId);
+       pstmt.setInt(1, utenteId);
        
        return pstmt.executeQuery();
    }
    
+   /**
+    * Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
+    * Se la variabile booleana libroRec è TRUE, inserisce una recensione di un prodotto, altrimenti di un venditore.
+    * @param idUtente utente che recensisce
+    * @param commento stringa, testo della recensione
+    * @param libroRec true: libro, false: venditore
+    * @param target id dell'elemento da recensire, venditore o libro
+    * @param voto valore da 1 a 5
+    * @throws SQLException 
+    */
    public static void creaRecensione(int idUtente, String commento, boolean libroRec, String target, int voto) throws SQLException {
-       /*Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
-       **Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
+       /*Esempio query :INSERT INTO "GRUPPO26"."RECENSIONI" (UTENTE_ID, COMMENTO, ISBN, VOTO)
        **               VALUES ('423572', 'Un libro meraviglioso, con forti spunti di riflessione. Da consigliare a tutti', '1', ‘5’)
-       **Se la variabile booleana libroRec è TRUE, inserisce una recensione di un prodotto, altrimenti di un venditore.
        */
+       
+       if (voto < 1)
+           voto = 1;
+       else if (voto > 5)
+           voto = 5;
        PreparedStatement pstmt;
        
        if ( libroRec )
@@ -304,7 +363,15 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   //Creazione di un nuovo utente
+   /**
+    * Creazione di un nuovo utente
+    * @param nome
+    * @param cognome
+    * @param mail
+    * @param password
+    * @param cellulare
+    * @throws SQLException 
+    */
    public static void creaUtente(String nome, String cognome, String mail, String password, String cellulare) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -319,6 +386,16 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Aggiornamento dei dati dell'utente
+    * @param id dell'utente da modificare, non cambia
+    * @param nome
+    * @param cognome
+    * @param mail
+    * @param password
+    * @param cellulare
+    * @throws SQLException 
+    */
    public static void aggiornaUtente(String id, String nome, String cognome, String mail, String password, String cellulare) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -333,6 +410,12 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Visualizza i dati di spedizione dell'utente
+    * @param idUtente
+    * @return CONTACT_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaRubricaUtente(String idUtente) throws SQLException {
        PreparedStatement pstmt;
        
@@ -349,6 +432,13 @@ public class DBConnection {
        */
    }
    
+   /**
+    * Eliminazione di un record da una tabella secondo i parametri
+    * @param id identificatore del record
+    * @param tabella nome della tabella da cui risiede il record
+    * @param nomeColonna nome dell'attributo dell'ID
+    * @throws SQLException 
+    */
    public static void eliminaRecord(String id, String tabella, String nomeColonna) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        pstmt = conn.prepareStatement("DELETE FROM " + tabella + " WHERE " + nomeColonna + " = ?");
@@ -356,6 +446,12 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Metodo di creazione dell'autore
+    * @param nome
+    * @param cognome
+    * @throws SQLException 
+    */
    public static void creaAutore(String nome, String cognome) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -368,6 +464,13 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Metodo di modifica di un autore
+    * @param id identificativo
+    * @param nome nuovo nome
+    * @param cognome nuovo cognome
+    * @throws SQLException 
+    */
    public static void aggiornaAutore(String id, String nome, String cognome) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -379,6 +482,18 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Creazione di un libro nell'entità LIBRI
+    * @param nomeLibro
+    * @param nEdizione
+    * @param isbn attenzione, è l'identificativo
+    * @param descrizione
+    * @param genere
+    * @param nPagine
+    * @param pesoSped
+    * @param dataUscita DD-MES-AAAA
+    * @throws SQLException 
+    */
    public static void creaLibro(String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -398,6 +513,19 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Metodo di modifica del libro
+    * @param oldISBN identificatore del libro
+    * @param nomeLibro
+    * @param nEdizione
+    * @param isbn nuovo ISBN
+    * @param descrizione
+    * @param genere
+    * @param nPagine
+    * @param pesoSped
+    * @param dataUscita
+    * @throws SQLException 
+    */
    public static void aggiornaLibro(String oldISBN, String nomeLibro, String nEdizione, String isbn, String descrizione, String genere, String nPagine, String pesoSped, String dataUscita) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -961,6 +1089,11 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   /**
+    * Inserendo un result set, restituisce il numero di righe
+    * @param resultSet
+    * @return intero, numero di righe
+    */
    public static int contaRigheResultSet(ResultSet resultSet) {
        int size;
     try {

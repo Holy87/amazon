@@ -20,7 +20,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 /**
- *
+ * Classe che serve per gli oggetti. Non riuscivo ad ereditare la classe,
+ * quindi ho dovuto farne una unica che cambiasse comportamento a seconda
+ * della tabella.
  * @author Francesco
  */
 public final class TabOggetti extends javax.swing.JPanel {
@@ -66,7 +68,13 @@ public final class TabOggetti extends javax.swing.JPanel {
         );
         //impostaPulsanteServizi();
     }
-        
+    
+    /**
+     * Imposta l'entità della tabella da cui prendere i dati.
+     * @param entita stringa nome della tabella.
+     * @param finestra finestra di modifica e aggiunta dei dati
+     * @param mainW finestra su cui si basa il jPane.
+     */
     public void impostaInterfaccia(String entita, EditForm finestra, MainWindow mainW) {
         nomeTabella = entita;
         finestraEdit = finestra;
@@ -197,10 +205,16 @@ public final class TabOggetti extends javax.swing.JPanel {
         }
     }
     
+    /**
+     * Attivazione del secondo pulsante inizialmente impostato come disabilitato
+     */
     public void attivaServiceButton2() {
         serviceButton2.setEnabled(true);
     }
     
+    /**
+     * Attivazione del terzo pulsante di servizio, inizialmente disabilitato
+     */
     public void attivaServiceButton3() {
         serviceButton3.setEnabled(true);
     }
@@ -274,7 +288,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     /**
-     * Metodo che viene chiamato alla prima connessione
+     * Metodo che viene chiamato alla prima connessione con il database
      */
     public void connectTable() {
         aggiornaTabella();
@@ -298,6 +312,9 @@ public final class TabOggetti extends javax.swing.JPanel {
         
     }
     
+    /**
+     * Aggiorna la tabella secondo la ricerca dell'utente
+     */
     public void aggiornaTabellaConQuery() {
         if (ultimaRicerca == null)
             aggiornaTabella();
@@ -358,6 +375,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      * Cerca il valore o parte in tutti i campi
      * Il % prima e dopo una stringa commette un LIKE
      * Si adatta al ResultSet leggendo i nomi delle colonne.
+     * @param query stringa da cercare
      */
     private void eseguiQuerySuTabella(String query){
         LinkedList tab = new ListaTipi().getTipi().get(getTableName());

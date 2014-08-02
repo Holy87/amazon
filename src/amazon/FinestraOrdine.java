@@ -16,8 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -106,7 +104,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void impostaMetodiPagamento() {
         try {
-            ResultSet pagamenti = DBConnection.sceltaModPagamento(""+idUtente);
+            ResultSet pagamenti = DBConnection.sceltaModPagamento(idUtente);
             cPagamento.removeAllItems();
             System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
             //pagamenti.first();

@@ -89,14 +89,26 @@ public class MainWindow extends javax.swing.JFrame {
      * @param nome nome per la visualizzazione
      */
     public void impostaUtente(int id, String nome) {
-        utenteID = id;
-        nomeUtente = nome;
-        lUtente.setText(nome);
-        mAcquisto.setEnabled(true);
-        mCarrello.setEnabled(true);
-        tabVenditori.attivaServiceButton3();
-        tabLibri.attivaServiceButton2();
-        JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
+        if (id == 0) {
+            utenteID = 0;
+            nomeUtente = null;
+            lUtente.setText("");
+            mAcquisto.setEnabled(false);
+            mCarrello.setEnabled(false);
+            mDesideri.setEnabled(false);
+            mOrdini.setEnabled(false);
+        } else {
+            utenteID = id;
+            nomeUtente = nome;
+            lUtente.setText(nome);
+            mAcquisto.setEnabled(true);
+            mCarrello.setEnabled(true);
+            mDesideri.setEnabled(true);
+            mOrdini.setEnabled(true);
+            tabVenditori.attivaServiceButton3();
+            tabLibri.attivaServiceButton2();
+            JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
+        }
     }
     
     public void gestisciUtente(){
@@ -236,6 +248,7 @@ public class MainWindow extends javax.swing.JFrame {
         mNuovo.setText("Nuovo");
         mNuovo.setEnabled(false);
 
+        mUtente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mUtente.setText("Utente");
         mUtente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -244,6 +257,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mUtente);
 
+        mLibro.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mLibro.setText("Libro");
         mLibro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -252,6 +266,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mLibro);
 
+        mEditore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mEditore.setText("Editore");
         mEditore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -260,6 +275,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mEditore);
 
+        mVenditore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mVenditore.setText("Venditore");
         mVenditore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -294,7 +310,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3.add(mAcquisto);
 
         mDesideri.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mDesideri.setText("Lista desideri");
+        mDesideri.setText("Lista Desideri");
         mDesideri.setEnabled(false);
         mDesideri.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,7 +320,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3.add(mDesideri);
 
         mOrdini.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mOrdini.setText("Storico ordini");
+        mOrdini.setText("Storico Ordini");
         mOrdini.setEnabled(false);
         mOrdini.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -366,6 +382,7 @@ public class MainWindow extends javax.swing.JFrame {
             try{
                 DBConnection.CloseConnection();
                 checkState(false);
+                impostaUtente(0, null);
             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(rootPane, "Errore nella disconnessione al database: " + e.toString(), null, ERROR_MESSAGE);

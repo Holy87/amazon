@@ -40,6 +40,9 @@
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="mUtente">
                   <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Ctrl+Alt+U"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Utente"/>
                   </Properties>
                   <Events>
@@ -48,6 +51,9 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="mLibro">
                   <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Ctrl+Alt+L"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Libro"/>
                   </Properties>
                   <Events>
@@ -56,6 +62,9 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="mEditore">
                   <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Ctrl+Alt+E"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Editore"/>
                   </Properties>
                   <Events>
@@ -64,6 +73,9 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="mVenditore">
                   <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Ctrl+Alt+V"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Venditore"/>
                   </Properties>
                   <Events>
@@ -107,7 +119,7 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+Alt+D"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Lista desideri"/>
+                <Property name="text" type="java.lang.String" value="Lista Desideri"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
@@ -119,7 +131,7 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+Alt+O"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Storico ordini"/>
+                <Property name="text" type="java.lang.String" value="Storico Ordini"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
