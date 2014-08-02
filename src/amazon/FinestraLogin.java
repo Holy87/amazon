@@ -44,10 +44,9 @@ public class FinestraLogin extends javax.swing.JDialog {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Effettua l'accesso");
         setAlwaysOnTop(true);
-        setLocationByPlatform(true);
         setModal(true);
         setResizable(false);
         setType(java.awt.Window.Type.POPUP);

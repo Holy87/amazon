@@ -270,7 +270,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu1.add(mNuovo);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem2.setText("Esci");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -293,10 +293,17 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(mAcquisto);
 
+        mDesideri.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mDesideri.setText("Lista desideri");
         mDesideri.setEnabled(false);
+        mDesideri.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDesideriActionPerformed(evt);
+            }
+        });
         jMenu3.add(mDesideri);
 
+        mOrdini.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mOrdini.setText("Storico ordini");
         mOrdini.setEnabled(false);
         mOrdini.addActionListener(new java.awt.event.ActionListener() {
@@ -399,6 +406,11 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_mOrdiniActionPerformed
 
+    private void mDesideriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDesideriActionPerformed
+        FinestraListaDesideri listaDesideri = new FinestraListaDesideri(this, false, utenteID);
+        listaDesideri.setVisible(true);
+    }//GEN-LAST:event_mDesideriActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -415,7 +427,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void checkState(){checkState(DBConnection.connected());}
     
     /**
-     * @param args the command line arguments
+     * @param args nome utente e password
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
