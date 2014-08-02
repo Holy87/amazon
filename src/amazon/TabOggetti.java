@@ -124,12 +124,12 @@ public final class TabOggetti extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     private void setService2() {
         switch (nomeTabella) {
-                case "UTENTI": serviceButton2.setText("Gestione utente");
+//                case "UTENTI": serviceButton2.setText("Gestione utente");
                 /*serviceButton2.addActionListener(new java.awt.event.ActionListener() {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaUtente(evt);}});
                      */
-                break;
+//                break;
                    
 
 
