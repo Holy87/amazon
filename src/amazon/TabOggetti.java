@@ -20,7 +20,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 
 /**
- *
+ * Classe che serve per gli oggetti. Non riuscivo ad ereditare la classe,
+ * quindi ho dovuto farne una unica che cambiasse comportamento a seconda
+ * della tabella.
  * @author Francesco
  */
 public final class TabOggetti extends javax.swing.JPanel {
@@ -66,7 +68,13 @@ public final class TabOggetti extends javax.swing.JPanel {
         );
         //impostaPulsanteServizi();
     }
-        
+    
+    /**
+     * Imposta l'entità della tabella da cui prendere i dati.
+     * @param entita stringa nome della tabella.
+     * @param finestra finestra di modifica e aggiunta dei dati
+     * @param mainW finestra su cui si basa il jPane.
+     */
     public void impostaInterfaccia(String entita, EditForm finestra, MainWindow mainW) {
         nomeTabella = entita;
         finestraEdit = finestra;
@@ -124,13 +132,22 @@ public final class TabOggetti extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     private void setService2() {
         switch (nomeTabella) {
-//            case "UTENTI": serviceButton2.setText("Gestione utente");
+//                case "UTENTI": serviceButton2.setText("Gestione utente");
+                /*serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaUtente(evt);}});
+                     */
+//                break;
+                   
+
+
+
+
+//            
 //                /*GESTIONE METODO: Apre una finestra dove selezionare 5 cose:
 //                **1) Visualizza liste desideri
 //                **2) Visualizza carrello
 //                **3) Visualizza ordini già effettuati
-//                **4) Crea ordine
-//                **5) Crea recensione libro/venditore
 //            
 //                **1) Visualizza liste desideri chiamerà il metodo in DBConnection visualizzaListeDesideri,
 //                **   che riceverà in ingresso l'ID dell'utente selezionato.
@@ -139,13 +156,6 @@ public final class TabOggetti extends javax.swing.JPanel {
 //                **   in fondo alla pagina il costo complessivo in base alla somma dei costi degli articoli nel carrello.
 //                **3) Visualizza ordini chiamerà il metodo in DBConnection visualizzaOrdini,
 //                **   il quale riceverà sempre in ingresso l'ID dell'utente.
-//                **4) DA CREARE ALL'ULTIMO
-//                **5) Il metodo creaRecensione riceve in ingresso:
-//                     - IDUtente
-//                     - Il testo della recensione
-//                     - Il tipo di recensione tramite un valore TRUE se si recensisce un libro, FALSE se si recensisce un venditore
-//                     - L'ID del prodotto/venditore del prodotto che si vuole recensire (da visualizzare tramite le funzioni di visualizzazione dei prodotti/venditori)
-//                     - Il voto da 1 a 5
 //                */
 //                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
 //                    @Override
@@ -195,10 +205,16 @@ public final class TabOggetti extends javax.swing.JPanel {
         }
     }
     
+    /**
+     * Attivazione del secondo pulsante inizialmente impostato come disabilitato
+     */
     public void attivaServiceButton2() {
         serviceButton2.setEnabled(true);
     }
     
+    /**
+     * Attivazione del terzo pulsante di servizio, inizialmente disabilitato
+     */
     public void attivaServiceButton3() {
         serviceButton3.setEnabled(true);
     }
@@ -209,7 +225,12 @@ public final class TabOggetti extends javax.swing.JPanel {
         String nome = (String)utente.get(1) + " " + (String)utente.get(2);
         mainWindow.impostaUtente(id, nome);
     }
-    
+    /*
+    private void visualizzaUtente(java.awt.event.ActionEvent evt) {
+        FinestraInfoUtente utente = new FinestraInfoUtente(mainWindow, false, getSelectedID());
+        utente.setVisible(true);
+    }
+    */
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
         FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, false, getSelectedID());
         libriAutore.setVisible(true);
@@ -267,7 +288,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     /**
-     * Metodo che viene chiamato alla prima connessione
+     * Metodo che viene chiamato alla prima connessione con il database
      */
     public void connectTable() {
         aggiornaTabella();
@@ -291,6 +312,9 @@ public final class TabOggetti extends javax.swing.JPanel {
         
     }
     
+    /**
+     * Aggiorna la tabella secondo la ricerca dell'utente
+     */
     public void aggiornaTabellaConQuery() {
         if (ultimaRicerca == null)
             aggiornaTabella();
@@ -351,6 +375,7 @@ public final class TabOggetti extends javax.swing.JPanel {
      * Cerca il valore o parte in tutti i campi
      * Il % prima e dopo una stringa commette un LIKE
      * Si adatta al ResultSet leggendo i nomi delle colonne.
+     * @param query stringa da cercare
      */
     private void eseguiQuerySuTabella(String query){
         LinkedList tab = new ListaTipi().getTipi().get(getTableName());

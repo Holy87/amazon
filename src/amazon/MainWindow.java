@@ -89,14 +89,26 @@ public class MainWindow extends javax.swing.JFrame {
      * @param nome nome per la visualizzazione
      */
     public void impostaUtente(int id, String nome) {
-        utenteID = id;
-        nomeUtente = nome;
-        lUtente.setText(nome);
-        mAcquisto.setEnabled(true);
-        mCarrello.setEnabled(true);
-        tabVenditori.attivaServiceButton3();
-        tabLibri.attivaServiceButton2();
-        JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
+        if (id == 0) {
+            utenteID = 0;
+            nomeUtente = null;
+            lUtente.setText("");
+            mAcquisto.setEnabled(false);
+            mCarrello.setEnabled(false);
+            mDesideri.setEnabled(false);
+            mOrdini.setEnabled(false);
+        } else {
+            utenteID = id;
+            nomeUtente = nome;
+            lUtente.setText(nome);
+            mAcquisto.setEnabled(true);
+            mCarrello.setEnabled(true);
+            mDesideri.setEnabled(true);
+            mOrdini.setEnabled(true);
+            tabVenditori.attivaServiceButton3();
+            tabLibri.attivaServiceButton2();
+            JOptionPane.showMessageDialog(this, nome + " è correttamente impostato come utente attivo.");
+        }
     }
     
     public void gestisciUtente(){
@@ -173,7 +185,8 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mAcquisto = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        mDesideri = new javax.swing.JMenuItem();
+        mOrdini = new javax.swing.JMenuItem();
         mCarrello = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -188,7 +201,7 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
+            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -235,6 +248,7 @@ public class MainWindow extends javax.swing.JFrame {
         mNuovo.setText("Nuovo");
         mNuovo.setEnabled(false);
 
+        mUtente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mUtente.setText("Utente");
         mUtente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -243,6 +257,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mUtente);
 
+        mLibro.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mLibro.setText("Libro");
         mLibro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,6 +266,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mLibro);
 
+        mEditore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mEditore.setText("Editore");
         mEditore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,6 +275,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mEditore);
 
+        mVenditore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mVenditore.setText("Venditore");
         mVenditore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -269,7 +286,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenu1.add(mNuovo);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         jMenuItem2.setText("Esci");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -283,7 +300,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu3.setText("Azioni utente");
 
         mAcquisto.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mAcquisto.setText("Acquisto libri");
+        mAcquisto.setText("Acquisto Libri");
         mAcquisto.setEnabled(false);
         mAcquisto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -292,12 +309,28 @@ public class MainWindow extends javax.swing.JFrame {
         });
         jMenu3.add(mAcquisto);
 
-        jMenuItem4.setText("Lista desideri");
-        jMenuItem4.setEnabled(false);
-        jMenu3.add(jMenuItem4);
+        mDesideri.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mDesideri.setText("Lista Desideri");
+        mDesideri.setEnabled(false);
+        mDesideri.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mDesideriActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mDesideri);
+
+        mOrdini.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mOrdini.setText("Storico Ordini");
+        mOrdini.setEnabled(false);
+        mOrdini.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mOrdiniActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mOrdini);
 
         mCarrello.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mCarrello.setText("Vai al carrello");
+        mCarrello.setText("Vai al Carrello");
         mCarrello.setEnabled(false);
         mCarrello.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -349,6 +382,7 @@ public class MainWindow extends javax.swing.JFrame {
             try{
                 DBConnection.CloseConnection();
                 checkState(false);
+                impostaUtente(0, null);
             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(rootPane, "Errore nella disconnessione al database: " + e.toString(), null, ERROR_MESSAGE);
@@ -385,6 +419,16 @@ public class MainWindow extends javax.swing.JFrame {
         finestraVenditore.show(ADDN, null, tabVenditori);
     }//GEN-LAST:event_mVenditoreActionPerformed
 
+    private void mOrdiniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mOrdiniActionPerformed
+        FinestraStoricoOrdini finestraSO = new FinestraStoricoOrdini(this, false, utenteID);
+        finestraSO.setVisible(true);
+    }//GEN-LAST:event_mOrdiniActionPerformed
+
+    private void mDesideriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDesideriActionPerformed
+        FinestraListaDesideri finestraLD = new FinestraListaDesideri(this, false, utenteID);
+        finestraLD.setVisible(true);
+    }//GEN-LAST:event_mDesideriActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -401,7 +445,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void checkState(){checkState(DBConnection.connected());}
     
     /**
-     * @param args the command line arguments
+     * @param args nome utente e password
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -465,15 +509,16 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lUtente;
     private javax.swing.JMenuItem mAcquisto;
     private javax.swing.JMenuItem mCarrello;
+    private javax.swing.JMenuItem mDesideri;
     private javax.swing.JMenuItem mEditore;
     private javax.swing.JMenuItem mLibro;
     private javax.swing.JMenu mNuovo;
+    private javax.swing.JMenuItem mOrdini;
     private javax.swing.JMenuItem mUtente;
     private javax.swing.JMenuItem mVenditore;
     private amazon.TabOggetti tabAutori;

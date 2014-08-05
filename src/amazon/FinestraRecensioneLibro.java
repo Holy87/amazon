@@ -83,6 +83,7 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
         setResizable(false);
 
         tCommento.setColumns(20);
+        tCommento.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         tCommento.setLineWrap(true);
         tCommento.setRows(5);
         tCommento.setToolTipText("Inserisci la tua recensione");
