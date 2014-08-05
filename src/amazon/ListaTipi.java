@@ -23,10 +23,17 @@ public class ListaTipi {
         inizializzaTipi();
     }
     
+    /**
+     * Non c'è bisogno di spiegare a cosa serve.
+     * @return 
+     */
     public Hashtable<String, LinkedList> getTipi() {
         return tabella;
     }
     
+    /**
+     * Inizializzazione. Viene chiamato dal costruttore.
+     */
     private void inizializzaTipi(){
         /*
         i: tipo intero

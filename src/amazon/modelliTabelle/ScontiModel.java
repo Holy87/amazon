@@ -21,16 +21,33 @@ public class ScontiModel extends AbstractTableModel {
         this.sconti = sconti;
     }
 
+    /**
+     * Ottieni il conteggio delle righe
+     * @return numero di righe
+     */
     @Override
     public int getRowCount() {
         return sconti.size();
     }
 
+    /**
+     * ottieni il conteggio delle colonne
+     * @return sempre 2
+     */
     @Override
     public int getColumnCount() {
         return 2;
     }
 
+    /**
+     * Ottieni il valore alla cella specificata
+     * Se i1 è 0, restituisce il codice promozionale
+     * Se i1 è 1, restituisce il bonus sconto
+     * Se i1 è un altro numero, restituisce null
+     * @param i riga
+     * @param i1 colonna
+     * @return 
+     */
     @Override
     public Object getValueAt(int i, int i1) {
         switch (i1) {
@@ -40,6 +57,11 @@ public class ScontiModel extends AbstractTableModel {
         }
     }
     
+    /**
+     * Ottiene il nome della colonna
+     * @param i indice di colonna
+     * @return nome colonna
+     */
     @Override
     public String getColumnName(int i) {
         switch (i) {
@@ -49,6 +71,10 @@ public class ScontiModel extends AbstractTableModel {
         }
     }
     
+    /**
+     * Imposta la lista degli sconti nella tabella
+     * @param sconti lista di elementi sconti
+     */
     public void setSconti(LinkedList<Scontotemp> sconti) {
         this.sconti = sconti;
         fireTableStructureChanged();

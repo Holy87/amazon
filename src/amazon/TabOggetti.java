@@ -332,7 +332,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         ultimaRicerca = pstmt;
         try {
             rs = pstmt.executeQuery();
-            modelloTabella.setResultSet(rs);
+            modelloTabella.setRS(rs);
             rs.absolute(cursore);
             mostraDati();
         } catch (SQLException ex) {

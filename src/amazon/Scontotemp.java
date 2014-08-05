@@ -11,18 +11,31 @@ package amazon;
  * @author pixel89
  */
 public class Scontotemp {
-    private String codPromo;
+    private String codPromo; //codice promozionale
     private double sconto;
     
+    /**
+     * Costruttore
+     * @param codPromo Stringa, codice alfanumerico
+     * @param sconto valore con la virgola, sconto assoluto
+     */
     public Scontotemp(String codPromo, double sconto)   {
         this.codPromo=codPromo;
         this.sconto=sconto;
     }
     
+    /**
+     * Ottiene il codice promozionale
+     * @return 
+     */
     public String getcodPromo()    {
         return codPromo;
     }
     
+    /**
+     * Ottiene lo sconto assoluto
+     * @return 
+     */
     public double getSconto() {
         return sconto;
     }

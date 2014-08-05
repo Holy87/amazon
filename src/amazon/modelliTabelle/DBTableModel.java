@@ -28,17 +28,11 @@ public class DBTableModel extends AbstractTableModel {
       super();
       rs = r;
     }
-    
-    /**
-    * Imposta il Resultset su cui si basa il modello.
-    * 
-    * @param r il ResultSet su cui basare il modello
-    */
-   public void setResultSet(ResultSet r) {
-      rs = r;
-      fireTableStructureChanged();
-   }
 
+   /**
+    * Restituisce il numero delle righe
+    * @return numero di righe della tabella
+    */
     @Override
     public int getRowCount() {
         if (!DBConnection.connected()) {
@@ -60,6 +54,10 @@ public class DBTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Restituisce il numero di colonne della tabella
+     * @return 
+     */
     @Override
     public int getColumnCount() {
         if (rs == null)
@@ -72,12 +70,24 @@ public class DBTableModel extends AbstractTableModel {
         }
     }
     
+    /**
+     * Restituisce il nome della colonn all'indirizzo i
+     * @param columnIndex numero di colonna (da 1)
+     * @return nome della colonna
+     * @throws SQLException 
+     */
     public String getDBColumnName(int columnIndex) throws SQLException {
         if (rs == null)
             return "";
         return rs.getMetaData().getColumnName(columnIndex);
     }
     
+    /**
+     * Restituisce il nome dell'ID della tabella (presumibilmente è la prima
+     * colonna)
+     * @return
+     * @throws SQLException 
+     */
     public String getDBID() throws SQLException {
         return getDBColumnName(1);
     }
@@ -105,6 +115,11 @@ public class DBTableModel extends AbstractTableModel {
         return ob;
     }
     
+    /**
+     * Ottiene la somma degli elementi di una colonna
+     * @param columnIndex
+     * @return 
+     */
     public double getColumnSum(int columnIndex) {
         double sum = 0;
         for (int i = 0; i < getRowCount(); i++) {
@@ -117,11 +132,22 @@ public class DBTableModel extends AbstractTableModel {
         return sum;
     }
     
+    /**
+     * Non fa nulla, i dati del DB non possono essere modificati dalla tabella
+     * @param aValue
+     * @param row
+     * @param column 
+     */
     @Override
     public void setValueAt(Object aValue, int row, int column) {
-        //devo metterci qua qualcosa
+        //NON FA NULLA
     }
     
+    /**
+     * Ottiene il nome della colonna dal resultSet
+     * @param col
+     * @return 
+     */
     @Override
     public String getColumnName(int col) {
         col++;
@@ -138,12 +164,22 @@ public class DBTableModel extends AbstractTableModel {
         return res;
     }
     
+    /**
+     * Imposta un nuovo resultSet della tabella
+     * @param r 
+     */
     public void setRS(ResultSet r) {
       rs = r;
       fireTableStructureChanged();
 
    }
     
+    /**
+     * Disattiva la modifica per tutte le celle della tabella
+     * @param row
+     * @param col
+     * @return 
+     */
    @Override
    public boolean isCellEditable(int row, int col) {
       return false;
