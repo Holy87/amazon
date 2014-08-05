@@ -129,7 +129,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     @SuppressWarnings("Convert2Lambda")
-    public final void impostaTabella() {
+    private void impostaTabella() {
         modelloTabellaArticoli = new DBTableModel(rsArticoli);
         tabellaArticoli.setModel(modelloTabellaArticoli); //metto il modellotabella nel
         tabellaArticoli.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
@@ -146,7 +146,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
         
     }
     
-    private final void impostaTabella2(){
+    @SuppressWarnings("Convert2Lambda")
+    private void impostaTabella2(){
         modelloTabellaSconti = new ScontiModel(sconti);
         tabellaSconti.setModel(modelloTabellaSconti);
         tabellaSconti.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
@@ -291,6 +292,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         tabellaArticoli.setRowSelectionInterval(cursoreSconti - 1, cursoreSconti - 1);
     }
     
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     private void aggiornaIndirizzoSelezionato() {
         try {
             indirizzoSelezionato = Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
