@@ -12,6 +12,8 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -155,7 +157,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      */
     private void aggiornaListeDesideri() {
         LinkedList<ListaDesideri> listeDesideri = new LinkedList();
-        ResultSet liste = null;
+        try {
+            ResultSet liste = DBConnection.visualizzaListeUtente(idUtente);
+        } catch (SQLException ex) {
+            mostraErrore();
+        }
     }
     
     /**
