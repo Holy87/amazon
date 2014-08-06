@@ -155,7 +155,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private void aggiornaTabella2() {
         try {
             rs2 = DBConnection.visualizzaFormatoLibroVenditore(isbn,
-                    modelloTabellaVenditori.getValueAt(cursore-1, 0).toString());
+                    Integer.parseInt(modelloTabellaVenditori.getValueAt(cursore-1, 0).toString()));
             modelloTabellaFormati.setRS(rs2);
             cursore2 = 1;
             rs2.absolute(cursore2);
@@ -294,8 +294,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili.\nVerrà comunque aggiunto al carrello.");
         setVisible(false);
         try {
-            DBConnection.inserisciArticoloCarrello(idUtente, isbn, formatoId,
-                    venditoreId, stato, getQuantita());
+            DBConnection.inserisciArticoloCarrello(idUtente, prodID, getQuantita());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);

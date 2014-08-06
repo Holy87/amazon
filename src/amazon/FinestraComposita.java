@@ -26,7 +26,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
      * Creates new form FinestraComposita
      * @param id è l'ID dell'elemento da inserire nella query per il resultS.
      */
-    public FinestraComposita(java.awt.Frame parent, boolean modal, String id) {
+    public FinestraComposita(java.awt.Frame parent, boolean modal, int id) {
         super(parent, modal);
         this.id = id;
         initComponents();
@@ -36,7 +36,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private ResultSet rs;
     private DBTableModel modelloTabella;
     private int cursore = 1;
-    protected String id;
+    protected int id;
     
     /**
      * Impostazione della tabella sul resultSet.
