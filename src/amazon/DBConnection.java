@@ -317,6 +317,8 @@ public class DBConnection {
        if (sconti!=null)
            applicaScontoOrdine(sconti, idOrder);
        
+       pstmt2.close();
+       
    }
    
    /**
@@ -884,7 +886,6 @@ public class DBConnection {
     * In questo campo compaiono i voti medi dei venditori
     * ISBN, VOTO_MEDIO
     * @param venditoreId venditore
-    * @param votoMedio voto medio fra le recensioni degli utenti
     * @return double valore del voto
     * @throws SQLException 
     */
@@ -933,7 +934,7 @@ public class DBConnection {
            break;
            case 2: nomePrivacy = "Pubblica";
            break;
-           //default: nomePrivacy = "?";
+           default: nomePrivacy = "Privata";
        }
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI (UTENTE_ID, LISTA_NOME, LISTA_PRIVACY) VALUES(?,?,?)");
@@ -971,7 +972,7 @@ public class DBConnection {
            break;
            case 2: nomePrivacy = "Pubblica";
            break;
-           //default: nomePrivacy = "?";
+           default: nomePrivacy = "Privata";
        }
        pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET LISTA_PRIVACY=? WHERE LISTA_ID = ?");
        pstmt.setString(1, nomePrivacy);
