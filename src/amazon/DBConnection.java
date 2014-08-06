@@ -1018,7 +1018,7 @@ public class DBConnection {
     */
    public static void inserisciArticoloLista(int listaID, int prodID, String dataPrezzo) throws SQLException {
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("INSERT INTO COMPLISTADESIDERI(LISTA_ID, PROD_ID, DATAAGGIUNTA_PREZZO) VALUES(?,?,?)",
+        pstmt = conn.prepareStatement("INSERT INTO COMPLISTA_DESIDERI(LISTA_ID, PROD_ID, DATAAGGIUNTA_PREZZO) VALUES(?,?,?)",
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, listaID);
