@@ -92,6 +92,7 @@ public class EsempioTabella extends javax.swing.JDialog {
         try {
             rs.absolute(tabella.getSelectionModel().getMinSelectionIndex() + 1);
             mostraDati();
+            System.out.println("ok");
         } catch (SQLException ex) {
             mostraErrore(ex);
         }

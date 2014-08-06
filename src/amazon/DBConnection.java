@@ -866,7 +866,6 @@ public class DBConnection {
     * In questo campo compaiono i voti medi dei libri presenti nell'archivio
     * ISBN, VOTO_MEDIO
     * @param isbn libro
-    * @param votoMedio voto medio fra le recensioni degli utenti
     * @return double valore del voto
     * @throws SQLException 
     */
@@ -876,8 +875,9 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
-
-       return pstmt.executeQuery().getDouble(2);
+       ResultSet rs = pstmt.executeQuery();
+       rs.first();
+       return rs.getDouble(1);
    }
    
      /**
@@ -925,7 +925,7 @@ public class DBConnection {
     * @throws SQLException 
     */
    public static void creaListaDesideri(int utenteID, String nomeLista, int privacy) throws SQLException {
-       String nomePrivacy;
+       String nomePrivacy = "Privata";
        switch (privacy) {
            case 0: nomePrivacy = "Privata";
            break;
@@ -933,7 +933,7 @@ public class DBConnection {
            break;
            case 2: nomePrivacy = "Pubblica";
            break;
-           default: nomePrivacy = "?";
+           //default: nomePrivacy = "?";
        }
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI (UTENTE_ID, LISTA_NOME, LISTA_PRIVACY) VALUES(?,?,?)");
@@ -963,7 +963,7 @@ public class DBConnection {
    public static void modificaListaDesideri(int listaID, int privacy) throws SQLException {
        
        PreparedStatement pstmt;
-       String nomePrivacy;
+       String nomePrivacy = "Privata";
        switch (privacy) {
            case 0: nomePrivacy = "Privata";
            break;
@@ -971,13 +971,13 @@ public class DBConnection {
            break;
            case 2: nomePrivacy = "Pubblica";
            break;
-           default: nomePrivacy = "?";
+           //default: nomePrivacy = "?";
        }
        pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET LISTA_PRIVACY=? WHERE LISTA_ID = ?");
        pstmt.setString(1, nomePrivacy);
        pstmt.setInt(2, listaID);
        
-       pstmt.executeQuery();
+       pstmt.executeUpdate();
    }
    
    /**
@@ -988,10 +988,10 @@ public class DBConnection {
    public static void eliminaListaDesideri(int listaID) throws SQLException {
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("DELETE FROM LISTA_DESIDERI WHERE LISTA_ID=?");
+       pstmt = conn.prepareStatement("DELETE FROM LISTA_DESIDERI WHERE LISTA_ID = ?");
        pstmt.setInt(1, listaID);
        
-       pstmt.executeQuery();
+       pstmt.execute();
    }   
    
    /**
@@ -1016,14 +1016,14 @@ public class DBConnection {
     * @param dataPrezzo stringa, in formato dd-MES-aaaa
     * @throws SQLException 
     */
-   public static void inserisciArticoloLista(int listaID, int prodID, String dataPrezzo) throws SQLException {
+   public static void inserisciArticoloLista(int listaID, int prodID, double dataPrezzo) throws SQLException {
         PreparedStatement pstmt;
         pstmt = conn.prepareStatement("INSERT INTO COMPLISTA_DESIDERI(LISTA_ID, PROD_ID, DATAAGGIUNTA_PREZZO) VALUES(?,?,?)",
         ResultSet.TYPE_SCROLL_INSENSITIVE,
         ResultSet.CONCUR_READ_ONLY);
         pstmt.setInt(1, listaID);
         pstmt.setInt(2, prodID);
-        pstmt.setString(3, dataPrezzo);   
+        pstmt.setDouble(3, dataPrezzo);   
         
         pstmt.executeQuery(); 
     }
@@ -1106,7 +1106,7 @@ public class DBConnection {
        * In questo campo compaiono le liste dei desideri di un singolo utente
        * LISTA_ID, LISTA_NOME, LISTA_PRIVACY
        * @param utenteId intero, identificatore dell'utente
-       * @return resultset delle liste desideri dell'utente
+       * @return resultset delle liste desideri dell'utente LISTA_ID, LISTA_NOME, LISTA_PRIVACY
        * @throws SQLException 
        */
    public static ResultSet visualizzaListeUtente(int utenteId) throws SQLException   {
@@ -1127,7 +1127,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaArticoliListaUtente(int listaID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE LISTA_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO NATURAL JOIN MAGAZZINO_LIBRI WHERE LISTA_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, listaID);

@@ -50,7 +50,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     
     private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
     private int disponibilita, pagine, idUtente, formatoId, venditoreId, prodId;
-    private long voto; 
+    private double voto; 
     private java.awt.Dialog padre;
     
     private LinkedList<ListaDesideri> listeDesideriUtente;
@@ -114,7 +114,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             }
             data = libro.getString(19).substring(0, 10);
             try {
-            voto  = 1;//Long.parseLong(libro.getString("1.1"));
+            voto  = DBConnection.visualizzaVotomedioLibro(isbn);
             } catch(NumberFormatException ex) {
                 voto = 0;
             }
@@ -181,7 +181,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             if (!"".equals(nomeLista)) {
                 try {
                     DBConnection.creaListaDesideri(idUtente, nomeLista, prodId);
-                    DBConnection.inserisciArticoloLista(DBConnection.ultimaListaDesideri(), prodId, prezzo);
+                    DBConnection.inserisciArticoloLista(DBConnection.ultimaListaDesideri(), prodId, Double.parseDouble(prezzo));
                     JOptionPane.showMessageDialog(this, titolo + " aggiunto a " + nomeLista);
                 } catch (SQLException ex) {
                     mostraErrore(ex);
@@ -192,7 +192,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } else {
             try {
                 ListaDesideri lista = listeDesideriUtente.get(listeDesideri.getSelectedIndex());
-                DBConnection.inserisciArticoloLista(lista.getIdLista(), prodId, prezzo);
+                DBConnection.inserisciArticoloLista(lista.getIdLista(), prodId, Double.parseDouble(prezzo));
                 JOptionPane.showMessageDialog(this, titolo + " aggiunto a " + lista.getNomeLista());
             } catch (SQLException ex) {
                 mostraErrore(ex);
@@ -309,7 +309,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         errore += "\nCodice: " + ex.getErrorCode();
         errore += "\nMessaggio: " + ex.getMessage();
         errore += "\n\n" + ex.getSQLState();
-        JOptionPane.showMessageDialog(this, "Errore: " + errore, null, ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Errore connessione al database: " + errore, null, ERROR_MESSAGE);
     }
     
     /**

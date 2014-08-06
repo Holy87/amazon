@@ -9,8 +9,6 @@ package amazon;
 import amazon.modelliTabelle.DBTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -32,6 +30,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         super(parent, modal);
         utenteID = utente;
         initComponents();
+        inizializzaComboBox();
         impostaTabella();           //liste desideri
         impostaTabellaArticoli();   //articoli della lista
         controllaSeUltima();
@@ -43,6 +42,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private DBTableModel modelloArticoli;
     private int cursoreDesideri = 1; //memorizza la riga selezionata
     private int cursoreArticoli = 1; //memorizza la riga selezionata negli art.
+    private boolean daModificare = false;
     
     /**
      * Inizializza i dati della tabella, assegnandogli il modello e il rs.
@@ -70,7 +70,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
      */
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabellaArticoli() {
-        modelloTabella = new DBTableModel(rsArticoli);//inserire il resultset nel costr.
+        modelloArticoli = new DBTableModel(rsArticoli);//inserire il resultset nel costr.
         tabellaArticoli.setModel(modelloArticoli); //metto il modellotabella nel
         tabellaArticoli.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
         tabellaArticoli.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -103,6 +103,15 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         }
     }
     
+    private void inizializzaComboBox() {
+        daModificare = false;
+        comboPrivacy.removeAllItems();
+        comboPrivacy.addItem("Privata");
+        comboPrivacy.addItem("Condivisa");
+        comboPrivacy.addItem("Pubblica");
+        daModificare = true;
+    }
+    
     /**
      * Aggiorna i dati della tabella articoli a seconda della lista selezionata.
      */
@@ -117,6 +126,8 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
             mostraDatiArticoli();           //imposta la selezione a riga singola
         } catch (SQLException ex) {
             mostraErrore(ex);
+        } catch (NullPointerException ex) {
+            System.out.println("Tabella vuota");
         }
     }
     
@@ -243,13 +254,17 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
      * Modifica la privacy. Viene chiamato dall'actionListener del comboBox.
      */
     private void modificaPrivacy() {
+        if (daModificare == false)
+            return;
         int selezione = comboPrivacy.getSelectedIndex();
+        System.out.println(selezione);
         try {
             DBConnection.modificaListaDesideri(idLista(), selezione);
+            aggiornaTabella();
         } catch (SQLException ex) {
             comboPrivacy.setSelectedIndex(ottieniPrivacy());
             mostraErrore(ex);
-        }
+        } catch (NullPointerException ex) {}
     }
     
     /**
@@ -297,7 +312,9 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     }
     
     private void aggiornaComboPrivacy() {
+        daModificare = false;
         comboPrivacy.setSelectedIndex(ottieniPrivacy());
+        daModificare = true;
     }
     
     /**
@@ -405,6 +422,11 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         });
 
         comboPrivacy.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Privato", "Condiviso", "Pubblico" }));
+        comboPrivacy.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboPrivacyItemStateChanged(evt);
+            }
+        });
         comboPrivacy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboPrivacyActionPerformed(evt);
@@ -521,7 +543,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton_NuovaListaActionPerformed
 
     private void comboPrivacyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPrivacyActionPerformed
-        modificaPrivacy();
+        
     }//GEN-LAST:event_comboPrivacyActionPerformed
 
     private void bEliminaArticoloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminaArticoloActionPerformed
@@ -539,6 +561,10 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private void bChiudiFinestraListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bChiudiFinestraListaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_bChiudiFinestraListaActionPerformed
+
+    private void comboPrivacyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboPrivacyItemStateChanged
+        modificaPrivacy();
+    }//GEN-LAST:event_comboPrivacyItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAggiungiCarrello;

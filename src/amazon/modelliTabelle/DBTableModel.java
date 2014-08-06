@@ -65,7 +65,7 @@ public class DBTableModel extends AbstractTableModel {
         try {
             return rs.getMetaData().getColumnCount();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Errore: " + ex.getMessage(), null, ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Errore conteggio righe: " + ex.getMessage(), null, ERROR_MESSAGE);
             return 0;
         }
     }
