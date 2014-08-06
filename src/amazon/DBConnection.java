@@ -907,6 +907,16 @@ public class DBConnection {
        pstmt.executeQuery();
    }
    
+   public static int ultimaListaDesideri() throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT LISTA_ID FROM LISTA_DESIDERI",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       ResultSet rs = pstmt.executeQuery();
+       rs.last();
+       return rs.getInt(1);
+   }
+   
    /**
     * Modifica della privacy della lista dei desideri
     * @param listaID id lista da modificare

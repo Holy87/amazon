@@ -130,7 +130,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void connessioneAutomatica(String user, String pass) {
         DBConnection.tempUser = user;
         DBConnection.tempPass = pass;
-        DBConnection.tempHost = "143.225.117.238";
+        DBConnection.tempHost = "188.9.189.147";//"143.225.117.238";
         DBConnection.tempPort = "1521";
         try {
             DBConnection.StartConnection();

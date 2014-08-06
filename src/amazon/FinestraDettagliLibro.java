@@ -12,6 +12,8 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -53,6 +55,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private long voto; 
     private java.awt.Dialog padre;
     
+    private LinkedList<ListaDesideri> listeDesideriUtente;
     private ResultSet rs, rs2, libro;//libro è il resultset a 1 riga
     private DBTableModel modelloTabellaVenditori;
     private DBTableModel modelloTabellaFormati;
@@ -154,11 +157,48 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * Metodo che aggiunge alla combo box tutte le liste dei desideri
      */
     private void aggiornaListeDesideri() {
-        LinkedList<ListaDesideri> listeDesideriUtente = new LinkedList();
+        listeDesideriUtente = new LinkedList();
+        listeDesideri.removeAllItems();
+        
         try {
             ResultSet liste = DBConnection.visualizzaListeUtente(idUtente);
+            while (liste.next()) {
+                ListaDesideri lista = new ListaDesideri(liste.getInt(1), liste.getString(2));
+                listeDesideriUtente.add(lista);
+                listeDesideri.addItem(lista.getNomeLista());
+            }
+            listeDesideri.addItem("Nuova lista desideri");
+            listeDesideri.setSelectedIndex(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
+        }
+    }
+    
+    /**
+     * Aggiunge l'oggetto alla lista desideri selezionata.
+     */
+    private void aggiungiListaDesideri() {
+        if (listeDesideri.getSelectedIndex() == listeDesideri.getItemCount()-1) {
+            String nomeLista = JOptionPane.showInputDialog(this, "Dai un nome alla nuova lista desideri");
+            if (!"".equals(nomeLista)) {
+                try {
+                    DBConnection.creaListaDesideri(idUtente, nomeLista, prodId);
+                    DBConnection.inserisciArticoloLista(DBConnection.ultimaListaDesideri(), prodId, prezzo);
+                    JOptionPane.showMessageDialog(this, titolo + " aggiunto a " + nomeLista);
+                } catch (SQLException ex) {
+                    mostraErrore(ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Errore, inserisci un nome valido!");
+            }
+        } else {
+            try {
+                ListaDesideri lista = listeDesideriUtente.get(listeDesideri.getSelectedIndex());
+                DBConnection.inserisciArticoloLista(lista.getIdLista(), prodId, prezzo);
+                JOptionPane.showMessageDialog(this, titolo + " aggiunto a " + lista.getNomeLista());
+            } catch (SQLException ex) {
+                mostraErrore(ex);
+            }
         }
     }
     
@@ -481,6 +521,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         listeDesideri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         bAggiungi.setText("Aggiungi");
+        bAggiungi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAggiungiActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -609,6 +654,10 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private void bCarrelloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCarrelloActionPerformed
         aggiungiACarrello();
     }//GEN-LAST:event_bCarrelloActionPerformed
+
+    private void bAggiungiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAggiungiActionPerformed
+        aggiungiListaDesideri();
+    }//GEN-LAST:event_bAggiungiActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAggiungi;
