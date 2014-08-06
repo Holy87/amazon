@@ -200,9 +200,9 @@ public class FinestraUtente extends EditForm {
         setVisible(false);
         try {
             if (mode == ADDN)
-                DBConnection.creaUtente(tNome.getText(), tCognome.getText(), tMail.getText(), tPass.getText(), tCell.getText());
+                DBConnection.creaUtente(tNome.getText(), tCognome.getText(), tMail.getText(), tPass.getText(), Integer.parseInt(tCell.getText()));
             else
-                DBConnection.aggiornaUtente(tID.getText(), tNome.getText(), tCognome.getText(), tMail.getText(), tPass.getText(), tCell.getText());
+                DBConnection.aggiornaUtente(Integer.parseInt(tID.getText()), tNome.getText(), tCognome.getText(), tMail.getText(), tPass.getText(), Integer.parseInt(tCell.getText()));
             chiudiFinestra();
         }
         catch(SQLException ex){

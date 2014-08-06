@@ -144,7 +144,7 @@ public class FinestraVenditore extends EditForm {
             if (mode == ADDN)
                 DBConnection.creaVenditore(tVenditore_Nome.getText());
             else
-                DBConnection.aggiornaVenditore(tVenditore_ID.getText(), tVenditore_Nome.getText());
+                DBConnection.aggiornaVenditore(Integer.parseInt(tVenditore_ID.getText()), tVenditore_Nome.getText());
             chiudiFinestra();
         }
         catch(SQLException ex){
