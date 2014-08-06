@@ -862,6 +862,43 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+      /**
+    * In questo campo compaiono i voti medi dei libri presenti nell'archivio
+    * ISBN, VOTO_MEDIO
+    * @param isbn libro
+    * @param votoMedio voto medio fra le recensioni degli utenti
+    * @return double valore del voto
+    * @throws SQLException 
+    */
+   public static double visualizzaVotomedioLibro(String isbn) throws SQLException   {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT VOTO_MEDIO FROM VOTO_LIBRI WHERE ISBN = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+
+       return pstmt.executeQuery().getDouble(2);
+   }
+   
+     /**
+    * In questo campo compaiono i voti medi dei venditori
+    * ISBN, VOTO_MEDIO
+    * @param venditoreId venditore
+    * @param votoMedio voto medio fra le recensioni degli utenti
+    * @return double valore del voto
+    * @throws SQLException 
+    */
+   public static double visualizzaVotomedioVenditore(String venditoreId) throws SQLException   {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT VOTO_MEDIO FROM VOTO_VENDITORI WHERE ISBN = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, venditoreId);
+
+       return pstmt.executeQuery().getDouble(2);
+   }
+   
+   
    /**
     * Viene effettuato l'inserimento nel carrello di un articolo
     * @param utenteId id dell'utente
