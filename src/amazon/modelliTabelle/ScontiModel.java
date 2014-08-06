@@ -6,7 +6,7 @@
 
 package amazon.modelliTabelle;
 
-import amazon.Scontotemp;
+import amazon.utility.Scontotemp;
 import java.util.LinkedList;
 import javax.swing.table.AbstractTableModel;
 

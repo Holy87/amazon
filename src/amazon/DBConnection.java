@@ -6,6 +6,7 @@
 
 package amazon;
 
+import amazon.utility.Scontotemp;
 import amazon.exceptions.CodeNotValidException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

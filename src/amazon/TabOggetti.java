@@ -6,6 +6,7 @@
 
 package amazon;
 
+import amazon.utility.ListaTipi;
 import amazon.modelliTabelle.DBTableModel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

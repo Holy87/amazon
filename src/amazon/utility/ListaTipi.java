@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package amazon;
+package amazon.utility;
 
 import java.util.LinkedList;
 import java.util.Hashtable;
