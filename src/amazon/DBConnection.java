@@ -809,7 +809,7 @@ public class DBConnection {
    /**
     * Compaiono le informazioni dettagliate dei libri presenti nell'archivio
     * @param isbn
-    * @return LIBRO_NOME, AUT_NOME, AUT_COGNOME, EDI_NOME, ISBN, DESCRIZIONE   
+    * @return ISBN, NOME_LIBRO, PROD_ID, VENDITORE_ID, VENDITORE_NOME, AUTORE_ID, AUT_NOME, AUT_COGNOME, EDI_ID, EDI_NOME, FORMATO_ID, FORMATO NOME, TIPOCONDIZIONE, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA, 
     * @throws SQLException 
     */
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {

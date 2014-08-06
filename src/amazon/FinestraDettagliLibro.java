@@ -97,24 +97,24 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private void assegnaDettagliLibro() {
         try {
             libro.first();
-            titolo = libro.getString(1);
-            autore = libro.getString(2) + " " + libro.getString(3);
-            editore = libro.getString(4);
-            descrizione = libro.getString(6);
-            genere = libro.getString(7);
+            titolo = libro.getString(2);
+            autore = libro.getString(7) + " " + libro.getString(8);
+            editore = libro.getString(10);
+            descrizione = libro.getString(15);
+            genere = libro.getString(16);
             try {
-                pagine = Integer.parseInt(libro.getString(8));
+                pagine = Integer.parseInt(libro.getString(17));
             } catch(NumberFormatException ex) {
                 System.out.println("PAGINE   " + ex);
             }
             try {
-                peso = libro.getString(9);
+                peso = libro.getString(18);
             } catch(NumberFormatException ex) {
                 System.out.println("PESO   " + ex);
             }
-            data = libro.getNString(10);
+            data = libro.getString(19).substring(0, 10);
             try {
-            voto = Long.parseLong(libro.getString(11));
+            voto  = 1;//Long.parseLong(libro.getString("1.1"));
             } catch(NumberFormatException ex) {
                 voto = 0;
             }
@@ -286,7 +286,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
           tabellaFormati.setRowSelectionInterval(cur, cur);
           prezzo = modelloTabellaFormati.getValueAt(cur, 5).toString();
           prodId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 0).toString());
-          if (modelloTabellaFormati.getValueAt(cur, 3) == null) {
+          if (modelloTabellaFormati.getValueAt(cur, 4) == null) {
               disponibilita = -1;
           } else
               disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 4).toString());
@@ -460,6 +460,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         jLabel3.setText("Quantità:");
 
         tQuantita.setText("1");
+        tQuantita.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tQuantitaFocusLost(evt);
+            }
+        });
 
         tEditore.setText("Editore:");
 
@@ -656,6 +661,10 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     private void bAggiungiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAggiungiActionPerformed
         aggiungiListaDesideri();
     }//GEN-LAST:event_bAggiungiActionPerformed
+
+    private void tQuantitaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tQuantitaFocusLost
+        getQuantita();
+    }//GEN-LAST:event_tQuantitaFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAggiungi;
