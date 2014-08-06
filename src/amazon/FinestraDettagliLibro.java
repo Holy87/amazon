@@ -29,11 +29,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * Creates new form FinestraDettagliLibro
      * @param parent la finestra chiamante
      * @param modal sempre false
-     * @param isbn il codice ISBN del libro da visualizzare
+     * @param idLibro il codice del libro da visualizzare
      * @param padre è la classe che crea la finestra
      * @param idUtente è l'ID dell'utente attivo per l'acquisto
      */
-    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn, java.awt.Dialog padre, int idUtente) {
+    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, int idLibro, java.awt.Dialog padre, int idUtente) {
         super(parent, modal);
         this.padre = padre;
         this.idUtente = idUtente;
@@ -43,15 +43,15 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
-        this.isbn = isbn;
+        thisidLibro = idLibro;
         initComponents();
         assegnaDettagliLibro();
         impostaTabella();
         aggiornaListeDesideri();
     }
     
-    private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
-    private int disponibilita, pagine, idUtente, venditoreId, formatoId;
+    private String titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
+    private int disponibilita, pagine, idUtente, venditoreId, formatoId, idLibro;
     private long voto; 
     private java.awt.Dialog padre;
     
