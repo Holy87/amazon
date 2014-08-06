@@ -154,7 +154,7 @@ public class FinestraEditore extends EditForm {
             if (mode == ADDN)
                 DBConnection.creaEditore(tEDI_Nome.getText());
             else
-                DBConnection.aggiornaEditore(tEDI_ID.getText(), tEDI_Nome.getText());
+                DBConnection.aggiornaEditore(Integer.parseInt(tEDI_ID.getText()), tEDI_Nome.getText());
             chiudiFinestra();
         }
         catch(SQLException ex){

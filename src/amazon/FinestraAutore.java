@@ -162,7 +162,7 @@ public class FinestraAutore extends EditForm {
             if (mode == ADDN)
                 DBConnection.creaAutore(tNome.getText(), tCognome.getText());
             else
-                DBConnection.aggiornaAutore(tAutore_ID.getText(), tNome.getText(), tCognome.getText());
+                DBConnection.aggiornaAutore(Integer.parseInt(tAutore_ID.getText()), tNome.getText(), tCognome.getText());
             chiudiFinestra();
         }
         catch(SQLException ex){

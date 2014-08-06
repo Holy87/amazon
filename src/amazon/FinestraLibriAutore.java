@@ -18,7 +18,7 @@ public class FinestraLibriAutore extends FinestraComposita {
     /**
      * Creates new form FinestraLibriAutore
      */
-    public FinestraLibriAutore(java.awt.Frame parent, boolean modal, String id) {
+    public FinestraLibriAutore(java.awt.Frame parent, boolean modal, int id) {
         super(parent, modal, id);
         //initComponents();
     }
