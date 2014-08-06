@@ -146,8 +146,22 @@ public class DBConnection {
        return rs;
    }
    
-   public static int ottieniIdProdotto(String isbn, int venditoreId, int formatoId) {
-       
+   /**
+    * Ottiene l'ID del prdotto dal magazzino libri passando l'ISBN, venditore e formato
+    * @param isbn stringa, isbn dell'entità libri
+    * @param venditoreId intero id del venditore
+    * @param formatoId intero formato del libro
+    * @return ID del prodotto PROD_ID
+    * @throws SQLException 
+    */
+   public static int ottieniIdProdotto(String isbn, int venditoreId, int formatoId) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT PROD_ID FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ?, ISBN = ?, FORMATO_ID = ?");
+       pstmt.setInt(1, venditoreId);
+       pstmt.setString(2, isbn);
+       pstmt.setInt(3, formatoId);
+       ResultSet rs = pstmt.executeQuery();
+       return Integer.parseInt(rs.getString(1));
    }
       
    /**
@@ -840,7 +854,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, int venditoreID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VENDITORI NATURAL JOIN IMPOSTAZIONI NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);

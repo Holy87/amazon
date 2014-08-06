@@ -49,7 +49,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     }
     
     private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
-    private int disponibilita, pagine, idUtente, formatoId, venditoreId;
+    private int disponibilita, pagine, idUtente, formatoId, venditoreId, prodId;
     private long voto; 
     private java.awt.Dialog padre;
     
@@ -177,6 +177,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             mostraDati2();
             tabellaFormati.getColumnModel().getColumn(0).setMinWidth(0);
             tabellaFormati.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabellaFormati.getColumnModel().getColumn(1).setMinWidth(0);
+            tabellaFormati.getColumnModel().getColumn(1).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -244,14 +246,15 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
           int cur = cursore2 - 1;
           tabellaFormati.getSelectionModel().setSelectionInterval(cur, cur);
           tabellaFormati.setRowSelectionInterval(cur, cur);
-          prezzo = modelloTabellaFormati.getValueAt(cur, 4).toString();
+          prezzo = modelloTabellaFormati.getValueAt(cur, 5).toString();
+          prodId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 0).toString());
           if (modelloTabellaFormati.getValueAt(cur, 3) == null) {
               disponibilita = -1;
           } else
-              disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 3).toString());
-          stato = modelloTabellaFormati.getValueAt(cur, 2).toString();
-          formato = modelloTabellaFormati.getValueAt(cur, 1).toString();
-          formatoId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 0).toString());
+              disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 4).toString());
+          stato = modelloTabellaFormati.getValueAt(cur, 3).toString();
+          formato = modelloTabellaFormati.getValueAt(cur, 2).toString();
+          formatoId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 1).toString());
           aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
@@ -309,7 +312,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili.\nVerrà comunque aggiunto al carrello.");
         setVisible(false);
         try {
-            DBConnection.inserisciArticoloCarrello(idUtente, isbn, getQuantita());
+            DBConnection.inserisciArticoloCarrello(idUtente, prodId, getQuantita());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
