@@ -164,7 +164,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void impostaIndirizzi() {
         try {
-            ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(""+idUtente);
+            ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
             cSpedizione.removeAllItems();
             indirizzi = new LinkedList();
             System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
