@@ -815,8 +815,8 @@ public class DBConnection {
    public static ResultSet visualizzaInfoLibro (String isbn) throws SQLException {
         //Esempio: ISBN = 9788804632238;
        /*RISULTATO QUERY:
-            LIBRO_NOME          AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            DESCRIZIONE                                                                                                                         GENERE          PAGINE_N    PESOSPED    DATAUSCITA      VOTOPROD_MEDIA
-            Hunger Games        Suzanne     Collins         Mondadori	9788804632238	Quando Katniss urla "Mi offro volontaria, mi offro volontaria come tributo!" sa di aver appena firmato la sua condanna a morte.     Fantascienza    370         399         14-MAG-13       (null)
+            ISBN                NOME_LIBRO              PROD_ID     VENDITORE_ID  VENDITORE_NOME    AUTORE_DI   AUT_NOME    AUT_COGNOME     EDI_ID      EDI_NOME        FORMATO_ID  FORMATO NOME    TIPOCONDIZIONE      DESCRIZIONE                             GENERE      PAGINE_N    PESOSPED    DATAUSCITA
+            5558845230455	La Danza delle Stelle	28	    6294	  Amazon.it         1006	Giuseppe    Senese          2779	Bompiani	2003        Kindle          Nuovo		Libro inedito che forse verrà scritto.	Fantasy     328         200         10-FEB-13
        */
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM VIEW_INFO NATURAL JOIN LIBRI WHERE ISBN = ?",
