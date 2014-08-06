@@ -12,8 +12,6 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -29,11 +27,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * Creates new form FinestraDettagliLibro
      * @param parent la finestra chiamante
      * @param modal sempre false
-     * @param idLibro il codice del libro da visualizzare
+     * @param isbn il codice del libro da visualizzare
      * @param padre è la classe che crea la finestra
      * @param idUtente è l'ID dell'utente attivo per l'acquisto
      */
-    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, int idLibro, java.awt.Dialog padre, int idUtente) {
+    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn, java.awt.Dialog padre, int idUtente) {
         super(parent, modal);
         this.padre = padre;
         this.idUtente = idUtente;
@@ -43,15 +41,15 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
-        thisidLibro = idLibro;
+        this.isbn = isbn;
         initComponents();
         assegnaDettagliLibro();
         impostaTabella();
         aggiornaListeDesideri();
     }
     
-    private String titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
-    private int disponibilita, pagine, idUtente, venditoreId, formatoId, idLibro;
+    private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
+    private int disponibilita, pagine, idUtente, formatoId, venditoreId;
     private long voto; 
     private java.awt.Dialog padre;
     
@@ -156,11 +154,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * Metodo che aggiunge alla combo box tutte le liste dei desideri
      */
     private void aggiornaListeDesideri() {
-        LinkedList<ListaDesideri> listeDesideri = new LinkedList();
+        LinkedList<ListaDesideri> listeDesideriUtente = new LinkedList();
         try {
             ResultSet liste = DBConnection.visualizzaListeUtente(idUtente);
         } catch (SQLException ex) {
-            mostraErrore();
+            mostraErrore(ex);
         }
     }
     
@@ -311,7 +309,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili.\nVerrà comunque aggiunto al carrello.");
         setVisible(false);
         try {
-            DBConnection.inserisciArticoloCarrello(idUtente, prodID, getQuantita());
+            DBConnection.inserisciArticoloCarrello(idUtente, isbn, getQuantita());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);

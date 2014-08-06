@@ -145,6 +145,10 @@ public class DBConnection {
        ResultSet rs = pstmt.executeQuery(query);
        return rs;
    }
+   
+   public static int ottieniIdProdotto(String isbn, int venditoreId, int formatoId) {
+       
+   }
       
    /**
     * Visualizza l'attuale carrello dell'utente dato il suo ID
@@ -1057,12 +1061,12 @@ public class DBConnection {
    /**
     * In questo campo compaiono i libri di una lista di un utente
     * @param listaID id della ista
-    * @return ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA
+    * @return PROD_ID, ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA
     * @throws SQLException 
     */
    public static ResultSet visualizzaArticoliListaUtente(int listaID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE LISTA_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, ISBN, LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, VENDITORE_NOME, PREZZOVENDITA FROM COMPLISTA_DESIDERI NATURAL JOIN VIEW_INFO WHERE LISTA_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, listaID);
