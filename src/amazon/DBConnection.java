@@ -317,6 +317,8 @@ public class DBConnection {
        if (sconti!=null)
            applicaScontoOrdine(sconti, idOrder);
        
+       pstmt2.close();
+       
    }
    
    /**
@@ -931,7 +933,7 @@ public class DBConnection {
            break;
            case 2: nomePrivacy = "Pubblica";
            break;
-           default: nomePrivacy = "?";
+           default: nomePrivacy = "Privata";
        }
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("INSERT INTO LISTA_DESIDERI (UTENTE_ID, LISTA_NOME, LISTA_PRIVACY) VALUES(?,?,?)");
@@ -969,7 +971,7 @@ public class DBConnection {
            break;
            case 2: nomePrivacy = "Pubblica";
            break;
-           default: nomePrivacy = "?";
+           default: nomePrivacy = "Privata";
        }
        pstmt = conn.prepareStatement("UPDATE LISTA_DESIDERI SET LISTA_PRIVACY=? WHERE LISTA_ID = ?");
        pstmt.setString(1, nomePrivacy);
