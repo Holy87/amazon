@@ -11,14 +11,14 @@ import java.sql.SQLException;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class FinestraLibriEditore extends FinestraComposita {
 
     /**
      * Creates new form FinestraLibriEditore
      */
-    public FinestraLibriEditore(java.awt.Frame parent, boolean modal, int id) {
+    public FinestraLibriEditore(java.awt.Frame parent, boolean modal, String id) {
         super(parent, modal, id);
         //initComponents();
     }
@@ -60,6 +60,6 @@ public class FinestraLibriEditore extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetAggiorna() throws SQLException {
-        return DBConnection.visualizzaLibriEditore(id);
+        return DBConnection.visualizzaLibriEditore(Integer.parseInt(id));
     }
 }

@@ -12,8 +12,6 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -366,18 +364,18 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * @return quantità scelta dell'oggetto
      */
     private int getQuantita() {
-        int prezzo = 0;
+        int prz = 0;
         try {
-            prezzo = Integer.parseInt(tQuantita.getText());
-            if (prezzo < 0) {
-                prezzo = 1;
+            prz = Integer.parseInt(tQuantita.getText());
+            if (prz < 0) {
+                prz = 1;
                 tQuantita.setText("1");
             }
         } catch (NumberFormatException ex) {
             System.out.println(tQuantita.getText()+" non è un valore accettabile");
             tQuantita.setText("1");
         }
-        return prezzo;
+        return prz;
     }
     
     /**

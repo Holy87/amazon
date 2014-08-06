@@ -11,14 +11,17 @@ import java.sql.SQLException;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class FinestraMagazzino extends FinestraComposita {
 
     /**
-     * Creates new form FinestraMagazzino
+     * Crea una nuova FinestraMagazzino
+     * @param parent
+     * @param modal
+     * @param id isbn del libro
      */
-    public FinestraMagazzino(java.awt.Frame parent, boolean modal, int id) {
+    public FinestraMagazzino(java.awt.Frame parent, boolean modal, String id) {
         super(parent, modal, id);
         //initComponents();
     }
@@ -53,11 +56,11 @@ public class FinestraMagazzino extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        return DBConnection.visualizzaMagazzino(id, query);
+        return DBConnection.visualizzaMagazzino(Integer.parseInt(id), query);
     }
 
     @Override
     protected ResultSet resultSetAggiorna() throws SQLException {
-        return DBConnection.visualizzaMagazzino(id);
+        return DBConnection.visualizzaMagazzino(Integer.parseInt(id));
     }
 }

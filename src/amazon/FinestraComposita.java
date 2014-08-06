@@ -23,10 +23,12 @@ import javax.swing.event.ListSelectionEvent;
 public abstract class FinestraComposita extends javax.swing.JDialog {
 
     /**
-     * Creates new form FinestraComposita
+     * Costruttore
+     * @param parent la finestra chiamante
+     * @param modal sempre false
      * @param id è l'ID dell'elemento da inserire nella query per il resultS.
      */
-    public FinestraComposita(java.awt.Frame parent, boolean modal, int id) {
+    public FinestraComposita(java.awt.Frame parent, boolean modal, String id) {
         super(parent, modal);
         this.id = id;
         initComponents();
@@ -36,7 +38,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
     private ResultSet rs;
     private DBTableModel modelloTabella;
     private int cursore = 1;
-    protected int id;
+    protected String id;
     
     /**
      * Impostazione della tabella sul resultSet.

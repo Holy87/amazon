@@ -450,10 +450,10 @@ public class DBConnection {
     * @param nomeColonna nome dell'attributo dell'ID
     * @throws SQLException 
     */
-   public static void eliminaRecord(int id, String tabella, String nomeColonna) throws SQLException {
+   public static void eliminaRecord(String id, String tabella, String nomeColonna) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        pstmt = conn.prepareStatement("DELETE FROM " + tabella + " WHERE " + nomeColonna + " = ?");
-       pstmt.setInt(1, id);
+       pstmt.setString(1, id);
        pstmt.executeUpdate();
    }
    

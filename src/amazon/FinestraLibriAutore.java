@@ -11,14 +11,17 @@ import java.sql.SQLException;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class FinestraLibriAutore extends FinestraComposita {
 
     /**
-     * Creates new form FinestraLibriAutore
+     * Creazione della finestra
+     * @param parent
+     * @param modal
+     * @param id dell'autore
      */
-    public FinestraLibriAutore(java.awt.Frame parent, boolean modal, int id) {
+    public FinestraLibriAutore(java.awt.Frame parent, boolean modal, String id) {
         super(parent, modal, id);
         //initComponents();
     }
@@ -54,11 +57,11 @@ public class FinestraLibriAutore extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        return DBConnection.cercaLibriAutore(id, query);
+        return DBConnection.cercaLibriAutore(Integer.parseInt(id), query);
     }
 
     @Override
     protected ResultSet resultSetAggiorna() throws SQLException {
-        return DBConnection.visualizzaLibriAutore(id);
+        return DBConnection.visualizzaLibriAutore(Integer.parseInt(id));
     }
 }
