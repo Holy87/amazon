@@ -44,8 +44,6 @@ public class DBConnection {
     /**
      * 
      * @throws SQLException 
-     * @param usernm nome utente per il collegamento
-     * @param passwd password da immettere per il collegamento
      * Avvia la connessione con il server
      */
     public static void StartConnection() throws SQLException {
@@ -53,14 +51,10 @@ public class DBConnection {
         ods.setDriverType("thin");
         ods.setServerName(tempHost);
         ods.setPortNumber(Integer.parseInt(tempPort));
-        ods.setUser(tempUser);
+        ods.setUser(tempUser);//143.225.117.238:1521/xe
         ods.setPassword(tempPass);
         ods.setDatabaseName("xe");
-        //ods.setURL("jdbc:oracle:thin:@//"+domain+":"+port+"/xe");//143.225.117.238:1521/xe");
-        //Stampa Versione Driver
         conn = ods.getConnection();
-        
-        //createTables();
     }
     
     /**
@@ -82,6 +76,10 @@ public class DBConnection {
         if (conn != null) conn.close();
     }
     
+    /**
+     * Verifica se la connessione è attiva.
+     * @return true se è connesso, false altrimenti.
+     */
     public static boolean connected() {
         return conn != null;
     }
@@ -705,6 +703,11 @@ public class DBConnection {
        */
    }
    
+   /**
+    * Visualizza tutti i libri disponibili per l'acquisto
+    * @return result set LIBRO_NOME, ISBN, FORMATO_NOME, PREZZOLISTINO
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaListinoLibri() throws SQLException {
         //Lista completa di tutti i libri presenti nell'archivio completo (non nei magazzini dei venditori)
        PreparedStatement pstmt;
