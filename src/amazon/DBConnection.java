@@ -866,7 +866,6 @@ public class DBConnection {
     * In questo campo compaiono i voti medi dei libri presenti nell'archivio
     * ISBN, VOTO_MEDIO
     * @param isbn libro
-    * @param votoMedio voto medio fra le recensioni degli utenti
     * @return double valore del voto
     * @throws SQLException 
     */
@@ -884,7 +883,6 @@ public class DBConnection {
     * In questo campo compaiono i voti medi dei venditori
     * ISBN, VOTO_MEDIO
     * @param venditoreId venditore
-    * @param votoMedio voto medio fra le recensioni degli utenti
     * @return double valore del voto
     * @throws SQLException 
     */
