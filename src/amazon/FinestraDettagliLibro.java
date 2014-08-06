@@ -12,8 +12,6 @@ import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -29,7 +27,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * Creates new form FinestraDettagliLibro
      * @param parent la finestra chiamante
      * @param modal sempre false
-     * @param isbn il codice ISBN del libro da visualizzare
+     * @param isbn il codice del libro da visualizzare
      * @param padre è la classe che crea la finestra
      * @param idUtente è l'ID dell'utente attivo per l'acquisto
      */
@@ -51,7 +49,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     }
     
     private String isbn, titolo, autore, editore, formato, stato, genere, data, descrizione, prezzo, peso;
-    private int disponibilita, pagine, idUtente, venditoreId, formatoId;
+    private int disponibilita, pagine, idUtente, formatoId, venditoreId, prodId;
     private long voto; 
     private java.awt.Dialog padre;
     
@@ -156,11 +154,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * Metodo che aggiunge alla combo box tutte le liste dei desideri
      */
     private void aggiornaListeDesideri() {
-        LinkedList<ListaDesideri> listeDesideri = new LinkedList();
+        LinkedList<ListaDesideri> listeDesideriUtente = new LinkedList();
         try {
             ResultSet liste = DBConnection.visualizzaListeUtente(idUtente);
         } catch (SQLException ex) {
-            mostraErrore();
+            mostraErrore(ex);
         }
     }
     
@@ -179,6 +177,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             mostraDati2();
             tabellaFormati.getColumnModel().getColumn(0).setMinWidth(0);
             tabellaFormati.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabellaFormati.getColumnModel().getColumn(1).setMinWidth(0);
+            tabellaFormati.getColumnModel().getColumn(1).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -246,14 +246,15 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
           int cur = cursore2 - 1;
           tabellaFormati.getSelectionModel().setSelectionInterval(cur, cur);
           tabellaFormati.setRowSelectionInterval(cur, cur);
-          prezzo = modelloTabellaFormati.getValueAt(cur, 4).toString();
+          prezzo = modelloTabellaFormati.getValueAt(cur, 5).toString();
+          prodId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 0).toString());
           if (modelloTabellaFormati.getValueAt(cur, 3) == null) {
               disponibilita = -1;
           } else
-              disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 3).toString());
-          stato = modelloTabellaFormati.getValueAt(cur, 2).toString();
-          formato = modelloTabellaFormati.getValueAt(cur, 1).toString();
-          formatoId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 0).toString());
+              disponibilita = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 4).toString());
+          stato = modelloTabellaFormati.getValueAt(cur, 3).toString();
+          formato = modelloTabellaFormati.getValueAt(cur, 2).toString();
+          formatoId = Integer.parseInt(modelloTabellaFormati.getValueAt(cur, 1).toString());
           aggiornaDatiLibro();
       } catch (SQLException ex) {
           mostraErrore(ex);
@@ -311,7 +312,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Attenzione: Il numero inserito è maggiore degli articoli disponibili.\nVerrà comunque aggiunto al carrello.");
         setVisible(false);
         try {
-            DBConnection.inserisciArticoloCarrello(idUtente, prodID, getQuantita());
+            DBConnection.inserisciArticoloCarrello(idUtente, prodId, getQuantita());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);

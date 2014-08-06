@@ -194,6 +194,8 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
           tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
           tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
+          tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
+          tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -279,10 +281,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private void rimuoviArticolo() {
         try {
             DBConnection.rimuoviArticoloLista(idLista(),
-                    modelloArticoli.getValueAt(cursoreArticoli - 1, 0).toString(),
-                    Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 2).toString()),
-                    Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 3).toString()),
-                    modelloArticoli.getValueAt(cursoreArticoli - 1, 4).toString());
+                    Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 0).toString()));
             aggiornaTabellaArticoli();
             controllaSeArticoliVuoti();
         } catch (SQLException ex) {
