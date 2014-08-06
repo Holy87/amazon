@@ -173,12 +173,9 @@ public final class TabOggetti extends javax.swing.JPanel {
                   4) Prezzo di vendita
                   
                   Alla funzione presente in DB Connection inserisciLibro gli passeremo quindi:
-                  1) Il venditore_ID selezionato all'inizio
-                  2) L'ISBN del libro da inserire
-                  3) Il Formato_ID del formato selezionato
-                  4) Il Tipo Condizione
-                  5) I Pezzi Disponibili
-                  6) Il Prezzo di vendita
+                  1) L'ID del prodotto
+                  2) I Pezzi Disponibili
+                  3) Il Prezzo di vendita
                 */
                 serviceButton2.addActionListener(new java.awt.event.ActionListener() {
                     @Override

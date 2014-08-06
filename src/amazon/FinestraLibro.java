@@ -266,9 +266,9 @@ public class FinestraLibro extends EditForm {
         try {
             setVisible(false);
             if (mode == ADDN)
-                DBConnection.creaLibro(tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
+                DBConnection.creaLibro(tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
             else
-                DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), tNEdizione.getText(), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), tNPagine.getText(), tPesoSped.getText(), tDataUscita.getText());
+                DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
             chiudiFinestra();
         }
         catch(SQLException ex){

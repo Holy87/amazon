@@ -18,7 +18,7 @@ public class FinestraMagazzino extends FinestraComposita {
     /**
      * Creates new form FinestraMagazzino
      */
-    public FinestraMagazzino(java.awt.Frame parent, boolean modal, String id) {
+    public FinestraMagazzino(java.awt.Frame parent, boolean modal, int id) {
         super(parent, modal, id);
         //initComponents();
     }
