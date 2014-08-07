@@ -212,9 +212,9 @@ public final class TabOggetti extends javax.swing.JPanel {
     /**
      * Attivazione del terzo pulsante di servizio, inizialmente disabilitato
      */
-    public void attivaServiceButton3() {
+    /*public void attivaServiceButton3() {
         serviceButton3.setEnabled(true);
-    }
+    }*/
     
     private void impostaUtente(java.awt.event.ActionEvent evt) {
         List utente = getDataCollection();

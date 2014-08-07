@@ -110,16 +110,6 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
-    public void gestisciUtente(){
-        /*Metodo che gestisce l'Utente e visualizza:
-        * 1) Visualizza liste desideri
-        * 2) Visualizza carrello
-        * 3) Visualizza ordini già effettuati
-        * 4) Crea ordine
-        * 5) Crea recensione
-        */
-    }
-    
     /**
      * Il metodo viene eseguito automaticamente quando vengono dati parametri
      * all'avvio dell'applicazione
@@ -137,20 +127,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         catch (SQLException exc){
         }
-    }
-    
-    public void visualizzaInfoLibro(){
-        /*Metodo che prende un libro e ne visualizza
-        **le info complete, tra cui:
-        **1) Le immagini di copertina
-        **2) Gli autori del libro
-        **3) Gli editori del libro
-        **4) Le lingue
-        **5) Il formato ed il prezzo di listino applicato a quel formato
-        **6) FACOLTATIVO: elencare tutte le recensioni di quel libro
-        */
-    }
-            
+    }           
     
     /**
      * This method is called from within the constructor to initialize the form.
