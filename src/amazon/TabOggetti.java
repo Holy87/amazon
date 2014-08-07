@@ -194,7 +194,6 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void setService3() {
         switch (nomeTabella) {
             case "VENDITORI": serviceButton3.setText("Visualizza recensioni");
-                serviceButton3.setEnabled(false);
                 serviceButton3.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRecensioniVenditore(evt);}});
@@ -250,10 +249,6 @@ public final class TabOggetti extends javax.swing.JPanel {
         listaRecensioni.setVisible(true);
     }
     
-    private void gestioneUtente(java.awt.event.ActionEvent evt) {
-        // Inserire la gestione dell'utente
-    }
-    
     private void inserisciLibro(java.awt.event.ActionEvent evt) {
         AggiungiLibriVenditore finestra = new AggiungiLibriVenditore(mainWindow, false, Integer.parseInt(getSelectedID()));
         finestra.setVisible(true);
@@ -267,11 +262,6 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void visualizzaRecensioniVenditore(java.awt.event.ActionEvent evt) {
         FinestraListaRecensioniVenditori finestraReceVenditori = new FinestraListaRecensioniVenditori(mainWindow, false, mainWindow.utenteID, getSelectedID());
         finestraReceVenditori.setVisible(true);
-    }
-    
-    private void inserisciRecensioneVenditore(java.awt.event.ActionEvent evt) {
-        FinestraRecensioneVenditore finestraVenditore = new FinestraRecensioneVenditore(mainWindow, false, mainWindow.utenteID, getSelectedID());
-        finestraVenditore.setVisible(true);
     }
     
     /**

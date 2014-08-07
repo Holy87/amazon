@@ -822,7 +822,7 @@ public class DBConnection {
    public static ResultSet visualizzaRecensioniVenditori (int venditoreID) throws SQLException {
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT NOME, COGNOME, COMMENTO, VOTO FROM RECENSIONI INNER JOIN UTENTI ON UTENTI.UTENTE_ID=RECENSIONI.UTENTE_ID WHERE ISBN=?",
+       pstmt = conn.prepareStatement("SELECT NOME, COGNOME, COMMENTO, VOTO FROM RECENSIONI INNER JOIN UTENTI ON UTENTI.UTENTE_ID=RECENSIONI.UTENTE_ID WHERE VENDITORE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, venditoreID);
