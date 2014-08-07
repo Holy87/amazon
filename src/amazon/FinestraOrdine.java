@@ -226,7 +226,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private double netto() {
-        return modelloTabellaArticoli.getColumnSum(6);
+        return modelloTabellaArticoli.getColumnSum(5);
     }
     
     private double costoSpedizione() {
