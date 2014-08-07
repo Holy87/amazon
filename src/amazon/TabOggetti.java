@@ -588,7 +588,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         });
 
         searchBox.setToolTipText("Scrivi la query di ricerca");
-        searchBox.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        searchBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         searchBox.setMaximumSize(new java.awt.Dimension(6, 20));
         searchBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -725,7 +725,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         searchButton.setEnabled(false);
         eseguiQuerySuTabella(query);
     }//GEN-LAST:event_searchButtonActionPerformed
-
+    
     private void deleteRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRecordActionPerformed
         eliminaRecord();
     }//GEN-LAST:event_deleteRecordActionPerformed
