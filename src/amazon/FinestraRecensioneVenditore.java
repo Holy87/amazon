@@ -22,17 +22,17 @@ public class FinestraRecensioneVenditore extends javax.swing.JDialog {
     public FinestraRecensioneVenditore(java.awt.Frame parent, boolean modal, int idUtente, String venditoreID) {
         super(parent, modal);
         this.idUtente = idUtente;
-        this.isbn = venditoreID;
+        this.venditoreID = venditoreID;
         initComponents();
     }
     
     private int idUtente;
-    private String isbn;
+    private String venditoreID;
     
     private void inserisciRecensione() {
         setVisible(false);
         try {
-            DBConnection.creaRecensione(idUtente, tCommento.getText(), false, isbn, sVoto.getValue());
+            DBConnection.creaRecensione(idUtente, tCommento.getText(), false, venditoreID, sVoto.getValue());
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
