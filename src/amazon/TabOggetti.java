@@ -112,11 +112,11 @@ public final class TabOggetti extends javax.swing.JPanel {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaLibriEditore(evt);}});
                 break;
-            case "LIBRI": serviceButton1.setText("Visualizza informazioni libro");
-                //GESTIONE METODO: Visualizza TUTTE le info sul libro, comprese quelle non visibili nella tabella
+            case "LIBRI": serviceButton1.setText("Visualizza recensioni libro");
+                //GESTIONE METODO: Visualizza le recensioni del libro
                 serviceButton1.addActionListener(new java.awt.event.ActionListener() {
                 @Override
-                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaInfoLibro(evt);}});
+                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRecensioniLibro(evt);}});
                 break;
             case "VENDITORI": serviceButton1.setText("Visualizza libri venditore");
                 //GESTIONE METODO: Visualizza TUTTE le info sul libro, comprese quelle non visibili nella tabella
@@ -245,9 +245,9 @@ public final class TabOggetti extends javax.swing.JPanel {
         magazzino.setVisible(true);
     }
     
-    private void visualizzaInfoLibro(java.awt.event.ActionEvent evt) {
-        //Non so cosa inserire
-        //mainWindow.visualizzaInfoLibro();
+    private void visualizzaRecensioniLibro(java.awt.event.ActionEvent evt) {
+        FinestraListaRecensioni listaRecensioni = new FinestraListaRecensioni(mainWindow, false, modelloTabella.getValueAt(cursore-1, 2).toString());
+        listaRecensioni.setVisible(true);
     }
     
     private void gestioneUtente(java.awt.event.ActionEvent evt) {
