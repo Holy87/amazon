@@ -245,6 +245,8 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private void aggiungiCarrello() {
         int quantita;
         try {
+            String stringa = JOptionPane.showInputDialog(this, "Inserisci la quantità:");
+            System.out.println(stringa);
             quantita = Integer.parseInt(JOptionPane.showInputDialog(this, "Inserisci la quantità:"));
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, "Il valore inserito per la quantità non è valido", null, ERROR_MESSAGE);

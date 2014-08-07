@@ -80,10 +80,15 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
      * Procedura del tasto cerca per avviare una ricerca specifica.
      */
     private void eseguiRicerca(){
+        String chiave = searchBox.getText();
         searchBox.setText(null);
         searchButton.setEnabled(false);
         try {
-            modelloTabella.setRS(resultSetRicerca(searchBox.getText()));
+            rs = resultSetRicerca(chiave);
+            modelloTabella.setRS(rs);
+            rs.first();
+            cursore = rs.getRow();
+            mostraDati();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }

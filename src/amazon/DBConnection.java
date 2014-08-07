@@ -624,7 +624,7 @@ public class DBConnection {
        pstmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idAutore);
-       pstmt.setString(2, chiave);
+       pstmt.setString(2, "%"+chiave+"%");
        
        return pstmt.executeQuery();
        /*RISULTATO QUERY: LIBRO_NOME
