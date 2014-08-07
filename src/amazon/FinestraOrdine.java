@@ -17,6 +17,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -30,7 +32,10 @@ import javax.swing.event.ListSelectionEvent;
 public class FinestraOrdine extends javax.swing.JDialog {
 
     /**
-     * Creates new form FinestraOrdine
+     * 
+     * @param parent
+     * @param modal true per bloccare la finestra precedente
+     * @param idUtente 
      */
     public FinestraOrdine(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
@@ -56,7 +61,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private ArrayList<String[]> metodiPagamento = new ArrayList();
     private LinkedList<Scontotemp> sconti = new LinkedList();
     
-    private int idUtente;
+    private int idUtente, prodID;
     private double totale = 0;
     static double scontoCompl = 0;
     
@@ -201,6 +206,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
             tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
             tabellaArticoli.getColumnModel().getColumn(2).setMinWidth(0);
             tabellaArticoli.getColumnModel().getColumn(2).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(8).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(8).setMaxWidth(0);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -276,6 +283,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
           cursoreArticoli = rsArticoli.getRow();
           tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
+          prodID = rsArticoli.getInt(9);
           //if (SwingUtilities.isRightMouseButton(null))
       } catch (SQLException ex) {
           mostraErrore(ex);
@@ -344,6 +352,14 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void clickDestro(java.awt.event.MouseEvent evt) {
         if (SwingUtilities.isRightMouseButton(evt)) {
             popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }
+    
+    private void rimuoviArticolo() {
+        try {
+            DBConnection.eliminaArticoloCarrello(idUtente, prodID);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
         }
     }
 
@@ -424,7 +440,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
         popupMenu.add(elimina);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setLocationByPlatform(true);
 
         tabellaArticoli.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -438,11 +453,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
             }
         ));
         tabellaArticoli.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabellaArticoliMouseClicked(evt);
-            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 tabellaArticoliMouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabellaArticoliMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tabellaArticoli);
@@ -450,6 +465,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel1.setText("Indirizzo di spedizione:");
 
         cSpedizione.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cSpedizione.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cSpedizioneItemStateChanged(evt);
+            }
+        });
         cSpedizione.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cSpedizioneActionPerformed(evt);
@@ -556,6 +576,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel9.setText("Seleziona il metodo di pagamento:");
 
         cPagamento.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cPagamento.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cPagamentoItemStateChanged(evt);
+            }
+        });
         cPagamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cPagamentoActionPerformed(evt);
@@ -759,8 +784,16 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }//GEN-LAST:event_tabellaArticoliMouseReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        rimuoviArticolo();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cPagamentoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cPagamentoItemStateChanged
+        aggiornaPagamentoSelezionato();
+    }//GEN-LAST:event_cPagamentoItemStateChanged
+
+    private void cSpedizioneItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cSpedizioneItemStateChanged
+        aggiornaIndirizzoSelezionato();
+    }//GEN-LAST:event_cSpedizioneItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
