@@ -57,7 +57,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jLabel14" max="32767" attributes="0"/>
+                          <Component id="jLabel14" pref="56" max="32767" attributes="0"/>
                           <Component id="jLabel13" max="32767" attributes="0"/>
                           <Component id="jLabel11" max="32767" attributes="0"/>
                           <Component id="jLabel10" alignment="0" max="32767" attributes="0"/>
@@ -137,7 +137,7 @@
                   <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="tDataUscita" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="148" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="bEsc" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bOk" alignment="3" min="-2" max="-2" attributes="0"/>
