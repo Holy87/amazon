@@ -37,7 +37,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         this.idUtente = idUtente;
         initComponents();
         impostaTabella();
-        impostaTabella2();
+        impostaTabellaSconti();
         impostaIndirizzi();
         impostaMetodiPagamento();
         aggiornaTotale();
@@ -146,7 +146,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     @SuppressWarnings("Convert2Lambda")
-    private void impostaTabella2(){
+    private void impostaTabellaSconti(){
         modelloTabellaSconti = new ScontiModel(sconti);
         tabellaSconti.setModel(modelloTabellaSconti);
         tabellaSconti.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
@@ -154,12 +154,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
             //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                tableSelectionChanged2();
+                tableSelectionChangedSconti();
             }
         } 
                 
         );
-        aggiornaTabella();
+        aggiornaTabellaSconti(); //Qui vengono visualizzati gli elementi dei record con Sconto e codice
     }
     
     private void impostaIndirizzi() {
@@ -204,6 +204,27 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+        
+    }
+    
+    public void aggiornaTabellaSconti()
+    {
+        /*try {
+            
+            rsArticoli = DBConnection.visualizzaCarrello(idUtente);
+            modelloTabellaArticoli.setRS(rsArticoli);
+            rsArticoli.absolute(cursoreArticoli);
+            mostraDati();
+            tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(2).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(2).setMaxWidth(0);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+            */
         
     }
     
@@ -285,7 +306,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         }
     }
     
-    private void tableSelectionChanged2() {
+    private void tableSelectionChangedSconti() {
         cursoreSconti = tabellaArticoli.getSelectedRow();
         tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreSconti - 1,cursoreSconti - 1);
         tabellaArticoli.setRowSelectionInterval(cursoreSconti - 1, cursoreSconti - 1);
