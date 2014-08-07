@@ -18,256 +18,184 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco
  */
 public class FinestraListaDesideri extends javax.swing.JDialog {
 
     /**
-     * Creates new form FinestraListaDesideri
+     * Creazione della finestra
      * @param parent
      * @param modal
-     * @param utente
+     * @param utenteID 
      */
-    public FinestraListaDesideri(java.awt.Frame parent, boolean modal, int utente) {
+    public FinestraListaDesideri(java.awt.Frame parent, boolean modal, int utenteID) {
         super(parent, modal);
-        utenteID = utente;
         initComponents();
-        inizializzaComboBox();
-        impostaTabella();           //liste desideri
-        impostaTabellaArticoli();   //articoli della lista
-        controllaSeUltima();
+        this.utenteID = utenteID;
+        impostaComboPrivacy();
+        impostaTabellaListeDesideri();
+        impostaTabellaArticoli();
     }
     
-    private final int utenteID;
-    private ResultSet rsDesideri, rsArticoli; //ResultSet su cui si basano i dati della tabella
-    private DBTableModel modelloTabella; //modello della tabella per i dati
-    private DBTableModel modelloArticoli;
-    private int cursoreDesideri = 1; //memorizza la riga selezionata
-    private int cursoreArticoli = 1; //memorizza la riga selezionata negli art.
-    private boolean daModificare = false;
-    private int idLista;
+    private int utenteID, listaID, prodID, curLista = 1, curArticoli = 1;
+    private DBTableModel modelloListe, modelloArticoli;
+    private ResultSet rsListe, rsArticoli;
+    private boolean modificaPrivacy = false;
     
     /**
-     * Inizializza i dati della tabella, assegnandogli il modello e il rs.
+     * Imposta la prima tabella
      */
     @SuppressWarnings("Convert2Lambda")
-    public final void impostaTabella() {
-        modelloTabella = new DBTableModel(rsDesideri);//inserire il resultset nel costr.
-        tabellaDesideri.setModel(modelloTabella); //metto il modellotabella nel
-        tabellaDesideri.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
-        tabellaDesideri.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+    private void impostaTabellaListeDesideri() {
+        modelloListe = new DBTableModel(rsListe);
+        tabellaListe.setModel(modelloListe); //metto il modellotabella nel
+        tabellaListe.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
+        tabellaListe.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                tableSelectionChanged();
+                listeSelectionChanged();
             }
         } 
                 
         );
-        //infine aggiorno il resultset della tabella
-        aggiornaTabella();
+        aggiornaTabellaListeDesideri();
     }
     
     /**
-     * Inizializza i dati della tabella, assegnandogli il modello e il rs.
+     * Imposta la seconda tabella
      */
     @SuppressWarnings("Convert2Lambda")
-    public final void impostaTabellaArticoli() {
-        modelloArticoli = new DBTableModel(rsArticoli);//inserire il resultset nel costr.
+    private void impostaTabellaArticoli() {
+        modelloArticoli = new DBTableModel(rsArticoli);
         tabellaArticoli.setModel(modelloArticoli); //metto il modellotabella nel
         tabellaArticoli.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
         tabellaArticoli.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                tableArticoliSelectionChanged();
+                articoliSelectionChanged();
             }
         } 
                 
         );
-        //infine aggiorno il resultset della tabella
         aggiornaTabellaArticoli();
     }
     
     /**
-     * Aggiorna i dati della tabella desideri con i dati dell'utente.
+     * Aggiorna la tabella lista desideri con il nuovo resultSet
      */
-    public void aggiornaTabella()
-    {
+    private void aggiornaTabellaListeDesideri() {
         try {
-            rsDesideri = ottieniDati(); //chiama il metodo in basso
-                                //non è proprio necessario chiamare un metodo
-                                //si può anche direttamente passare il reslts.
-            modelloTabella.setRS(rsDesideri);   //non credo serva, ma il prof lo mette..
-            rsDesideri.absolute(cursoreDesideri);   //attiva la riga del cursore attuale
-            mostraDati();           //imposta la selezione a riga singola
+            rsListe = DBConnection.visualizzaListeUtente(utenteID);
+            modelloListe.setRS(rsListe);
+            rsListe.absolute(curLista);
+            tabellaListe.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaListe.getColumnModel().getColumn(0).setMaxWidth(0);
+            impostaListaSelezionata();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
     }
     
-    private void inizializzaComboBox() {
-        daModificare = false;
-        comboPrivacy.removeAllItems();
-        comboPrivacy.addItem("Privata");
-        comboPrivacy.addItem("Condivisa");
-        comboPrivacy.addItem("Pubblica");
-        daModificare = true;
+    /**
+     * Aggiorna l'ID della lista selezionata e aggiorna la tabella degli articoli
+     * per la nuova selezione
+     */
+    private void impostaListaSelezionata() {
+        try {
+            curLista = rsListe.getRow();
+            //tabellaListe.getSelectionModel().setSelectionInterval(curLista - 1,curLista - 1);
+            tabellaListe.setRowSelectionInterval(curLista - 1, curLista - 1);
+            listaID = rsListe.getInt(1);
+            if (modelloListe.getRowCount() == 0)
+                abilitaPulsantiListeDesideri(false);
+            else
+                abilitaPulsantiListeDesideri(true);
+            aggiornaComboPrivacy();
+            aggiornaTabellaArticoli();
+      } catch (SQLException ex) {
+          mostraErrore(ex);
+      } catch (java.lang.IllegalArgumentException ex) {
+          System.out.println(ex.getMessage());
+      } catch (NullPointerException ex) {
+          abilitaPulsantiListeDesideri(false);
+      }
     }
     
     /**
-     * Aggiorna i dati della tabella articoli a seconda della lista selezionata.
+     * Evento che viene chiamato quando cambia la selezione della lista desideri
      */
-    public void aggiornaTabellaArticoli()
-    {
+    private void listeSelectionChanged() {
         try {
-            rsArticoli = ottieniArticoli(idLista); //chiama il metodo in basso
-                                //non è proprio necessario chiamare un metodo
-                                //si può anche direttamente passare il reslts.
-            modelloArticoli.setRS(rsArticoli);   //non credo serva, ma il prof lo mette..
-            rsArticoli.absolute(1);   //attiva la riga del cursore attuale
-            mostraDatiArticoli();           //imposta la selezione a riga singola
+            rsListe.absolute(tabellaListe.getSelectionModel().getMinSelectionIndex() + 1);                    
+            impostaListaSelezionata();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
+    /**
+     * Aggiornamento della tabella articoli con il nuovo resultSet
+     */
+    private void aggiornaTabellaArticoli() {
+        try {
+            rsArticoli = DBConnection.visualizzaArticoliListaUtente(listaID);
+            curArticoli = 1;
+            modelloArticoli.setRS(rsArticoli);
+            rsArticoli.absolute(curArticoli);
+            tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
+            tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
+            impostaArticoloSelezionato();
+            //abilitaPulsantiArticolo(true);
         } catch (SQLException ex) {
             mostraErrore(ex);
         } catch (NullPointerException ex) {
-            System.out.println("Tabella vuota");
+            abilitaPulsantiArticolo(false);
+            System.out.println(ex.getMessage());
         }
     }
     
     /**
-     * Questo metodo restituisce il resultset necessario alla tabella
-     * Modificatelo a seconda dei dati che volete visualizzare sulla tabella
-     * @return resultset dei dati da mettere in tabella 
+     * Impostazione dell'articolo selezionato con prodID
      */
-    private ResultSet ottieniDati() throws SQLException {
-        ResultSet rs = DBConnection.visualizzaListeUtente(utenteID);
-        rs.first();
-        return rs;
-    }
-    
-    private ResultSet ottieniArticoli(int idLista) throws SQLException {
-        return DBConnection.visualizzaArticoliListaUtente(idLista);
-    }
-    
-    /**
-     * Metodo che viene chiamato quando si clica il mouse sulla tabella
-     * cambiando la selezione
-     */
-    private void tableSelectionChanged() 
-    {
+    private void impostaArticoloSelezionato() {
         try {
-            rsDesideri.absolute(tabellaDesideri.getSelectionModel().getMinSelectionIndex() + 1);
-            idLista = Integer.parseInt(modelloTabella.getValueAt(cursoreDesideri - 1, 0).toString());
-            System.out.println(idLista);
-            mostraDati();
-            aggiornaTabellaArticoli();
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-    }
-    
-    /**
-     * Metodo che viene chiamato quando si clicca il mouse sulla tabella
-     * cambiando la selezione
-     */
-    private void tableArticoliSelectionChanged() 
-    {
-        try {
-            rsArticoli.absolute(tabellaArticoli.getSelectionModel().getMinSelectionIndex() + 1);
-            mostraDatiArticoli();
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-    }
-    
-    /**
-     * Mostra infine i dati sulla tabella dopo un aggiornamento
-     */
-    private void mostraDati() {
-      try {
-          cursoreDesideri = rsDesideri.getRow();
-          tabellaDesideri.getSelectionModel().setSelectionInterval(cursoreDesideri - 1,cursoreDesideri - 1);
-          tabellaDesideri.setRowSelectionInterval(cursoreDesideri - 1, cursoreDesideri - 1);
-          tabellaDesideri.getColumnModel().getColumn(0).setMinWidth(0);
-          tabellaDesideri.getColumnModel().getColumn(0).setMaxWidth(0);
-          aggiornaComboPrivacy();
+            curArticoli = rsArticoli.getRow();
+            tabellaArticoli.setRowSelectionInterval(curArticoli - 1, curArticoli - 1);
+            prodID = rsArticoli.getInt(1);
+            if (modelloArticoli.getRowCount() == 0)
+                abilitaPulsantiArticolo(false);
+            else
+                abilitaPulsantiArticolo(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println("errore mostradati " + ex.getMessage());
+          System.out.println(ex.getMessage());
       }
     }
     
     /**
-     * Mostra infine i dati sulla tabella dopo un aggiornamento
+     * 
      */
-    private void mostraDatiArticoli() {
-      try {
-          System.out.println("ci sono");
-          cursoreArticoli = rsArticoli.getRow();
-          tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
-          tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
-          tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
-          tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
-          tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
-      } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println("Argomento invalido " + ex.getMessage());
-      } catch (SQLException ex) {
-          mostraErrore(ex);
-      }
-          
-    }
-    
-    private void eliminaLista() {
+    private void articoliSelectionChanged() {
         try {
-            DBConnection.eliminaListaDesideri(idLista);
-            aggiornaTabella();
-            controllaSeUltima();
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-        controllaSeUltima();
-    }
-    
-    private void rinominaLista() {
-        String nuovoNome = JOptionPane.showInputDialog(this, "Inserisci il nuovo nome per la lista");
-        try {
-            DBConnection.rinominaListaDesideri(idLista, nuovoNome);
-            aggiornaTabella();
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-        aggiornaTabella();
-    }
-    
-    /**
-     * Crea una nuova lista dei desideri. Avvia un JOptionPane.
-     */
-    private void aggiungiLista() {
-        String nome = JOptionPane.showInputDialog(this, "Inserisci il nome per la nuova lista");
-        try {
-            DBConnection.creaListaDesideri(utenteID, nome, 0);
-            aggiornaTabella();
-            controllaSeUltima();
+            rsArticoli.absolute(tabellaArticoli.getSelectionModel().getMinSelectionIndex() + 1);                    
+            impostaArticoloSelezionato();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
     }
     
-    /**
-     * Modifica la privacy. Viene chiamato dall'actionListener del comboBox.
-     */
-    private void modificaPrivacy() {
-        if (daModificare == false)
-            return;
-        int selezione = comboPrivacy.getSelectedIndex();
-        try {
-            DBConnection.modificaListaDesideri(idLista, selezione);
-            aggiornaTabella();
-        } catch (SQLException ex) {
-            //aggiornaComboPrivacy();
-            mostraErrore(ex);
-        } catch (NullPointerException ex) {}
+    private void impostaComboPrivacy() {
+        modificaPrivacy = false;
+        cPrivacyLista.removeAllItems();
+        cPrivacyLista.addItem("Privata");
+        cPrivacyLista.addItem("Condivisa");
+        cPrivacyLista.addItem("Pubblica");
+        cPrivacyLista.setSelectedIndex(0);
     }
     
     /**
@@ -275,55 +203,101 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
      * @return 0 se privata, 1 se condivisa, 2 se pubblica.
      */
     private int ottieniPrivacy() {
-        switch(modelloTabella.getValueAt(cursoreDesideri - 1, 2).toString()) {
-            case "Privata": return 0;
-            case "Condivisa": return 1;
-            case "Pubblica": return 2;
-            default: return 0;
+        try {
+            switch(rsListe.getString(3)) {
+                case "Privata": return 0;
+                case "Condivisa": return 1;
+                case "Pubblica": return 2;
+                default: return 0;
+            }
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+            return -1;
         }
     }
     
-    private void controllaSeUltima() {
-        int righe = modelloTabella.getColumnCount();
-        if (righe == 0) {
-            bRinomina.setEnabled(false);
-            comboPrivacy.setEnabled(false);
-            bElimina.setEnabled(false);
-        } else {
-            bRinomina.setEnabled(true);
-            comboPrivacy.setEnabled(true);
-            bElimina.setEnabled(true);
-        }
+    private void aggiornaComboPrivacy() {
+        modificaPrivacy = false;
+        cPrivacyLista.setSelectedIndex(ottieniPrivacy());
+        modificaPrivacy = true;
+    }
+    
+    private void abilitaPulsantiArticolo(boolean stato) {
+        bRimuoviArticolo.setEnabled(stato);
+        bAggiungiCarrello.setEnabled(stato);
+    }
+    
+    private void abilitaPulsantiListeDesideri(boolean stato) {
+        bElimina.setEnabled(stato);
+        bRinomina.setEnabled(stato);
+        cPrivacyLista.setEnabled(stato);
     }
     
     private void rimuoviArticolo() {
         try {
-            DBConnection.rimuoviArticoloLista(idLista,
-                    Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 0).toString()));
-            aggiornaTabellaArticoli();
-            controllaSeArticoliVuoti();
+            DBConnection.rimuoviArticoloLista(listaID, prodID);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        aggiornaTabellaArticoli();
+    }
+    
+    private void aggiungiCarrello() {
+        int quantita;
+        try {
+            quantita = Integer.parseInt(JOptionPane.showInputDialog(this, "Inserisci la quantità:"));
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, "Il valore inserito per la quantità non è valido", null, ERROR_MESSAGE);
+            return;
+        }
+        try {
+            DBConnection.inserisciArticoloCarrello(utenteID, prodID, quantita);
+            JOptionPane.showMessageDialog(this, "Articolo aggiunto al carrello.");
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
     }
     
-    private void controllaSeArticoliVuoti() {
-        if (modelloArticoli.getRowCount() == 0)
-            bEliminaArticolo.setEnabled(false);
-        else
-            bEliminaArticolo.setEnabled(true);
+    private void eliminaListaDesideri() {
+        try {
+            DBConnection.eliminaListaDesideri(listaID);
+            aggiornaTabellaListeDesideri();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }
     
-    private void aggiornaComboPrivacy() {
-        daModificare = false;
-        comboPrivacy.setSelectedIndex(ottieniPrivacy());
-        daModificare = true;
+    private void aggiungiListaDesideri() {
+        String nomeLista = JOptionPane.showInputDialog(this, "Inserisci il nuovo nome per la lista dei desideri:");
+        try {
+            DBConnection.creaListaDesideri(utenteID, nomeLista, 0);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        aggiornaTabellaListeDesideri();
     }
     
-    /**
-     * Questo metodo stampa l'errore SQL. È facoltativo.
-     * @param ex è l'eccezione da stampare
-     */
+    private void rinominaLista() {
+        String nuovoNome = JOptionPane.showInputDialog(this, "Inserisci il nuovo nome per la lista dei desideri:");
+        try {
+            DBConnection.rinominaListaDesideri(listaID, nuovoNome);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        aggiornaTabellaListeDesideri();
+    }
+    
+    private void modificaPrivacyLista() {
+        if (modificaPrivacy == false)
+            return;
+        try {
+            DBConnection.modificaListaDesideri(listaID, cPrivacyLista.getSelectedIndex());
+            aggiornaTabellaListeDesideri();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
     private void mostraErrore(SQLException ex) {
         String errore = "Errore di connessione al database";
         errore += "\nCodice: " + ex.getErrorCode();
@@ -331,6 +305,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         errore += "\n\n" + ex.getSQLState();
         JOptionPane.showMessageDialog(this, "Errore: " + errore, null, ERROR_MESSAGE);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -342,26 +317,21 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabellaDesideri = new javax.swing.JTable();
+        tabellaListe = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabellaArticoli = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton_NuovaLista = new javax.swing.JButton();
+        bAggiungiCarrello = new javax.swing.JButton();
+        bRimuoviArticolo = new javax.swing.JButton();
         bRinomina = new javax.swing.JButton();
         bElimina = new javax.swing.JButton();
-        bEliminaArticolo = new javax.swing.JButton();
-        comboPrivacy = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
-        bModificaPrivacy = new javax.swing.JButton();
-        bAggiungiCarrello = new javax.swing.JButton();
-        bChiudiFinestraLista = new javax.swing.JButton();
+        bAggiungi = new javax.swing.JButton();
+        cPrivacyLista = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Liste dei desideri");
         setLocationByPlatform(true);
 
-        tabellaDesideri.setModel(new javax.swing.table.DefaultTableModel(
+        tabellaListe.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -372,12 +342,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tabellaDesideri.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tabellaDesideriMouseReleased(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tabellaDesideri);
+        jScrollPane1.setViewportView(tabellaListe);
 
         tabellaArticoli.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -392,198 +357,134 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         ));
         jScrollPane2.setViewportView(tabellaArticoli);
 
-        jLabel1.setText("Liste Desideri:");
-
-        jLabel2.setText("Articoli nella Lista:");
-
-        jButton_NuovaLista.setText("Nuova Lista");
-        jButton_NuovaLista.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_NuovaListaActionPerformed(evt);
-            }
-        });
-
-        bRinomina.setText("Rinomina Lista");
-        bRinomina.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bRinominaActionPerformed(evt);
-            }
-        });
-
-        bElimina.setText("Elimina Lista");
-        bElimina.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bEliminaActionPerformed(evt);
-            }
-        });
-
-        bEliminaArticolo.setText("Rimuovi articolo");
-        bEliminaArticolo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bEliminaArticoloActionPerformed(evt);
-            }
-        });
-
-        comboPrivacy.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Privato", "Condiviso", "Pubblico" }));
-        comboPrivacy.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                comboPrivacyItemStateChanged(evt);
-            }
-        });
-        comboPrivacy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboPrivacyActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Privacy");
-
-        bModificaPrivacy.setText("Modifica Privacy Lista");
-        bModificaPrivacy.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bModificaPrivacyActionPerformed(evt);
-            }
-        });
-
-        bAggiungiCarrello.setText("Aggiungi al Carrello");
+        bAggiungiCarrello.setText("Aggiungi articolo al carrello");
         bAggiungiCarrello.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bAggiungiCarrelloActionPerformed(evt);
             }
         });
 
-        bChiudiFinestraLista.setText("Chiudi");
-        bChiudiFinestraLista.addActionListener(new java.awt.event.ActionListener() {
+        bRimuoviArticolo.setText("Rimuovi articolo");
+        bRimuoviArticolo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bChiudiFinestraListaActionPerformed(evt);
+                bRimuoviArticoloActionPerformed(evt);
             }
         });
+
+        bRinomina.setText("Rinomina lista desideri");
+        bRinomina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bRinominaActionPerformed(evt);
+            }
+        });
+
+        bElimina.setText("Elimina lista desideri");
+        bElimina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bEliminaActionPerformed(evt);
+            }
+        });
+
+        bAggiungi.setText("Nuova lista desideri");
+        bAggiungi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAggiungiActionPerformed(evt);
+            }
+        });
+
+        cPrivacyLista.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cPrivacyLista.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cPrivacyListaItemStateChanged(evt);
+            }
+        });
+
+        jLabel1.setText("Imposta privacy per questa lista:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bRimuoviArticolo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bAggiungiCarrello))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jButton_NuovaLista, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bRinomina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 36, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboPrivacy, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(bElimina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bModificaPrivacy, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bChiudiFinestraLista, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(65, 65, 65)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(bAggiungiCarrello)
-                        .addGap(59, 59, 59)
-                        .addComponent(bEliminaArticolo))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                            .addComponent(bRinomina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bElimina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bAggiungi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cPrivacyLista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(comboPrivacy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_NuovaLista)
+                        .addComponent(cPrivacyLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bRinomina)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bModificaPrivacy)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bElimina)
-                        .addGap(0, 10, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bAggiungi)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bEliminaArticolo)
                     .addComponent(bAggiungiCarrello)
-                    .addComponent(bChiudiFinestraLista))
-                .addContainerGap())
+                    .addComponent(bRimuoviArticolo)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tabellaDesideriMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaDesideriMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tabellaDesideriMouseReleased
+    private void bAggiungiCarrelloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAggiungiCarrelloActionPerformed
+        aggiungiCarrello();
+    }//GEN-LAST:event_bAggiungiCarrelloActionPerformed
+
+    private void bRimuoviArticoloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRimuoviArticoloActionPerformed
+        rimuoviArticolo();
+    }//GEN-LAST:event_bRimuoviArticoloActionPerformed
 
     private void bEliminaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminaActionPerformed
-        eliminaLista();
+        eliminaListaDesideri();
     }//GEN-LAST:event_bEliminaActionPerformed
+
+    private void bAggiungiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAggiungiActionPerformed
+        aggiungiListaDesideri();
+    }//GEN-LAST:event_bAggiungiActionPerformed
 
     private void bRinominaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRinominaActionPerformed
         rinominaLista();
     }//GEN-LAST:event_bRinominaActionPerformed
 
-    private void jButton_NuovaListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_NuovaListaActionPerformed
-        aggiungiLista();
-    }//GEN-LAST:event_jButton_NuovaListaActionPerformed
+    private void cPrivacyListaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cPrivacyListaItemStateChanged
+        modificaPrivacyLista();
+    }//GEN-LAST:event_cPrivacyListaItemStateChanged
 
-    private void comboPrivacyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPrivacyActionPerformed
-        
-    }//GEN-LAST:event_comboPrivacyActionPerformed
-
-    private void bEliminaArticoloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminaArticoloActionPerformed
-        rimuoviArticolo();
-    }//GEN-LAST:event_bEliminaArticoloActionPerformed
-
-    private void bModificaPrivacyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificaPrivacyActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bModificaPrivacyActionPerformed
-
-    private void bAggiungiCarrelloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAggiungiCarrelloActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bAggiungiCarrelloActionPerformed
-
-    private void bChiudiFinestraListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bChiudiFinestraListaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bChiudiFinestraListaActionPerformed
-
-    private void comboPrivacyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboPrivacyItemStateChanged
-        modificaPrivacy();
-    }//GEN-LAST:event_comboPrivacyItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bAggiungi;
     private javax.swing.JButton bAggiungiCarrello;
-    private javax.swing.JButton bChiudiFinestraLista;
     private javax.swing.JButton bElimina;
-    private javax.swing.JButton bEliminaArticolo;
-    private javax.swing.JButton bModificaPrivacy;
+    private javax.swing.JButton bRimuoviArticolo;
     private javax.swing.JButton bRinomina;
-    private javax.swing.JComboBox comboPrivacy;
-    private javax.swing.JButton jButton_NuovaLista;
+    private javax.swing.JComboBox cPrivacyLista;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tabellaArticoli;
-    private javax.swing.JTable tabellaDesideri;
+    private javax.swing.JTable tabellaListe;
     // End of variables declaration//GEN-END:variables
 }
