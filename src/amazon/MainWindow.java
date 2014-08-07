@@ -58,15 +58,15 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private void initCustomComponents() {
         jTabbedPane1.setVisible(false);
-        finestraUtente = new FinestraUtente(this, false);
+        finestraUtente = new FinestraUtente(this, true);
         tabUtenti.impostaInterfaccia("UTENTI", finestraUtente, this);
-        finestraAutore = new FinestraAutore(this, false);
+        finestraAutore = new FinestraAutore(this, true);
         tabAutori.impostaInterfaccia("AUTORI", finestraAutore, this);
-        finestraEditore = new FinestraEditore(this, false);
+        finestraEditore = new FinestraEditore(this, true);
         tabEditori.impostaInterfaccia("EDITORI", finestraEditore, this);
-        finestraLibro = new FinestraLibro(this, false);
+        finestraLibro = new FinestraLibro(this, true);
         tabLibri.impostaInterfaccia("LIBRI", finestraLibro, this);
-        finestraVenditore = new FinestraVenditore(this, false);
+        finestraVenditore = new FinestraVenditore(this, true);
         tabVenditori.impostaInterfaccia("VENDITORI", finestraVenditore, this);
     }
     
@@ -344,7 +344,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        FinestraLogin lWindow = new FinestraLogin(this, false);
+        FinestraLogin lWindow = new FinestraLogin(this, true);
         lWindow.setVisible(true);
         checkState();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -370,12 +370,12 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void mAcquistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAcquistoActionPerformed
-        AnagraficaLibri anaLibri = new AnagraficaLibri(this, false, utenteID);
+        AnagraficaLibri anaLibri = new AnagraficaLibri(this, true, utenteID);
         anaLibri.setVisible(true);
     }//GEN-LAST:event_mAcquistoActionPerformed
 
     private void mCarrelloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCarrelloActionPerformed
-        FinestraOrdine finestra = new FinestraOrdine(this, false, utenteID);
+        FinestraOrdine finestra = new FinestraOrdine(this, true, utenteID);
         finestra.setVisible(true);
     }//GEN-LAST:event_mCarrelloActionPerformed
 
@@ -396,12 +396,12 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_mVenditoreActionPerformed
 
     private void mOrdiniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mOrdiniActionPerformed
-        FinestraStoricoOrdini finestraSO = new FinestraStoricoOrdini(this, false, utenteID);
+        FinestraStoricoOrdini finestraSO = new FinestraStoricoOrdini(this, true, utenteID);
         finestraSO.setVisible(true);
     }//GEN-LAST:event_mOrdiniActionPerformed
 
     private void mDesideriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mDesideriActionPerformed
-        FinestraListaDesideri finestraLD = new FinestraListaDesideri(this, false, utenteID);
+        FinestraListaDesideri finestraLD = new FinestraListaDesideri(this, true, utenteID);
         finestraLD.setVisible(true);
     }//GEN-LAST:event_mDesideriActionPerformed
 

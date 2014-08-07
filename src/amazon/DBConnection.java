@@ -1123,8 +1123,9 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, utenteId);
-       
-       return pstmt.executeQuery();
+       ResultSet rs = pstmt.executeQuery();
+       rs.first();
+       return rs;
    }
    
    /**
