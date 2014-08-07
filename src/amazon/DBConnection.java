@@ -303,7 +303,7 @@ public class DBConnection {
     * @param sconti codici di sconto
     * @throws SQLException 
     */
-   public static void creaOrdine (int idUtente, String sped, double sconto, int modpagamento, Scontotemp sconti[]) throws SQLException {
+   public static void creaOrdine (int idUtente, int sped, double sconto, int modpagamento, Scontotemp sconti[]) throws SQLException {
        //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
@@ -313,7 +313,7 @@ public class DBConnection {
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setInt(1, idUtente);
-       pstmt.setString(2, sped);
+       pstmt.setInt(2, sped);
        pstmt.setDouble(3, sconto);
        pstmt.setInt(4, modpagamento);
        
@@ -326,7 +326,7 @@ public class DBConnection {
        pstmt2 = conn.prepareStatement("BEGIN CREA_ORDINE_PART_2(?,?,?,?); END;");
        pstmt2.setInt(1, idUtente);
        pstmt2.setInt(2, idOrder);
-       pstmt2.setString(3, sped);
+       pstmt2.setInt(3, sped);
        pstmt2.setInt(4, modpagamento);
        
        if (sconti!=null)

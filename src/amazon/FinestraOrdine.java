@@ -322,7 +322,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void completaAcquisto() {
-        //
+        //Chiamata funzione CREA ORDINE
+        //DBConnection.creaOrdine(ID DELL'UTENTE, COSTO SPEDIZIONE, SCONTO COMPLESSIVO, ID MODALITA' PAGAMENTO, ARRAY SCONTI);
     }
     
     private void aggiornaPagamentoSelezionato() {
