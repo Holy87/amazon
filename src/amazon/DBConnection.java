@@ -686,7 +686,7 @@ public class DBConnection {
        
        */
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM VIEW_INFO WHERE VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM LIBRI NATURAL JOIN MAGAZZINO_LIBRI NATURAL JOIN IMPOSTAZIONI WHERE VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        
@@ -805,6 +805,17 @@ public class DBConnection {
            pstmt.setDouble(controllo, prezzoMax);
        }
        return pstmt.executeQuery();
+   }
+   
+   public static ResultSet visualizzaRecensioniLibro (String isbn) throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT NOME, COGNOME, COMMENTO FROM RECENSIONI INNER JOIN UTENTI ON UTENTI.UTENTE_ID=RECENSIONI.UTENTE_ID WHERE ISBN=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       return pstmt.executeQuery();
+       
    }
    
    
