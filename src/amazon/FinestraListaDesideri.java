@@ -9,6 +9,8 @@ package amazon;
 import amazon.modelliTabelle.DBTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -43,6 +45,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private int cursoreDesideri = 1; //memorizza la riga selezionata
     private int cursoreArticoli = 1; //memorizza la riga selezionata negli art.
     private boolean daModificare = false;
+    private int idLista;
     
     /**
      * Inizializza i dati della tabella, assegnandogli il modello e il rs.
@@ -118,11 +121,11 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     public void aggiornaTabellaArticoli()
     {
         try {
-            rsArticoli = ottieniArticoli(idLista()); //chiama il metodo in basso
+            rsArticoli = ottieniArticoli(idLista); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts.
             modelloArticoli.setRS(rsArticoli);   //non credo serva, ma il prof lo mette..
-            rsArticoli.absolute(cursoreArticoli);   //attiva la riga del cursore attuale
+            rsArticoli.absolute(1);   //attiva la riga del cursore attuale
             mostraDatiArticoli();           //imposta la selezione a riga singola
         } catch (SQLException ex) {
             mostraErrore(ex);
@@ -137,15 +140,13 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
      * @return resultset dei dati da mettere in tabella 
      */
     private ResultSet ottieniDati() throws SQLException {
-        return DBConnection.visualizzaListeUtente(utenteID);
+        ResultSet rs = DBConnection.visualizzaListeUtente(utenteID);
+        rs.first();
+        return rs;
     }
     
     private ResultSet ottieniArticoli(int idLista) throws SQLException {
         return DBConnection.visualizzaArticoliListaUtente(idLista);
-    }
-    
-    private int idLista() {
-        return Integer.parseInt(modelloTabella.getValueAt(cursoreDesideri - 1, 0).toString());
     }
     
     /**
@@ -156,6 +157,8 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     {
         try {
             rsDesideri.absolute(tabellaDesideri.getSelectionModel().getMinSelectionIndex() + 1);
+            idLista = Integer.parseInt(modelloTabella.getValueAt(cursoreDesideri - 1, 0).toString());
+            System.out.println(idLista);
             mostraDati();
             aggiornaTabellaArticoli();
         } catch (SQLException ex) {
@@ -191,7 +194,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          System.out.println("errore mostradati " + ex.getMessage());
       }
     }
     
@@ -200,23 +203,24 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
      */
     private void mostraDatiArticoli() {
       try {
+          System.out.println("ci sono");
           cursoreArticoli = rsArticoli.getRow();
-          tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
           tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
           tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
           tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
           tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
+      } catch (java.lang.IllegalArgumentException ex) {
+          System.out.println("Argomento invalido " + ex.getMessage());
       } catch (SQLException ex) {
           mostraErrore(ex);
-      } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
       }
+          
     }
     
     private void eliminaLista() {
         try {
-            DBConnection.eliminaListaDesideri(idLista());
+            DBConnection.eliminaListaDesideri(idLista);
             aggiornaTabella();
             controllaSeUltima();
         } catch (SQLException ex) {
@@ -228,7 +232,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     private void rinominaLista() {
         String nuovoNome = JOptionPane.showInputDialog(this, "Inserisci il nuovo nome per la lista");
         try {
-            DBConnection.rinominaListaDesideri(idLista(), nuovoNome);
+            DBConnection.rinominaListaDesideri(idLista, nuovoNome);
             aggiornaTabella();
         } catch (SQLException ex) {
             mostraErrore(ex);
@@ -257,12 +261,11 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
         if (daModificare == false)
             return;
         int selezione = comboPrivacy.getSelectedIndex();
-        System.out.println(selezione);
         try {
-            DBConnection.modificaListaDesideri(idLista(), selezione);
+            DBConnection.modificaListaDesideri(idLista, selezione);
             aggiornaTabella();
         } catch (SQLException ex) {
-            comboPrivacy.setSelectedIndex(ottieniPrivacy());
+            //aggiornaComboPrivacy();
             mostraErrore(ex);
         } catch (NullPointerException ex) {}
     }
@@ -295,7 +298,7 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
     
     private void rimuoviArticolo() {
         try {
-            DBConnection.rimuoviArticoloLista(idLista(),
+            DBConnection.rimuoviArticoloLista(idLista,
                     Integer.parseInt(modelloArticoli.getValueAt(cursoreArticoli - 1, 0).toString()));
             aggiornaTabellaArticoli();
             controllaSeArticoliVuoti();

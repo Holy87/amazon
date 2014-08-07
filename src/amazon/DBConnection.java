@@ -926,7 +926,7 @@ public class DBConnection {
     * @throws SQLException 
     */
    public static void creaListaDesideri(int utenteID, String nomeLista, int privacy) throws SQLException {
-       String nomePrivacy = "Privata";
+       String nomePrivacy;
        switch (privacy) {
            case 0: nomePrivacy = "Privata";
            break;
@@ -964,7 +964,7 @@ public class DBConnection {
    public static void modificaListaDesideri(int listaID, int privacy) throws SQLException {
        
        PreparedStatement pstmt;
-       String nomePrivacy = "Privata";
+       String nomePrivacy;
        switch (privacy) {
            case 0: nomePrivacy = "Privata";
            break;
