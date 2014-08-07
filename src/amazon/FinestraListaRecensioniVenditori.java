@@ -18,22 +18,24 @@ import javax.swing.event.ListSelectionEvent;
  *
  * @author Francesco
  */
-public class FinestraListaRecensioni extends javax.swing.JDialog {
+public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
 
     /**
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
      */
-    public FinestraListaRecensioni(java.awt.Frame parent, boolean modal, String isbnlibro) {
+    public FinestraListaRecensioniVenditori(java.awt.Frame parent, boolean modal, int iduser, String idvendor) {
         super(parent, modal);
-        isbn = isbnlibro;
+        venditoreID = idvendor;
+        utenteID = iduser;
         initComponents();
         impostaTabella();   // aggiungere al costruttore questo metodo in modo
                             // da impostare il set di dati
     }
     
-    private final String isbn;
+    private final String venditoreID; //ID Venditore selezionato in precedenta da TabOggetti
+    private final int utenteID; //Utente ID da passare alla creazione della nuova recensione
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
@@ -52,9 +54,13 @@ public class FinestraListaRecensioni extends javax.swing.JDialog {
             public void valueChanged(ListSelectionEvent e) {
                 tableSelectionChanged();
             }
-        } 
+        }
                 
         );
+        
+        if ( utenteID > 0 )
+            attivaAggiungiRecensione();
+        
         //infine aggiorno il resultset della tabella
         aggiornaTabella();
     }
@@ -82,7 +88,7 @@ public class FinestraListaRecensioni extends javax.swing.JDialog {
      * @return resultset dei dati da mettere in tabella 
      */
     private ResultSet ottieniDati() throws SQLException {
-        return DBConnection.visualizzaRecensioniLibro(isbn);
+        return DBConnection.visualizzaRecensioniVenditori(Integer.parseInt(venditoreID));
     }
     
     /**
@@ -112,11 +118,17 @@ public class FinestraListaRecensioni extends javax.swing.JDialog {
           tabella.getColumnModel().getColumn(0).setMaxWidth(120);
           tabella.getColumnModel().getColumn(1).setMinWidth(120);
           tabella.getColumnModel().getColumn(1).setMaxWidth(120);
+          tabella.getColumnModel().getColumn(3).setMinWidth(50);
+          tabella.getColumnModel().getColumn(3).setMaxWidth(50);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
           System.out.println(ex.getMessage());
       }
+    }
+    
+    public void attivaAggiungiRecensione() {
+        addRece.setEnabled(true);
     }
     
     /**
@@ -142,21 +154,30 @@ public class FinestraListaRecensioni extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
+        addRece = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Title 1", "Title 2", "Title 3", "Title4"
             }
         ));
         jScrollPane1.setViewportView(tabella);
+
+        addRece.setText("Aggiungi recensione");
+        addRece.setEnabled(false);
+        addRece.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addReceActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -165,18 +186,30 @@ public class FinestraListaRecensioni extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 756, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(addRece)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(addRece)
+                .addGap(0, 11, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addReceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addReceActionPerformed
+        FinestraRecensioneVenditore finestra = new FinestraRecensioneVenditore(null, false, utenteID, venditoreID);
+        finestra.setVisible(true);
+    }//GEN-LAST:event_addReceActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addRece;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

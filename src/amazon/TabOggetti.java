@@ -193,11 +193,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     
     private void setService3() {
         switch (nomeTabella) {
-            case "VENDITORI": serviceButton3.setText("Recensisci venditore");
+            case "VENDITORI": serviceButton3.setText("Visualizza recensioni");
                 serviceButton3.setEnabled(false);
                 serviceButton3.addActionListener(new java.awt.event.ActionListener() {
                     @Override
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciRecensioneVenditore(evt);}});
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRecensioniVenditore(evt);}});
                 break;
             default: serviceButton3.setVisible(false);
         }
@@ -246,7 +246,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     
     private void visualizzaRecensioniLibro(java.awt.event.ActionEvent evt) {
-        FinestraListaRecensioni listaRecensioni = new FinestraListaRecensioni(mainWindow, false, modelloTabella.getValueAt(cursore-1, 2).toString());
+        FinestraListaRecensioniLibri listaRecensioni = new FinestraListaRecensioniLibri(mainWindow, false, modelloTabella.getValueAt(cursore-1, 2).toString(), mainWindow.utenteID);
         listaRecensioni.setVisible(true);
     }
     
@@ -262,6 +262,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void inserisciRecensioneLibro(java.awt.event.ActionEvent evt) {
         FinestraRecensioneLibro finestraLibro = new FinestraRecensioneLibro(mainWindow, false, mainWindow.utenteID, modelloTabella.getValueAt(cursore-1, 2).toString());
         finestraLibro.setVisible(true);
+    }
+    
+    private void visualizzaRecensioniVenditore(java.awt.event.ActionEvent evt) {
+        FinestraListaRecensioniVenditori finestraReceVenditori = new FinestraListaRecensioniVenditori(mainWindow, false, mainWindow.utenteID, getSelectedID());
+        finestraReceVenditori.setVisible(true);
     }
     
     private void inserisciRecensioneVenditore(java.awt.event.ActionEvent evt) {

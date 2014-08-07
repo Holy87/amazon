@@ -811,10 +811,21 @@ public class DBConnection {
    public static ResultSet visualizzaRecensioniLibro (String isbn) throws SQLException {
        
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT NOME, COGNOME, COMMENTO FROM RECENSIONI INNER JOIN UTENTI ON UTENTI.UTENTE_ID=RECENSIONI.UTENTE_ID WHERE ISBN=?",
+       pstmt = conn.prepareStatement("SELECT NOME, COGNOME, COMMENTO, VOTO FROM RECENSIONI INNER JOIN UTENTI ON UTENTI.UTENTE_ID=RECENSIONI.UTENTE_ID WHERE ISBN=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
+       return pstmt.executeQuery();
+       
+   }
+   
+   public static ResultSet visualizzaRecensioniVenditori (int venditoreID) throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT NOME, COGNOME, COMMENTO, VOTO FROM RECENSIONI INNER JOIN UTENTI ON UTENTI.UTENTE_ID=RECENSIONI.UTENTE_ID WHERE ISBN=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, venditoreID);
        return pstmt.executeQuery();
        
    }
