@@ -567,8 +567,52 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) {
-       //DA IMPLEMENTARE
+   public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
+       
+       if ( prezzoFlessibile > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2001,?)");
+           pstmt.setString(1,isbn);
+           pstmt.setDouble(2,prezzoFlessibile);
+       }
+       
+       if ( prezzoRigida > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2002,?)");
+           pstmt.setString(1,isbn);
+           pstmt.setDouble(2,prezzoRigida);
+       }
+       
+       if ( prezzoKindle > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2003,?)");
+           pstmt.setString(1,isbn);
+           pstmt.setDouble(2,prezzoKindle);
+       }
+   }
+   
+   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) throws SQLException {
+        
+       if ( prezzoFlessibile > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
+           pstmt.setDouble(1,prezzoFlessibile);
+           pstmt.setString(2,isbn);
+       }
+       
+       if ( prezzoRigida > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+           pstmt.setDouble(1,prezzoRigida);
+           pstmt.setString(2,isbn);
+       }
+       
+       if ( prezzoKindle > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+           pstmt.setDouble(1,prezzoKindle);
+           pstmt.setString(2,isbn);
+       }
    }
    
    public static void creaEditore(String nomeEditore) throws SQLException
