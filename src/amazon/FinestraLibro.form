@@ -46,7 +46,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
@@ -89,6 +89,24 @@
                           <Component id="tNomeLibro" alignment="1" max="32767" attributes="0"/>
                           <Component id="tISBN" max="32767" attributes="0"/>
                       </Group>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="jLabel4" alignment="0" max="32767" attributes="0"/>
+                              <Component id="cRigida" alignment="0" max="32767" attributes="0"/>
+                              <Component id="cFlessibile" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="cKindle" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jLabel5" max="32767" attributes="0"/>
+                          <Component id="tListinoRigida" max="32767" attributes="0"/>
+                          <Component id="tListinoFlessibile" max="32767" attributes="0"/>
+                          <Component id="tListinoKindle" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -137,7 +155,27 @@
                   <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="tDataUscita" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="148" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cRigida" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tListinoRigida" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cFlessibile" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tListinoFlessibile" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cKindle" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tListinoKindle" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="34" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="bEsc" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bOk" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -239,5 +277,45 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JCheckBox" name="cRigida">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Copertina rigida"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cRigidaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel4">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Formati disponibili:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cFlessibile">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Copertina flessibile"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cFlessibileActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cKindle">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Amazon Kindle"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cKindleActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="tListinoRigida">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel5">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Prezzo listino:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="tListinoFlessibile">
+    </Component>
+    <Component class="javax.swing.JTextField" name="tListinoKindle">
+    </Component>
   </SubComponents>
 </Form>

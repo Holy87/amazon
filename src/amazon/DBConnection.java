@@ -558,6 +558,10 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) {
+       //DA IMPLEMENTARE
+   }
+   
    public static void creaEditore(String nomeEditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini

@@ -58,6 +58,14 @@ public class FinestraLibro extends EditForm {
         tISBN = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tDescrizione = new javax.swing.JTextArea();
+        cRigida = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        cFlessibile = new javax.swing.JCheckBox();
+        cKindle = new javax.swing.JCheckBox();
+        tListinoRigida = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        tListinoFlessibile = new javax.swing.JTextField();
+        tListinoKindle = new javax.swing.JTextField();
 
         jLabel9.setText("Descrizione");
 
@@ -112,6 +120,31 @@ public class FinestraLibro extends EditForm {
         tDescrizione.setRows(5);
         jScrollPane1.setViewportView(tDescrizione);
 
+        cRigida.setText("Copertina rigida");
+        cRigida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cRigidaActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Formati disponibili:");
+
+        cFlessibile.setText("Copertina flessibile");
+        cFlessibile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cFlessibileActionPerformed(evt);
+            }
+        });
+
+        cKindle.setText("Amazon Kindle");
+        cKindle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cKindleActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Prezzo listino:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -150,7 +183,21 @@ public class FinestraLibro extends EditForm {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tNEdizione, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
                             .addComponent(tNomeLibro, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tISBN))))
+                            .addComponent(tISBN)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cRigida, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cFlessibile, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(cKindle))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tListinoRigida)
+                            .addComponent(tListinoFlessibile)
+                            .addComponent(tListinoKindle))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -187,7 +234,23 @@ public class FinestraLibro extends EditForm {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(tDataUscita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cRigida)
+                    .addComponent(tListinoRigida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cFlessibile)
+                    .addComponent(tListinoFlessibile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cKindle)
+                    .addComponent(tListinoKindle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bEsc)
                     .addComponent(bOk)))
@@ -208,10 +271,25 @@ public class FinestraLibro extends EditForm {
         // TODO add your handling code here:
     }//GEN-LAST:event_tNEdizioneActionPerformed
 
+    private void cRigidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cRigidaActionPerformed
+        tListinoRigida.setEnabled(cRigida.isSelected());
+    }//GEN-LAST:event_cRigidaActionPerformed
+
+    private void cFlessibileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cFlessibileActionPerformed
+        tListinoFlessibile.setEnabled(cFlessibile.isSelected());
+    }//GEN-LAST:event_cFlessibileActionPerformed
+
+    private void cKindleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cKindleActionPerformed
+        tListinoKindle.setEnabled(cKindle.isSelected());
+    }//GEN-LAST:event_cKindleActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bEsc;
     private javax.swing.JButton bOk;
+    private javax.swing.JCheckBox cFlessibile;
+    private javax.swing.JCheckBox cKindle;
+    private javax.swing.JCheckBox cRigida;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -220,6 +298,8 @@ public class FinestraLibro extends EditForm {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -229,6 +309,9 @@ public class FinestraLibro extends EditForm {
     private javax.swing.JTextField tGenere;
     private javax.swing.JTextField tID;
     private javax.swing.JTextField tISBN;
+    private javax.swing.JTextField tListinoFlessibile;
+    private javax.swing.JTextField tListinoKindle;
+    private javax.swing.JTextField tListinoRigida;
     private javax.swing.JTextField tNEdizione;
     private javax.swing.JTextField tNPagine;
     private javax.swing.JTextField tNomeLibro;
