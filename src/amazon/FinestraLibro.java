@@ -6,7 +6,11 @@
 
 package amazon;
 
+import amazon.exceptions.NoFormatSelectedException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -347,6 +351,7 @@ public class FinestraLibro extends EditForm {
     {
         
         try {
+            tuttiDisattivati();
             setVisible(false);
             if (mode == ADDN)
                 DBConnection.creaLibro(tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
@@ -358,15 +363,25 @@ public class FinestraLibro extends EditForm {
         catch(SQLException ex){
             mostraErrore(ex);
             setVisible(true);
+        } catch (NoFormatSelectedException ex) {
+            JOptionPane.showMessageDialog(this, "Devi selezionare almeno un formato", "Errore!", JOptionPane.ERROR_MESSAGE, null);
         }
         
+    }
+    
+    private void tuttiDisattivati() throws NoFormatSelectedException {
+        if (cRigida.isSelected() && cFlessibile.isSelected() && cKindle.isSelected())
+            throw new NoFormatSelectedException();
     }
     
     private void aggiornaListinoLibro() throws SQLException {
         double rigida = ottieniTesto(tListinoRigida.getText());
         double flessibile = ottieniTesto(tListinoFlessibile.getText());
         double kindle = ottieniTesto(tListinoKindle.getText());
-        DBConnection.aggiornaListino(tISBN.getText(), rigida, flessibile, kindle);
+        if (mode == EDIT)
+            DBConnection.aggiornaListino(tISBN.getText(), rigida, flessibile, kindle);
+        else
+            DBConnection.aggiungiListino(tISBN.getText(), rigida, flessibile, kindle);
     }
     
     private double ottieniTesto(String testo) {
