@@ -7,8 +7,12 @@
 package amazon;
 
 import amazon.modelliTabelle.DBTableModel;
+import amazon.utility.Editore;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -18,23 +22,24 @@ import javax.swing.event.ListSelectionEvent;
  *
  * @author Francesco
  */
-public class FinestraRubricaUtente extends javax.swing.JDialog {
+public class FinestraEditoriLibro extends javax.swing.JDialog {
 
     /**
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
+     * @param isbn ISBN del libro di cui visualizzare gli editori
      */
-    public FinestraRubricaUtente(java.awt.Frame parent, boolean modal, int idUtente) {
+    public FinestraEditoriLibro(java.awt.Frame parent, boolean modal, String isbn) {
         super(parent, modal);
-        this.idUtente = idUtente;
+        this.isbn = isbn;
         initComponents();
         impostaTabella();   // aggiungere al costruttore questo metodo in modo
                             // da impostare il set di dati
     }
     
-    private final int idUtente;
-    private int contactID;
+    private final String isbn; //ISBN selezionato in precedenta da TabOggetti
+    private int editoreID;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
@@ -83,7 +88,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
      * @return resultset dei dati da mettere in tabella 
      */
     private ResultSet ottieniDati() throws SQLException {
-        return DBConnection.visualizzaRubricaUtente(idUtente);
+        return DBConnection.visualizzaEditoriLibro(isbn);
     }
     
     /**
@@ -109,7 +114,11 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-          contactID = rs.getInt(1);
+          editoreID = rs.getInt(1);
+          if (modelloTabella.getRowCount() == 0)
+            abilitaPulsanteElimina(false);
+          else
+            abilitaPulsanteElimina(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -117,16 +126,77 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
       }
     }
     
-        /**
+    /*private void impostaAutoreSelezionato() {
+        try {
+            curAutori = rs.getRow();
+            tabella.setRowSelectionInterval(curAutori - 1, curAutori - 1);
+            autoreID = rs.getInt(1);
+            if (modelloTabella.getRowCount() == 0)
+                abilitaPulsanteElimina(false);
+            else
+                abilitaPulsanteElimina(true);
+      } catch (SQLException ex) {
+          mostraErrore(ex);
+      } catch (java.lang.IllegalArgumentException ex) {
+          System.out.println(ex.getMessage());
+      }
+    }*/
+    
+    /**
      * Rimozione di un autore al libro
      */
-    private void rimuoviIndirizzo() {
+    private void rimuoviEditore() {
         try {
-            DBConnection.rimuoviIndirizzo(contactID);
+            DBConnection.rimuoviEditoreLibro(editoreID, isbn);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         aggiornaTabella();
+    }
+    
+    /**
+     * Aggiunta di un autore alla composizione del libro
+     */
+    private void aggiungiEditore() {
+        try {
+            
+            ResultSet editori = DBConnection.eseguiQuery("SELECT * FROM EDITORI");
+            int[] editoriInLibro = new int[modelloTabella.getRowCount()];
+            for (int i = 0; i < editoriInLibro.length; i++) {
+                editoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(cursore - 1, 0).toString());
+            }
+            LinkedList<Editore> listaEditori = new LinkedList();
+            while (editori.next()) {
+                if (autoreNonPresente(editoriInLibro, editori.getInt(1)))
+                    listaEditori.add(new Editore(editori.getInt(1),editori.getString(2)));
+            }
+            Editore[] elencoAutori = listaEditori.toArray(new Editore[listaEditori.size()]);
+            Editore risposta = (Editore)JOptionPane.showInputDialog(this, "Seleziona l'editore da aggiungere al libro", "Aggiungi editore", JOptionPane.QUESTION_MESSAGE, null, elencoAutori, JOptionPane.OK_CANCEL_OPTION);
+            if (risposta != null) {
+                DBConnection.aggiungiEditoreLibro(risposta.getId(), isbn);
+                aggiornaTabella();}
+        } catch (SQLException ex) {
+            Logger.getLogger(FinestraEditoriLibro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Restituisce true se l'autore è già presente nell'elenco degli autori
+     * del libro
+     * @param idAutori array degli ID degli autori
+     * @param autore id dell'autore da verificare
+     * @return true se non è presente, false altrimenti
+     */
+    private boolean autoreNonPresente(int[] idAutori, int autore) {
+        for (int i = 0; i < idAutori.length; i++) {
+            if (idAutori[i] == autore)
+                return false;
+        }
+        return true;
+    }
+    
+    private void abilitaPulsanteElimina(boolean stato) {
+        bDeleteEditor.setEnabled(stato);
     }
     
     /**
@@ -152,9 +222,8 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
-        bDeleteAuthor = new javax.swing.JButton();
-        bDeleteAddress = new javax.swing.JButton();
-        bAddAddress = new javax.swing.JButton();
+        bAddEditor = new javax.swing.JButton();
+        bDeleteEditor = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -171,68 +240,56 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tabella);
 
-        bDeleteAuthor.setText("Elimina autore");
-        bDeleteAuthor.addActionListener(new java.awt.event.ActionListener() {
+        bAddEditor.setText("Aggiungi editore");
+        bAddEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bDeleteAuthorActionPerformed(evt);
+                bAddEditorActionPerformed(evt);
             }
         });
 
-        bDeleteAddress.setText("Elimina indirizzo");
-        bDeleteAddress.addActionListener(new java.awt.event.ActionListener() {
+        bDeleteEditor.setText("Elimina editore");
+        bDeleteEditor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bDeleteAddressActionPerformed(evt);
+                bDeleteEditorActionPerformed(evt);
             }
         });
-
-        bAddAddress.setText("Aggiungi indirizzo");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(bAddAddress)
+                .addComponent(bAddEditor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bDeleteAddress))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(150, 150, 150)
-                    .addComponent(bDeleteAuthor)
-                    .addContainerGap(151, Short.MAX_VALUE)))
+                .addComponent(bDeleteEditor)
+                .addGap(6, 6, 6))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bDeleteAddress)
-                    .addComponent(bAddAddress)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(138, 138, 138)
-                    .addComponent(bDeleteAuthor)
-                    .addContainerGap(139, Short.MAX_VALUE)))
+                    .addComponent(bAddEditor)
+                    .addComponent(bDeleteEditor)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bDeleteAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAuthorActionPerformed
+    private void bDeleteEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteEditorActionPerformed
+        rimuoviEditore();
+    }//GEN-LAST:event_bDeleteEditorActionPerformed
 
-    }//GEN-LAST:event_bDeleteAuthorActionPerformed
-
-    private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
-        rimuoviIndirizzo();
-    }//GEN-LAST:event_bDeleteAddressActionPerformed
+    private void bAddEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddEditorActionPerformed
+        aggiungiEditore();
+    }//GEN-LAST:event_bAddEditorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bAddAddress;
-    private javax.swing.JButton bDeleteAddress;
-    private javax.swing.JButton bDeleteAuthor;
+    private javax.swing.JButton bAddEditor;
+    private javax.swing.JButton bDeleteEditor;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

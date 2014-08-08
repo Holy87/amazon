@@ -460,6 +460,18 @@ public class DBConnection {
        */
    }
    
+   public static void rimuoviIndirizzo(int contactID) throws SQLException {
+        PreparedStatement pstmt;
+        
+        pstmt = conn.prepareStatement("DELETE FROM RUBRICA_INDIRIZZI WHERE CONTACT_ID=?");
+        pstmt.setInt(1, contactID);
+  
+        
+        pstmt.executeQuery(); 
+    }
+   
+   
+   
    /**
     * Metodo di creazione dell'autore
     * @param nome
@@ -501,6 +513,16 @@ public class DBConnection {
        
        pstmt = conn.prepareStatement("INSERT INTO AUTORI_LIB VALUES(?, ?)");
        pstmt.setInt(2, autoreID);
+       pstmt.setString(1, isbn);
+       
+       pstmt.execute();
+   }
+   
+   public static void aggiungiEditoreLibro(int editoreID, String isbn) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO EDITORI_LIB VALUES(?, ?)");
+       pstmt.setInt(2, editoreID);
        pstmt.setString(1, isbn);
        
        pstmt.execute();
@@ -765,13 +787,13 @@ public class DBConnection {
    /**
     * Visualizza gli editori di un libro
     * @param isbn del libro di cui visualizzare gli editori
-    * @return ResultSet con nome e cognome degli editori
+    * @return ResultSet con nome dell'editore
     * @throws SQLException 
     */
    public static ResultSet visualizzaEditoriLibro(String isbn) throws SQLException {
        PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("SELECT EDI_NOME FROM EDITORI INNER JOIN EDITORI_LIB ON EDITORI.EDI_ID=EDITORI_LIB.EDI_ID WHERE ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT EDITORI_LIB.EDI_ID, EDI_NOME FROM EDITORI INNER JOIN EDITORI_LIB ON EDITORI.EDI_ID=EDITORI_LIB.EDI_ID WHERE ISBN = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
@@ -783,6 +805,15 @@ public class DBConnection {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("DELETE FROM AUTORI_LIB WHERE AUTORE_ID=? AND ISBN LIKE ?");
        pstmt.setInt(1, autoreID);
+       pstmt.setString(2, isbn);
+        
+        pstmt.executeQuery(); 
+   }
+   
+   public static void rimuoviEditoreLibro(int editoreID, String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("DELETE FROM EDITORI_LIB WHERE EDI_ID=? AND ISBN LIKE ?");
+       pstmt.setInt(1, editoreID);
        pstmt.setString(2, isbn);
         
         pstmt.executeQuery(); 
