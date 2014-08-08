@@ -61,7 +61,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private ArrayList<String[]> metodiPagamento = new ArrayList();
     private LinkedList<Scontotemp> sconti = new LinkedList();
     
-    private int idUtente, prodID;
+    private int idUtente, prodID, prodNum;
     private double totale = 0;
     static double scontoCompl = 0;
     
@@ -113,7 +113,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
             ResultSet pagamenti = DBConnection.sceltaModPagamento(idUtente);
             cPagamento.removeAllItems();
             System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
-            //pagamenti.first();
             while (pagamenti.next()) {
                 String[] lista = {pagamenti.getString(1),//id metodo
                 pagamenti.getString(2),//nome
@@ -130,6 +129,18 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    /**
+     * Restituisce l'ID del metodo di pagamento selezionato
+     * @return 
+     */
+    private int metodoPagamentoSelezionato() {
+        return Integer.parseInt(metodiPagamento.get(cPagamento.getSelectedIndex())[0]);
+    }
+    
+    private int indirizzoSelezionato() {
+        return Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
     }
     
     @SuppressWarnings("Convert2Lambda")
@@ -199,7 +210,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             rsArticoli = DBConnection.visualizzaCarrello(idUtente);
             modelloTabellaArticoli.setRS(rsArticoli);
             rsArticoli.absolute(cursoreArticoli);
-            mostraDati();
+            aggiornaSelezione();
             tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
             tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
             tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
@@ -278,12 +289,13 @@ public class FinestraOrdine extends javax.swing.JDialog {
     /**
      * Mostra infine i dati sulla tabella dopo un aggiornamento
      */
-    private void mostraDati() {
+    private void aggiornaSelezione() {
       try {
           cursoreArticoli = rsArticoli.getRow();
           tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
-          prodID = rsArticoli.getInt(9);
+          prodID = rsArticoli.getInt(8);
+          prodNum = rsArticoli.getInt(9);
           //if (SwingUtilities.isRightMouseButton(null))
       } catch (SQLException ex) {
           mostraErrore(ex);
@@ -308,7 +320,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     {
         try {
             rsArticoli.absolute(tabellaArticoli.getSelectionModel().getMinSelectionIndex() + 1);
-            mostraDati();
+            aggiornaSelezione();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -330,8 +342,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void completaAcquisto() {
-        //Chiamata funzione CREA ORDINE
-        //DBConnection.creaOrdine(ID DELL'UTENTE, COSTO SPEDIZIONE, SCONTO COMPLESSIVO, ID MODALITA' PAGAMENTO, ARRAY SCONTI);
+        try {
+            DBConnection.creaOrdine(idUtente, (int)costoSpedizione(), scontoCompl, metodoPagamentoSelezionato(), indirizzoSelezionato(), sconti);
+            //DBConnection.creaOrdine(ID DELL'UTENTE, COSTO SPEDIZIONE, SCONTO COMPLESSIVO, ID MODALITA' PAGAMENTO, ID indirizzo spedizione, ARRAY SCONTI);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }
     
     private void aggiornaPagamentoSelezionato() {
@@ -361,6 +377,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+    }
+    
+    private void modificaQuantita() {
+        
     }
 
     /**
@@ -409,6 +429,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         tScadenzaCarta = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -602,17 +623,23 @@ public class FinestraOrdine extends javax.swing.JDialog {
             }
         });
 
+        jButton3.setText("Modifica quantità");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addGap(84, 84, 84)
                             .addComponent(tScadenzaCarta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -621,7 +648,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tIntestatario, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(tIntestatario, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -674,12 +705,13 @@ public class FinestraOrdine extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(2, 2, 2)
                         .addComponent(cSpedizione, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rb1)
@@ -695,10 +727,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
                             .addComponent(pulsanteCodiceSconto))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton3))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -795,6 +829,10 @@ public class FinestraOrdine extends javax.swing.JDialog {
         aggiornaIndirizzoSelezionato();
     }//GEN-LAST:event_cSpedizioneItemStateChanged
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        modificaQuantita();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -804,6 +842,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private javax.swing.JMenuItem elimina;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
