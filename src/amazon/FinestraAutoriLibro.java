@@ -142,6 +142,9 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
       }
     }*/
     
+    /**
+     * Rimozione di un auotre al libro
+     */
     private void rimuoviAutore() {
         try {
             DBConnection.rimuoviAutoreLibro(autoreID, isbn);
@@ -151,6 +154,9 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         aggiornaTabella();
     }
     
+    /**
+     * Aggiunta di un autore alla composizione del libro
+     */
     private void aggiungiAutore() {
         try {
             
@@ -166,13 +172,21 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
             }
             Autore[] elencoAutori = listaAutori.toArray(new Autore[listaAutori.size()]);
             Autore risposta = (Autore)JOptionPane.showInputDialog(this, "Seleziona l'autore da aggiungere al libro", "Aggiungi autore", JOptionPane.QUESTION_MESSAGE, null, elencoAutori, JOptionPane.OK_CANCEL_OPTION);
-            if (risposta != null)
+            if (risposta != null) {
                 DBConnection.aggiungiAutoreLibro(risposta.getId(), isbn);
+                aggiornaTabella();}
         } catch (SQLException ex) {
             Logger.getLogger(FinestraAutoriLibro.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    /**
+     * Restituisce true se l'autore è già presente nell'elenco degli autori
+     * del libro
+     * @param idAutori array degli ID degli autori
+     * @param autore id dell'autore da verificare
+     * @return true se non è presente, false altrimenti
+     */
     private boolean autoreNonPresente(int[] idAutori, int autore) {
         for (int i = 0; i < idAutori.length; i++) {
             if (idAutori[i] == autore)

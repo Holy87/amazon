@@ -233,38 +233,38 @@ public final class TabOggetti extends javax.swing.JPanel {
     }
     */
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
-        FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, false, getSelectedID());
+        FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, true, getSelectedID());
         libriAutore.setVisible(true);
 
     }
     
     private void visualizzaLibriEditore(java.awt.event.ActionEvent evt) {
-        FinestraLibriEditore libriEditore = new FinestraLibriEditore(mainWindow, false, getSelectedID());
+        FinestraLibriEditore libriEditore = new FinestraLibriEditore(mainWindow, true, getSelectedID());
         libriEditore.setVisible(true);
     }
     
     private void visualizzaLibriVenditore(java.awt.event.ActionEvent evt) {
-        FinestraMagazzino magazzino = new FinestraMagazzino(mainWindow, false, getSelectedID());
+        FinestraMagazzino magazzino = new FinestraMagazzino(mainWindow, true, getSelectedID());
         magazzino.setVisible(true);
     }
     
     private void visualizzaRecensioniLibro(java.awt.event.ActionEvent evt) {
-        FinestraListaRecensioniLibri listaRecensioni = new FinestraListaRecensioniLibri(mainWindow, false, modelloTabella.getValueAt(cursore-1, 2).toString(), mainWindow.utenteID);
+        FinestraListaRecensioniLibri listaRecensioni = new FinestraListaRecensioniLibri(mainWindow, true, modelloTabella.getValueAt(cursore-1, 2).toString(), mainWindow.utenteID);
         listaRecensioni.setVisible(true);
     }
     
     private void inserisciLibro(java.awt.event.ActionEvent evt) {
-        AggiungiLibriVenditore finestra = new AggiungiLibriVenditore(mainWindow, false, Integer.parseInt(getSelectedID()));
+        AggiungiLibriVenditore finestra = new AggiungiLibriVenditore(mainWindow, true, Integer.parseInt(getSelectedID()));
         finestra.setVisible(true);
     }
     
     private void visualizzaAutoriLibro(java.awt.event.ActionEvent evt) {
-        FinestraAutoriLibro autoriLibro = new FinestraAutoriLibro(mainWindow, false, modelloTabella.getValueAt(cursore-1, 2).toString());
+        FinestraAutoriLibro autoriLibro = new FinestraAutoriLibro(mainWindow, true, modelloTabella.getValueAt(cursore-1, 2).toString());
         autoriLibro.setVisible(true);
     }
     
     private void visualizzaRecensioniVenditore(java.awt.event.ActionEvent evt) {
-        FinestraListaRecensioniVenditori finestraReceVenditori = new FinestraListaRecensioniVenditori(mainWindow, false, mainWindow.utenteID, getSelectedID());
+        FinestraListaRecensioniVenditori finestraReceVenditori = new FinestraListaRecensioniVenditori(mainWindow, true, mainWindow.utenteID, getSelectedID());
         finestraReceVenditori.setVisible(true);
     }
     
