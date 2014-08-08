@@ -460,6 +460,18 @@ public class DBConnection {
        */
    }
    
+   public static void rimuoviIndirizzo(int contactID) throws SQLException {
+        PreparedStatement pstmt;
+        
+        pstmt = conn.prepareStatement("DELETE FROM RUBRICA_INDIRIZZI WHERE CONTACT_ID=?");
+        pstmt.setInt(1, contactID);
+  
+        
+        pstmt.executeQuery(); 
+    }
+   
+   
+   
    /**
     * Metodo di creazione dell'autore
     * @param nome

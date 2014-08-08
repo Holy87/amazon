@@ -34,6 +34,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     }
     
     private final int idUtente;
+    private int contactID;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
@@ -108,6 +109,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
+          contactID = rs.getInt(1);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -118,14 +120,14 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         /**
      * Rimozione di un autore al libro
      */
-    /*private void rimuoviIndirizzo() {
+    private void rimuoviIndirizzo() {
         try {
-            DBConnection.rimuoviIndirizzo(autoreID, isbn);
+            DBConnection.rimuoviIndirizzo(contactID);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         aggiornaTabella();
-    }*/
+    }
     
     /**
      * Questo metodo stampa l'errore SQL. È facoltativo.
@@ -224,7 +226,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     }//GEN-LAST:event_bDeleteAuthorActionPerformed
 
     private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
-//        rimuoviIndirizzo();
+        rimuoviIndirizzo();
     }//GEN-LAST:event_bDeleteAddressActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
