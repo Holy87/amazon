@@ -299,10 +299,11 @@ public class DBConnection {
     * @param sped costo previsto dalla modalità di spedizione
     * @param sconto valore complessivo dello sconto
     * @param modpagamento id del metodo di pagamento
+    * @param contactID id del contatto dell'indirizzo di spedizione
     * @param sconti codici di sconto
     * @throws SQLException 
     */
-   public static void creaOrdine (int idUtente, int sped, double sconto, int modpagamento, LinkedList<Scontotemp> sconti) throws SQLException {
+   public static void creaOrdine (int idUtente, int sped, double sconto, int modpagamento, int contactID, LinkedList<Scontotemp> sconti) throws SQLException {
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -321,11 +322,12 @@ public class DBConnection {
        
        PreparedStatement pstmt2; //Statement per il richiamo della funzione per il completamento
        
-       pstmt2 = conn.prepareStatement("BEGIN CREA_ORDINE_PART_2(?,?,?,?); END;");
+       pstmt2 = conn.prepareStatement("BEGIN CREA_ORDINE_PART_2(?,?,?,?,?); END;");
        pstmt2.setInt(1, idUtente);
        pstmt2.setInt(2, idOrder);
        pstmt2.setInt(3, sped);
        pstmt2.setInt(4, modpagamento);
+       pstmt2.setInt(5, contactID);
        
        if ( sconti.isEmpty() ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
