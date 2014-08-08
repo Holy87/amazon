@@ -157,6 +157,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         bAddAddress = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -191,7 +192,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bAddAddress)
@@ -201,7 +202,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
                 .addGroup(layout.createSequentialGroup()
                     .addGap(150, 150, 150)
                     .addComponent(bDeleteAuthor)
-                    .addContainerGap(151, Short.MAX_VALUE)))
+                    .addContainerGap(763, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
