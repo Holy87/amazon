@@ -154,6 +154,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     
     private void setService3() {
         switch (nomeTabella) {
+            case "UTENTI": serviceButton3.setText("Visualizza Modalità pagamenti");
+                serviceButton3.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaModPagamenti(evt);}});
+                break;
             case "VENDITORI": serviceButton3.setText("Visualizza recensioni");
                 serviceButton3.addActionListener(new java.awt.event.ActionListener() {
                     @Override
@@ -194,10 +199,14 @@ public final class TabOggetti extends javax.swing.JPanel {
         rubricaUtente.setVisible(true);
     }
     
+    private void visualizzaModPagamenti(java.awt.event.ActionEvent evt) {
+        FinestraModPagamento modPagamento = new FinestraModPagamento(mainWindow, true, Integer.parseInt(getSelectedID()));
+        modPagamento.setVisible(true);
+    }
+    
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
         FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, true, getSelectedID());
         libriAutore.setVisible(true);
-
     }
     
     private void visualizzaLibriEditore(java.awt.event.ActionEvent evt) {

@@ -242,6 +242,16 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static ResultSet visualizzaModPagamento (int idUtente) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, idUtente);
+       
+       return pstmt.executeQuery();
+   }
+   
    /**
     * Restituisce il valore di sconto del codice, lancia eccezione se non valido
     * @param codice

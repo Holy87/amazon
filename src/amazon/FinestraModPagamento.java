@@ -18,14 +18,14 @@ import javax.swing.event.ListSelectionEvent;
  *
  * @author Francesco
  */
-public class FinestraRubricaUtente extends javax.swing.JDialog {
+public class FinestraModPagamento extends javax.swing.JDialog {
 
     /**
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
      */
-    public FinestraRubricaUtente(java.awt.Frame parent, boolean modal, int idUtente) {
+    public FinestraModPagamento(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
         this.idUtente = idUtente;
         initComponents();
@@ -34,7 +34,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     }
     
     private final int idUtente;
-    private int contactID;
+    private int modID;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
@@ -83,7 +83,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
      * @return resultset dei dati da mettere in tabella 
      */
     private ResultSet ottieniDati() throws SQLException {
-        return DBConnection.visualizzaRubricaUtente(idUtente);
+        return DBConnection.visualizzaModPagamento(idUtente);
     }
     
     /**
@@ -109,7 +109,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-          contactID = rs.getInt(1);
+          modID = rs.getInt(1);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -120,14 +120,14 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         /**
      * Rimozione di un autore al libro
      */
-    private void rimuoviIndirizzo() {
+    /*private void rimuoviModPagamento() {
         try {
-            DBConnection.rimuoviIndirizzo(contactID);
+            DBConnection.rimuoviModPagamento(modID);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         aggiornaTabella();
-    }
+    }*/
     
     /**
      * Questo metodo stampa l'errore SQL. È facoltativo.
@@ -205,7 +205,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
-        rimuoviIndirizzo();
+        //rimuoviModPagamento();
     }//GEN-LAST:event_bDeleteAddressActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
