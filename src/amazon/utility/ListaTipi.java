@@ -84,12 +84,17 @@ public class ListaTipi {
         magazzinoLibri.add('i');
         magazzinoLibri.add('i');
         
+        LinkedList venditori = new LinkedList();
+        venditori.add('i');
+        venditori.add('s');
+        
         tabella.put("UTENTI", utenti);
         tabella.put("AUTORI", autori);
         tabella.put("CORRIERI", corrieri);
         tabella.put("EDITORI", editori);
         tabella.put("LIBRI", libri);
         tabella.put("MAGAZZINO_LIBRI", magazzinoLibri);
+        tabella.put("VENDITORI",venditori);
         
     }
 }
