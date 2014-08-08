@@ -166,7 +166,8 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
             }
             Autore[] elencoAutori = listaAutori.toArray(new Autore[listaAutori.size()]);
             Autore risposta = (Autore)JOptionPane.showInputDialog(this, "Seleziona l'autore da aggiungere al libro", "Aggiungi autore", JOptionPane.QUESTION_MESSAGE, null, elencoAutori, JOptionPane.OK_CANCEL_OPTION);
-            //AGGIUNTA DELL'AUTORE AL LIBRO
+            if (risposta != null)
+                DBConnection.aggiungiAutoreLibro(risposta.getId(), isbn);
         } catch (SQLException ex) {
             Logger.getLogger(FinestraAutoriLibro.class.getName()).log(Level.SEVERE, null, ex);
         }
