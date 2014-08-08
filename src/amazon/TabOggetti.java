@@ -192,6 +192,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     
     private void setService3() {
         switch (nomeTabella) {
+            case "UTENTI": serviceButton3.setText("Visualizza rubrica utente");
+                serviceButton3.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRecensioniVenditore(evt);}});
+                break;
             case "VENDITORI": serviceButton3.setText("Visualizza recensioni");
                 serviceButton3.addActionListener(new java.awt.event.ActionListener() {
                     @Override
