@@ -18,26 +18,24 @@ import javax.swing.event.ListSelectionEvent;
  *
  * @author Francesco
  */
-public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
+public class FinestraAutoriLibro extends javax.swing.JDialog {
 
     /**
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
-     * @param isbn isbn del libro di cui visualizzare le recensioni
-     * @param utenteID ID dell'utente che potrà aggiungere una recensione di quel libro
+     * @param isbn ISBN del libro di cui visualizzare gli autori
      */
-    public FinestraListaRecensioniLibri(java.awt.Frame parent, boolean modal, String isbn, int utenteID) {
+    public FinestraAutoriLibro(java.awt.Frame parent, boolean modal, String isbn) {
         super(parent, modal);
         this.isbn = isbn;
-        this.utenteID = utenteID;
         initComponents();
         impostaTabella();   // aggiungere al costruttore questo metodo in modo
                             // da impostare il set di dati
     }
     
     private final String isbn; //ISBN selezionato in precedenta da TabOggetti
-    private final int utenteID; //Utente ID da passare alla creazione della nuova recensione
+    private int autoreID;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
@@ -56,13 +54,9 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
             public void valueChanged(ListSelectionEvent e) {
                 tableSelectionChanged();
             }
-        }
+        } 
                 
         );
-        
-        if ( utenteID > 0 )
-            attivaAggiungiRecensione();
-        
         //infine aggiorno il resultset della tabella
         aggiornaTabella();
     }
@@ -90,7 +84,7 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
      * @return resultset dei dati da mettere in tabella 
      */
     private ResultSet ottieniDati() throws SQLException {
-        return DBConnection.visualizzaRecensioniLibro(isbn);
+        return DBConnection.visualizzaAutoriLibro(isbn);
     }
     
     /**
@@ -116,12 +110,11 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-          tabella.getColumnModel().getColumn(0).setMinWidth(120);
-          tabella.getColumnModel().getColumn(0).setMaxWidth(120);
-          tabella.getColumnModel().getColumn(1).setMinWidth(120);
-          tabella.getColumnModel().getColumn(1).setMaxWidth(120);
-          tabella.getColumnModel().getColumn(3).setMinWidth(50);
-          tabella.getColumnModel().getColumn(3).setMaxWidth(50);
+          autoreID = rs.getInt(1);
+          if (modelloTabella.getRowCount() == 0)
+            abilitaPulsanteElimina(false);
+          else
+            abilitaPulsanteElimina(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -129,8 +122,33 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
       }
     }
     
-    public void attivaAggiungiRecensione() {
-        addRece.setEnabled(true);
+    /*private void impostaAutoreSelezionato() {
+        try {
+            curAutori = rs.getRow();
+            tabella.setRowSelectionInterval(curAutori - 1, curAutori - 1);
+            autoreID = rs.getInt(1);
+            if (modelloTabella.getRowCount() == 0)
+                abilitaPulsanteElimina(false);
+            else
+                abilitaPulsanteElimina(true);
+      } catch (SQLException ex) {
+          mostraErrore(ex);
+      } catch (java.lang.IllegalArgumentException ex) {
+          System.out.println(ex.getMessage());
+      }
+    }*/
+    
+    private void rimuoviAutore() {
+        try {
+            DBConnection.rimuoviAutoreLibro(autoreID, isbn);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        aggiornaTabella();
+    }
+    
+    private void abilitaPulsanteElimina(boolean stato) {
+        bDeleteAuthor.setEnabled(stato);
     }
     
     /**
@@ -156,7 +174,8 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
-        addRece = new javax.swing.JButton();
+        bAddAuthor = new javax.swing.JButton();
+        bDeleteAuthor = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -168,16 +187,17 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title4"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
         jScrollPane1.setViewportView(tabella);
 
-        addRece.setText("Aggiungi recensione");
-        addRece.setEnabled(false);
-        addRece.addActionListener(new java.awt.event.ActionListener() {
+        bAddAuthor.setText("Aggiungi autore");
+
+        bDeleteAuthor.setText("Elimina autore");
+        bDeleteAuthor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addReceActionPerformed(evt);
+                bDeleteAuthorActionPerformed(evt);
             }
         });
 
@@ -185,33 +205,34 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 756, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(addRece)
-                .addContainerGap())
+                .addComponent(bAddAuthor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bDeleteAuthor)
+                .addGap(6, 6, 6))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(addRece)
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bAddAuthor)
+                    .addComponent(bDeleteAuthor)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addReceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addReceActionPerformed
-        FinestraRecensioneLibro finestra = new FinestraRecensioneLibro(null, false, utenteID, isbn);
-        finestra.setVisible(true);
-    }//GEN-LAST:event_addReceActionPerformed
+    private void bDeleteAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAuthorActionPerformed
+        rimuoviAutore();
+    }//GEN-LAST:event_bDeleteAuthorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addRece;
+    private javax.swing.JButton bAddAuthor;
+    private javax.swing.JButton bDeleteAuthor;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

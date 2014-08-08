@@ -666,6 +666,49 @@ public class DBConnection {
    }
    
    /**
+    * Visualizza gli autori di un libro
+    * @param isbn del libro di cui visualizzare gli autori
+    * @return ResultSet con nome e cognome degli autori
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaAutoriLibro(String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT AUTORI.AUTORE_ID, AUT_NOME, AUT_COGNOME FROM AUTORI INNER JOIN AUTORI_LIB ON AUTORI.AUTORE_ID=AUTORI_LIB.AUTORE_ID WHERE ISBN = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       
+       return pstmt.executeQuery();
+   }
+   
+   /**
+    * Visualizza gli editori di un libro
+    * @param isbn del libro di cui visualizzare gli editori
+    * @return ResultSet con nome e cognome degli editori
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaEditoriLibro(String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT EDI_NOME FROM EDITORI INNER JOIN EDITORI_LIB ON EDITORI.EDI_ID=EDITORI_LIB.EDI_ID WHERE ISBN = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       
+       return pstmt.executeQuery();
+   }
+   
+   public static void rimuoviAutoreLibro(int autoreID, String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("DELETE FROM AUTORI_LIB WHERE AUTORE_ID=? AND ISBN LIKE ?");
+       pstmt.setInt(1, autoreID);
+       pstmt.setString(2, isbn);
+        
+        pstmt.executeQuery(); 
+   }
+   
+   /**
     * Lista dei libri dettagliata che il venditore ha a disposizione
     * @param venditoreID
     * @return LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA
