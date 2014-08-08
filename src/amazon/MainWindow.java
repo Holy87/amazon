@@ -47,7 +47,7 @@ public class MainWindow extends javax.swing.JFrame {
     private FinestraEditore finestraEditore;
     private FinestraLibro finestraLibro;
     private FinestraVenditore finestraVenditore;
-    
+    private FinestraCorriere finestraCorriere;    
     /**
      * Inizializzazione dei componenti:
      * finestraUtente: scheda dell'elenco degli utenti
@@ -57,7 +57,7 @@ public class MainWindow extends javax.swing.JFrame {
      * finestraVenditore: scheda dell'elenco dei venditori
      */
     private void initCustomComponents() {
-        jTabbedPane1.setVisible(false);
+        jTabbedPanel.setVisible(false);
         finestraUtente = new FinestraUtente(this, true);
         tabUtenti.impostaInterfaccia("UTENTI", finestraUtente, this);
         finestraAutore = new FinestraAutore(this, true);
@@ -68,6 +68,8 @@ public class MainWindow extends javax.swing.JFrame {
         tabLibri.impostaInterfaccia("LIBRI", finestraLibro, this);
         finestraVenditore = new FinestraVenditore(this, true);
         tabVenditori.impostaInterfaccia("VENDITORI", finestraVenditore, this);
+        finestraCorriere = new FinestraCorriere(this, true);
+        tabCorrieri.impostaInterfaccia("CORRIERI", finestraCorriere, this);
     }
     
     /**
@@ -80,6 +82,7 @@ public class MainWindow extends javax.swing.JFrame {
         tabEditori.connectTable();
         tabLibri.connectTable();
         tabVenditori.connectTable();
+        tabCorrieri.connectTable();
     }
     
     /**
@@ -138,7 +141,7 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPanel = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         tabUtenti = new amazon.TabOggetti();
         jLabel1 = new javax.swing.JLabel();
@@ -147,6 +150,7 @@ public class MainWindow extends javax.swing.JFrame {
         tabEditori = new amazon.TabOggetti();
         tabLibri = new amazon.TabOggetti();
         tabVenditori = new amazon.TabOggetti();
+        tabCorrieri = new amazon.TabOggetti();
         tabOggetti2 = new amazon.TabOggetti();
         tabOggetti3 = new amazon.TabOggetti();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -194,11 +198,12 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(lUtente)))
         );
 
-        jTabbedPane1.addTab("Utenti", jPanel1);
-        jTabbedPane1.addTab("Autori", tabAutori);
-        jTabbedPane1.addTab("Editori", tabEditori);
-        jTabbedPane1.addTab("Libri", tabLibri);
-        jTabbedPane1.addTab("Venditori", tabVenditori);
+        jTabbedPanel.addTab("Utenti", jPanel1);
+        jTabbedPanel.addTab("Autori", tabAutori);
+        jTabbedPanel.addTab("Editori", tabEditori);
+        jTabbedPanel.addTab("Libri", tabLibri);
+        jTabbedPanel.addTab("Venditori", tabVenditori);
+        jTabbedPanel.addTab("Corrieri", tabCorrieri);
 
         jMenu1.setText("File");
 
@@ -323,14 +328,14 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPanel)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPanel)
         );
 
-        jTabbedPane1.getAccessibleContext().setAccessibleName("utenti");
+        jTabbedPanel.getAccessibleContext().setAccessibleName("utenti");
 
         getAccessibleContext().setAccessibleDescription("");
 
@@ -412,7 +417,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void checkState(boolean state){
         jMenuItem1.setEnabled(!state);
         jMenuItem3.setEnabled(state);
-        jTabbedPane1.setVisible(state);
+        jTabbedPanel.setVisible(state);
         mNuovo.setEnabled(state);
         if (state == true)
             connettiTutto();
@@ -486,7 +491,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPanel;
     private javax.swing.JLabel lUtente;
     private javax.swing.JMenuItem mAcquisto;
     private javax.swing.JMenuItem mCarrello;
@@ -498,6 +503,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem mUtente;
     private javax.swing.JMenuItem mVenditore;
     private amazon.TabOggetti tabAutori;
+    private amazon.TabOggetti tabCorrieri;
     private amazon.TabOggetti tabEditori;
     private amazon.TabOggetti tabLibri;
     private amazon.TabOggetti tabOggetti2;
