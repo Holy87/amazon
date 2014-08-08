@@ -75,7 +75,7 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts.
             modelloTabella.setRS(rs);   //non credo serva, ma il prof lo mette..
-            rs.absolute(cursore);   //attiva la riga del cursore attuale
+            rs.absolute(1);   //attiva la riga del cursore attuale
             mostraDati();           //imposta la selezione a riga singola
         } catch (SQLException ex) {
             mostraErrore(ex);
@@ -126,24 +126,8 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
       }
     }
     
-    /*private void impostaAutoreSelezionato() {
-        try {
-            curAutori = rs.getRow();
-            tabella.setRowSelectionInterval(curAutori - 1, curAutori - 1);
-            autoreID = rs.getInt(1);
-            if (modelloTabella.getRowCount() == 0)
-                abilitaPulsanteElimina(false);
-            else
-                abilitaPulsanteElimina(true);
-      } catch (SQLException ex) {
-          mostraErrore(ex);
-      } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
-      }
-    }*/
-    
     /**
-     * Rimozione di un autore al libro
+     * Rimozione di un editore al libro
      */
     private void rimuoviEditore() {
         try {
@@ -155,7 +139,7 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
     }
     
     /**
-     * Aggiunta di un autore alla composizione del libro
+     * Aggiunta di un editore alla composizione del libro
      */
     private void aggiungiEditore() {
         try {
@@ -167,11 +151,11 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
             }
             LinkedList<Editore> listaEditori = new LinkedList();
             while (editori.next()) {
-                if (autoreNonPresente(editoriInLibro, editori.getInt(1)))
+                if (editoreNonPresente(editoriInLibro, editori.getInt(1)))
                     listaEditori.add(new Editore(editori.getInt(1),editori.getString(2)));
             }
-            Editore[] elencoAutori = listaEditori.toArray(new Editore[listaEditori.size()]);
-            Editore risposta = (Editore)JOptionPane.showInputDialog(this, "Seleziona l'editore da aggiungere al libro", "Aggiungi editore", JOptionPane.QUESTION_MESSAGE, null, elencoAutori, JOptionPane.OK_CANCEL_OPTION);
+            Editore[] elencoEditori = listaEditori.toArray(new Editore[listaEditori.size()]);
+            Editore risposta = (Editore)JOptionPane.showInputDialog(this, "Seleziona l'editore da aggiungere al libro", "Aggiungi editore", JOptionPane.QUESTION_MESSAGE, null, elencoEditori, JOptionPane.OK_CANCEL_OPTION);
             if (risposta != null) {
                 DBConnection.aggiungiEditoreLibro(risposta.getId(), isbn);
                 aggiornaTabella();}
@@ -181,15 +165,15 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
     }
     
     /**
-     * Restituisce true se l'autore è già presente nell'elenco degli autori
+     * Restituisce true se l'editore è già presente nell'elenco degli editori
      * del libro
-     * @param idAutori array degli ID degli autori
-     * @param autore id dell'autore da verificare
+     * @param idEditori array degli ID degli editorii
+     * @param editore id dell'editore da verificare
      * @return true se non è presente, false altrimenti
      */
-    private boolean autoreNonPresente(int[] idAutori, int autore) {
-        for (int i = 0; i < idAutori.length; i++) {
-            if (idAutori[i] == autore)
+    private boolean editoreNonPresente(int[] idEditori, int editore) {
+        for (int i = 0; i < idEditori.length; i++) {
+            if (idEditori[i] == editore)
                 return false;
         }
         return true;
