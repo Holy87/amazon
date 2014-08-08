@@ -21,20 +21,23 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
     /**
      * Creates new form FinestraRecensioneLibro
      */
-    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int idUtente, String isbn) {
+    public FinestraRecensioneLibro(java.awt.Frame parent, boolean modal, int idUtente, String isbn, FinestraListaRecensioniLibri finestraRecensioni) {
         super(parent, modal);
         this.idUtente = idUtente;
         this.isbn = isbn;
+        this.finestraRecensioni = finestraRecensioni;
         initComponents();
     }
     
     private int idUtente;
     private String isbn;
+    private FinestraListaRecensioniLibri finestraRecensioni;
     
     private void inserisciRecensione() {
         setVisible(false);
         try {
             DBConnection.creaRecensione(idUtente, tCommento.getText(), true, isbn, sVoto.getValue());
+            finestraRecensioni.aggiornaTabella();
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);

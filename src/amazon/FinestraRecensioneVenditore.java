@@ -17,22 +17,30 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 public class FinestraRecensioneVenditore extends javax.swing.JDialog {
 
     /**
-     * Creates new form FinestraRecensioneLibro
+     * 
+     * @param parent
+     * @param modal
+     * @param idUtente
+     * @param venditoreID
+     * @param finestraRecensioni 
      */
-    public FinestraRecensioneVenditore(java.awt.Frame parent, boolean modal, int idUtente, String venditoreID) {
+    public FinestraRecensioneVenditore(java.awt.Frame parent, boolean modal, int idUtente, String venditoreID, FinestraListaRecensioniVenditori finestraRecensioni) {
         super(parent, modal);
         this.idUtente = idUtente;
         this.venditoreID = venditoreID;
+        this.finestraRecensioni = finestraRecensioni;
         initComponents();
     }
     
-    private int idUtente;
-    private String venditoreID;
+    private final int idUtente;
+    private final String venditoreID;
+    private final FinestraListaRecensioniVenditori finestraRecensioni;
     
     private void inserisciRecensione() {
         setVisible(false);
         try {
             DBConnection.creaRecensione(idUtente, tCommento.getText(), false, venditoreID, sVoto.getValue());
+            finestraRecensioni.aggiornaTabella();
             dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
