@@ -159,11 +159,11 @@ public final class TabOggetti extends javax.swing.JPanel {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRecensioniVenditore(evt);}});
                 break;
-            /*case "LIBRI": serviceButton3.setText("Visualizza editori del libro");
+            case "LIBRI": serviceButton3.setText("Visualizza editori del libro");
                 serviceButton3.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaEditoriLibro(evt);}});
-                break;*/
+                break;
             default: serviceButton3.setVisible(false);
         }
     }
@@ -223,6 +223,11 @@ public final class TabOggetti extends javax.swing.JPanel {
     private void visualizzaAutoriLibro(java.awt.event.ActionEvent evt) {
         FinestraAutoriLibro autoriLibro = new FinestraAutoriLibro(mainWindow, true, modelloTabella.getValueAt(cursore-1, 2).toString());
         autoriLibro.setVisible(true);
+    }
+    
+    private void visualizzaEditoriLibro(java.awt.event.ActionEvent evt) {
+        FinestraEditoriLibro editoriLibro = new FinestraEditoriLibro(mainWindow, true, modelloTabella.getValueAt(cursore-1, 2).toString());
+        editoriLibro.setVisible(true);
     }
     
     private void visualizzaRecensioniVenditore(java.awt.event.ActionEvent evt) {
