@@ -706,17 +706,6 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static ResultSet listaAutori(String isbn) throws SQLException {
-       PreparedStatement pstmt;
-       
-       pstmt = conn.prepareStatement("",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setString(1, isbn);
-       
-       return pstmt.executeQuery();
-   }
-   
    /**
     * Visualizza gli editori di un libro
     * @param isbn del libro di cui visualizzare gli editori
