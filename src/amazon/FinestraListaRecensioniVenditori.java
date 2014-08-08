@@ -21,14 +21,16 @@ import javax.swing.event.ListSelectionEvent;
 public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
 
     /**
-     * Creates new form EsempioTabella
-     * @param parent va inserita la finestra chiamante (un jFrame)
-     * @param modal va sempre in false
-     */
-    public FinestraListaRecensioniVenditori(java.awt.Frame parent, boolean modal, int iduser, String idvendor) {
+    * 
+    * @param parent
+    * @param modal
+    * @param utenteID
+    * @param venditoreID 
+    */
+    public FinestraListaRecensioniVenditori(java.awt.Frame parent, boolean modal, int utenteID, String venditoreID) {
         super(parent, modal);
-        venditoreID = idvendor;
-        utenteID = iduser;
+        this.venditoreID = venditoreID;
+        this.utenteID = utenteID;
         initComponents();
         impostaTabella();   // aggiungere al costruttore questo metodo in modo
                             // da impostare il set di dati
@@ -77,6 +79,12 @@ public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
             modelloTabella.setRS(rs);   //non credo serva, ma il prof lo mette..
             rs.absolute(cursore);   //attiva la riga del cursore attuale
             mostraDati();           //imposta la selezione a riga singola
+            tabella.getColumnModel().getColumn(0).setMinWidth(120);
+            tabella.getColumnModel().getColumn(0).setMaxWidth(120);
+            tabella.getColumnModel().getColumn(1).setMinWidth(120);
+            tabella.getColumnModel().getColumn(1).setMaxWidth(120);
+            tabella.getColumnModel().getColumn(3).setMinWidth(50);
+            tabella.getColumnModel().getColumn(3).setMaxWidth(50);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -114,12 +122,6 @@ public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-          tabella.getColumnModel().getColumn(0).setMinWidth(120);
-          tabella.getColumnModel().getColumn(0).setMaxWidth(120);
-          tabella.getColumnModel().getColumn(1).setMinWidth(120);
-          tabella.getColumnModel().getColumn(1).setMaxWidth(120);
-          tabella.getColumnModel().getColumn(3).setMinWidth(50);
-          tabella.getColumnModel().getColumn(3).setMaxWidth(50);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -204,7 +206,7 @@ public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addReceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addReceActionPerformed
-        FinestraRecensioneVenditore finestra = new FinestraRecensioneVenditore(null, false, utenteID, venditoreID);
+        FinestraRecensioneVenditore finestra = new FinestraRecensioneVenditore(null, false, utenteID, venditoreID, this);
         finestra.setVisible(true);
     }//GEN-LAST:event_addReceActionPerformed
 
