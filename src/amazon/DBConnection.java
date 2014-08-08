@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import oracle.jdbc.pool.*;
+import java.util.LinkedList;
 /**
  *
  * @author Francesco
@@ -276,20 +277,18 @@ public class DBConnection {
     * @param ordineId id dell'ordine
     * @throws SQLException 
     */
-   public static void applicaScontoOrdine(Scontotemp sconti[], int ordineId) throws SQLException {
+   public static void applicaScontoOrdine(LinkedList<Scontotemp> sconti, int ordineId) throws SQLException {
         PreparedStatement pstmt;
-        int contatore=0;
         String codPromo;
         
-        while(sconti[contatore]!=null)    {
-            codPromo=sconti[contatore].getcodPromo();
+        for(Scontotemp preso : sconti)    {
+            codPromo=preso.getcodPromo();
             
             pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO='?'");
             pstmt.setInt(1, ordineId);
             pstmt.setString(2, codPromo);
             
             pstmt.executeUpdate();
-            contatore++;
             pstmt.close();
         }  
    }
@@ -303,7 +302,7 @@ public class DBConnection {
     * @param sconti codici di sconto
     * @throws SQLException 
     */
-   public static void creaOrdine (int idUtente, int sped, double sconto, int modpagamento, Scontotemp sconti[]) throws SQLException {
+   public static void creaOrdine (int idUtente, int sped, double sconto, int modpagamento, LinkedList<Scontotemp> sconti) throws SQLException {
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -328,7 +327,7 @@ public class DBConnection {
        pstmt2.setInt(3, sped);
        pstmt2.setInt(4, modpagamento);
        
-       if ( sconti[0]!=null ) //Verifica se l'array non è stato riempito
+       if ( sconti.isEmpty() ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
        
        pstmt2.close();
