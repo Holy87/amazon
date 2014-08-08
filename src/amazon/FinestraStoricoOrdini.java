@@ -9,8 +9,6 @@ package amazon;
 import amazon.modelliTabelle.DBTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -32,13 +30,13 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         super(parent, modal);
         utenteID = utente;
         initComponents();
-        impostaTabella();           //storico ordini
+        impostaTabellaStorico();    //storico ordini
         impostaTabellaArticoli();   //articoli dell'ordine
     }
     
     private final int utenteID;
     private ResultSet rsStorico, rsArticoli; //ResultSet su cui si basano i dati della tabella
-    private DBTableModel modelloTabella; //modello della tabella per i dati
+    private DBTableModel modelloTabellaOrdini; //modello della tabella per i dati
     private DBTableModel modelloArticoli;
     private int cursoreStorico = 1; //memorizza la riga selezionata
     private int cursoreArticoli = 1; //memorizza la riga selezionata negli art.
@@ -47,9 +45,9 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
      * Inizializza i dati della tabella, assegnandogli il modello e il rs.
      */
     @SuppressWarnings("Convert2Lambda")
-    public final void impostaTabella() {
-        modelloTabella = new DBTableModel(rsStorico);//inserire il resultset nel costr.
-        tabellaStorico.setModel(modelloTabella); //metto il modellotabella nel
+    public final void impostaTabellaStorico() {
+        modelloTabellaOrdini = new DBTableModel(rsStorico);//inserire il resultset nel costr.
+        tabellaStorico.setModel(modelloTabellaOrdini); //metto il modellotabella nel
         tabellaStorico.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
         tabellaStorico.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             //implemento un evento che chiama tableSelectionChanged quando cambia la selezione della tabella
@@ -61,7 +59,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                 
         );
         //infine aggiorno il resultset della tabella
-        aggiornaTabella();
+        aggiornaTabellaStorico();
     }
     
     /**
@@ -69,7 +67,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
      */
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabellaArticoli() { //In questa tabella non è necessario usare la selezione
-        modelloTabella = new DBTableModel(rsArticoli);//inserire il resultset nel costr.
+        modelloArticoli = new DBTableModel(rsArticoli);//inserire il resultset nel costr.
         tabellaArticoli.setModel(modelloArticoli); //metto il modellotabella nel
         tabellaArticoli.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //non possono essere selezionati record multipli
         tabellaArticoli.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -88,15 +86,15 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     /**
      * Aggiorna i dati della tabella desideri con i dati dell'utente.
      */
-    public void aggiornaTabella()
+    public void aggiornaTabellaStorico()
     {
         try {
             rsStorico = ottieniDati(); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts.
-            modelloTabella.setRS(rsStorico);   //non credo serva, ma il prof lo mette..
+            modelloTabellaOrdini.setRS(rsStorico);   //non credo serva, ma il prof lo mette..
             rsStorico.absolute(cursoreStorico);   //attiva la riga del cursore attuale
-            mostraDati();           //imposta la selezione a riga singola
+            aggiornaSelezioneOrdine();           //imposta la selezione a riga singola
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -110,13 +108,13 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         try {
             rsArticoli = ottieniArticoli(idOrdine()); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
-                                //si può anche direttamente passare il reslts.
+                                //si può anche direttamente passare il reslts
             modelloArticoli.setRS(rsArticoli);   //non credo serva, ma il prof lo mette..
             rsArticoli.absolute(cursoreArticoli);   //attiva la riga del cursore attuale
             mostraDatiArticoli();           //imposta la selezione a riga singola
         } catch (SQLException ex) {
             mostraErrore(ex);
-        }
+        } catch (NullPointerException ex) {}
     }
     
     /**
@@ -133,7 +131,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     }
     
     private int idOrdine() {
-        return Integer.parseInt(modelloTabella.getValueAt(cursoreStorico - 1, 0).toString());
+        return Integer.parseInt(modelloTabellaOrdini.getValueAt(cursoreStorico - 1, 0).toString());
     }
     
     /**
@@ -144,8 +142,8 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     {
         try {
             rsStorico.absolute(tabellaStorico.getSelectionModel().getMinSelectionIndex() + 1);
-            mostraDati();
-            aggiornaTabellaArticoli();
+            aggiornaSelezioneOrdine();
+            //
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -168,13 +166,14 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     /**
      * Mostra infine i dati sulla tabella dopo un aggiornamento
      */
-    private void mostraDati() {
+    private void aggiornaSelezioneOrdine() {
       try {
           cursoreStorico = rsStorico.getRow();
           tabellaStorico.getSelectionModel().setSelectionInterval(cursoreStorico - 1,cursoreStorico - 1);
           tabellaStorico.setRowSelectionInterval(cursoreStorico - 1, cursoreStorico - 1);
           tabellaStorico.getColumnModel().getColumn(0).setMinWidth(0);
           tabellaStorico.getColumnModel().getColumn(0).setMaxWidth(0);
+          aggiornaTabellaArticoli();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -228,7 +227,6 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         tabellaArticoli = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        bChiudiFinestraStorico = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Liste dei desideri");
@@ -269,29 +267,16 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
 
         jLabel2.setText("Articoli dell'Ordine:");
 
-        bChiudiFinestraStorico.setText("Chiudi");
-        bChiudiFinestraStorico.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bChiudiFinestraStoricoActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(bChiudiFinestraStorico, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -306,12 +291,8 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(bChiudiFinestraStorico)
-                        .addGap(6, 6, 6))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -322,12 +303,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_tabellaStoricoMouseReleased
 
-    private void bChiudiFinestraStoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bChiudiFinestraStoricoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bChiudiFinestraStoricoActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bChiudiFinestraStorico;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
