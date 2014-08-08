@@ -7,13 +7,16 @@
 package amazon;
 
 import amazon.modelliTabelle.DBTableModel;
+import java.awt.Window;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 
 /**
@@ -205,6 +208,7 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
         bNuovo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -391,7 +395,7 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     }//GEN-LAST:event_bAnnullaActionPerformed
 
     private void bNuovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNuovoActionPerformed
-        FinestraLibro finestra = new FinestraLibro(null, false);
+        FinestraLibro finestra = new FinestraLibro(this, true);
         finestra.setVisible(true);
     }//GEN-LAST:event_bNuovoActionPerformed
 

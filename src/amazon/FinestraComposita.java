@@ -172,6 +172,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         searchButton.setText("Cerca");
         searchButton.setEnabled(false);

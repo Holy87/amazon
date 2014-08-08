@@ -38,6 +38,14 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
                             // da impostare il set di dati
     }
     
+    public FinestraAutoriLibro(java.awt.Dialog parent, boolean modal, String isbn) {
+        super(parent, modal);
+        this.isbn = isbn;
+        initComponents();
+        impostaTabella();   // aggiungere al costruttore questo metodo in modo
+                            // da impostare il set di dati
+    }
+    
     private final String isbn; //ISBN selezionato in precedenta da TabOggetti
     private int autoreID;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
@@ -226,6 +234,7 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         bDeleteAuthor = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

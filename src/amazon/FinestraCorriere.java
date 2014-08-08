@@ -42,6 +42,7 @@ public class FinestraCorriere extends EditForm {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modifica Autore");
+        setLocationByPlatform(true);
 
         jLabel1.setText("Corriere_ID");
 
