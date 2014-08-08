@@ -609,7 +609,7 @@ public class DBConnection {
        
        if ( prezzoKindle > 0) {
            PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
            pstmt.setDouble(1,prezzoKindle);
            pstmt.setString(2,isbn);
        }
