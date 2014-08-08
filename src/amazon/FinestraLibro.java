@@ -353,12 +353,28 @@ public class FinestraLibro extends EditForm {
             else
                 DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
             chiudiFinestra();
+        aggiornaListinoLibro();
         }
         catch(SQLException ex){
             mostraErrore(ex);
             setVisible(true);
         }
         
+    }
+    
+    private void aggiornaListinoLibro() throws SQLException {
+        double rigida = ottieniTesto(tListinoRigida.getText());
+        double flessibile = ottieniTesto(tListinoFlessibile.getText());
+        double kindle = ottieniTesto(tListinoKindle.getText());
+        DBConnection.aggiornaListino(tISBN.getText(), rigida, flessibile, kindle);
+    }
+    
+    private double ottieniTesto(String testo) {
+        try {
+            return Double.parseDouble(testo);
+        } catch (IllegalArgumentException ex) {
+            return 0.0;
+        }
     }
     
     @Override
