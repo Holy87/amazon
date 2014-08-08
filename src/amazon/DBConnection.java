@@ -304,7 +304,6 @@ public class DBConnection {
     * @throws SQLException 
     */
    public static void creaOrdine (int idUtente, int sped, double sconto, int modpagamento, Scontotemp sconti[]) throws SQLException {
-       //NOTA = sistemare i "parse" ove necessario
        //NOTA2 = gestire i pezzi disponibili. Checkare e sottrarre solo se il formato ID è 2001 o 2002.
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -318,7 +317,7 @@ public class DBConnection {
        pstmt.setInt(4, modpagamento);
        
        rs=pstmt.executeQuery();
-       idOrder=rs.getInt(2);//Ottenimento ORDINE_ID riga inserita
+       idOrder=rs.getInt(2); //Ottenimento ORDINE_ID riga inserita
        pstmt.close();
        
        PreparedStatement pstmt2; //Statement per il richiamo della funzione per il completamento
@@ -329,7 +328,7 @@ public class DBConnection {
        pstmt2.setInt(3, sped);
        pstmt2.setInt(4, modpagamento);
        
-       if (sconti!=null)
+       if ( sconti[0]!=null ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
        
        pstmt2.close();
@@ -700,6 +699,17 @@ public class DBConnection {
        PreparedStatement pstmt;
        
        pstmt = conn.prepareStatement("SELECT AUTORI.AUTORE_ID, AUT_NOME, AUT_COGNOME FROM AUTORI INNER JOIN AUTORI_LIB ON AUTORI.AUTORE_ID=AUTORI_LIB.AUTORE_ID WHERE ISBN = ?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       
+       return pstmt.executeQuery();
+   }
+   
+   public static ResultSet listaAutori(String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
