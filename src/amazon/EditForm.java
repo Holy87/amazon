@@ -34,6 +34,11 @@ public abstract class EditForm extends javax.swing.JDialog {
         //initComponents();
     }
     
+    public EditForm(java.awt.Dialog parent, boolean modal) {
+        super(parent, modal);
+        setVisible(false);
+    }
+    
     /**
      * Apre la finestra impostando i dati
      * @param mode      modalità di apertura (ADDN o EDIT)
@@ -111,6 +116,7 @@ public abstract class EditForm extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         jButton1.setText("Annulla");
 

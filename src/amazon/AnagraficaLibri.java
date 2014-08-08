@@ -21,7 +21,10 @@ import javax.swing.event.ListSelectionEvent;
 public final class AnagraficaLibri extends javax.swing.JDialog {
 
     /**
-     * Creates new form AnagraficaLibri
+     * Crea una nuova finestra anagrafica libri
+     * @param parent frame chiamante
+     * @param modal modalità, true per bloccare il genitore
+     * @param idUtente id dell'utente
      */
     public AnagraficaLibri(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
@@ -144,8 +147,8 @@ public final class AnagraficaLibri extends javax.swing.JDialog {
     
     private void apriLibro() {
         FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(
-                (java.awt.Frame)super.getParent(), false, 
-                modelloTabella.getValueAt(cursore-1, 1).toString(), this,
+                this, true, 
+                modelloTabella.getValueAt(cursore-1, 1).toString(),
                 idUtente);
         finestraDettagli.setVisible(true);
     }

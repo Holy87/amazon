@@ -28,6 +28,11 @@ public class FinestraLibro extends EditForm {
         initComponents();
     }
     
+    public FinestraLibro(java.awt.Dialog parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+    }
+    
     private String oldISBN;
 
     /**

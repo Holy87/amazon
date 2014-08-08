@@ -28,14 +28,20 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
      * @param parent la finestra chiamante
      * @param modal sempre false
      * @param isbn il codice del libro da visualizzare
-     * @param padre è la classe che crea la finestra
      * @param idUtente è l'ID dell'utente attivo per l'acquisto
      */
-    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn, java.awt.Dialog padre, int idUtente) {
+    public FinestraDettagliLibro(java.awt.Frame parent, boolean modal, String isbn, int idUtente) {
         super(parent, modal);
-        this.padre = padre;
+        inizializzazione(isbn, idUtente);
+    }
+    
+    public FinestraDettagliLibro(java.awt.Dialog parent, boolean modal, String isbn, int idUtente) {
+        super(parent, modal);
+        inizializzazione(isbn, idUtente);
+    }
+    
+    private void inizializzazione( String isbn, int idUtente) {
         this.idUtente = idUtente;
-        this.padre.setVisible(false);
         try {
             libro = DBConnection.visualizzaInfoLibro(isbn);
         } catch (SQLException ex) {
@@ -376,16 +382,6 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             tQuantita.setText("1");
         }
         return prz;
-    }
-    
-    /**
-     * Override per far tornare visibile la finestra della scelta dei libri alla
-     * chiusura di questa finestra.
-     */
-    @Override
-    public void dispose() {
-        super.dispose();
-        padre.setVisible(true);
     }
 
     /**
