@@ -167,11 +167,11 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
      */
     private void aggiungiAutore() {
         try {
-            
             ResultSet autori = DBConnection.eseguiQuery("SELECT * FROM AUTORI");
             int[] autoriInLibro = new int[modelloTabella.getRowCount()];
+            System.out.println(modelloTabella.getRowCount());
             for (int i = 0; i < autoriInLibro.length; i++) {
-                autoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(cursore - 1, 0).toString());
+                autoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(i, 0).toString());
             }
             LinkedList<Autore> listaAutori = new LinkedList();
             while (autori.next()) {

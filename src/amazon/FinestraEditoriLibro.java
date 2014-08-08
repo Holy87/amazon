@@ -147,7 +147,7 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
             ResultSet editori = DBConnection.eseguiQuery("SELECT * FROM EDITORI");
             int[] editoriInLibro = new int[modelloTabella.getRowCount()];
             for (int i = 0; i < editoriInLibro.length; i++) {
-                editoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(cursore - 1, 0).toString());
+                editoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(i, 0).toString());
             }
             LinkedList<Editore> listaEditori = new LinkedList();
             while (editori.next()) {
