@@ -494,6 +494,17 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   public static void aggiungiAutoreLibro(int autoreID, String isbn) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO AUTORI_LIB VALUES(?,'?')");
+       pstmt.setInt(1, autoreID);
+       pstmt.setString(2, isbn);
+       
+       pstmt.executeUpdate();
+   }
+   
+   
    /**
     * Creazione di un libro nell'entità LIBRI
     * @param nomeLibro
