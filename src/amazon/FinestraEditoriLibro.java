@@ -226,6 +226,7 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
         bDeleteEditor = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
