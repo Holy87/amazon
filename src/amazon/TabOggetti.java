@@ -333,8 +333,7 @@ public final class TabOggetti extends javax.swing.JPanel {
             rs.absolute(cursore);
             mostraDati();
         } catch (SQLException ex) {
-            //mostraErrore(ex);
-            System.out.println((String)colonne.get(9).toString());
+            mostraErrore(ex);
         }
     }
     

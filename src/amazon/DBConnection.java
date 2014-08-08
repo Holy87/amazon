@@ -579,6 +579,27 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   public static void creaCorriere(String nomeCorriere) throws SQLException
+   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO CORRIERI(CORRIERE_NOME) VALUES(?)");
+       pstmt.setString(1, nomeCorriere);
+
+       
+       pstmt.executeUpdate();
+   }
+   
+   public static void aggiornaCorriere(int idCorriere, String nomeCorriere) throws SQLException {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE CORRIERI SET CORRIERE_NOME = ? WHERE CORRIERE_ID = ?");
+       pstmt.setString(1, nomeCorriere);
+       pstmt.setInt(2, idCorriere);
+       
+       pstmt.executeUpdate();
+   }
+   
       public static void creaVenditore(String nomeVenditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini

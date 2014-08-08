@@ -39,6 +39,7 @@ public class ListaTipi {
         i: tipo intero
         s: tipo stringa
         f: con la virgola
+        d: tipo data
         */
         tabella = new Hashtable();
         LinkedList utenti = new LinkedList();
@@ -56,16 +57,13 @@ public class ListaTipi {
         
         LinkedList libri = new LinkedList();
         libri.add('s');//verifica che si tratti dell'ISBN
+        libri.add('i');
         libri.add('s');
-        libri.add('i');
-        libri.add('i');
         libri.add('s');
         libri.add('s');
         libri.add('i');
         libri.add('i');
         libri.add('d');
-        libri.add('f');
-        libri.add('i');
         
         LinkedList corrieri = new LinkedList();
         corrieri.add('i');
@@ -84,12 +82,17 @@ public class ListaTipi {
         magazzinoLibri.add('i');
         magazzinoLibri.add('i');
         
+        LinkedList venditori = new LinkedList();
+        venditori.add('i');
+        venditori.add('s');
+        
         tabella.put("UTENTI", utenti);
         tabella.put("AUTORI", autori);
         tabella.put("CORRIERI", corrieri);
         tabella.put("EDITORI", editori);
         tabella.put("LIBRI", libri);
         tabella.put("MAGAZZINO_LIBRI", magazzinoLibri);
+        tabella.put("VENDITORI",venditori);
         
     }
 }
