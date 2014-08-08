@@ -7,12 +7,8 @@
 package amazon;
 
 import amazon.modelliTabelle.DBTableModel;
-import amazon.utility.Autore;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -22,24 +18,22 @@ import javax.swing.event.ListSelectionEvent;
  *
  * @author Francesco
  */
-public class FinestraAutoriLibro extends javax.swing.JDialog {
+public class FinestraRubricaUtente extends javax.swing.JDialog {
 
     /**
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
-     * @param isbn ISBN del libro di cui visualizzare gli autori
      */
-    public FinestraAutoriLibro(java.awt.Frame parent, boolean modal, String isbn) {
+    public FinestraRubricaUtente(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
-        this.isbn = isbn;
+        this.idUtente = idUtente;
         initComponents();
         impostaTabella();   // aggiungere al costruttore questo metodo in modo
                             // da impostare il set di dati
     }
     
-    private final String isbn; //ISBN selezionato in precedenta da TabOggetti
-    private int autoreID;
+    private final int idUtente;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
@@ -88,7 +82,7 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
      * @return resultset dei dati da mettere in tabella 
      */
     private ResultSet ottieniDati() throws SQLException {
-        return DBConnection.visualizzaAutoriLibro(isbn);
+        return DBConnection.visualizzaRubricaUtente(idUtente);
     }
     
     /**
@@ -114,11 +108,6 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-          autoreID = rs.getInt(1);
-          if (modelloTabella.getRowCount() == 0)
-            abilitaPulsanteElimina(false);
-          else
-            abilitaPulsanteElimina(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -126,78 +115,17 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
       }
     }
     
-    /*private void impostaAutoreSelezionato() {
-        try {
-            curAutori = rs.getRow();
-            tabella.setRowSelectionInterval(curAutori - 1, curAutori - 1);
-            autoreID = rs.getInt(1);
-            if (modelloTabella.getRowCount() == 0)
-                abilitaPulsanteElimina(false);
-            else
-                abilitaPulsanteElimina(true);
-      } catch (SQLException ex) {
-          mostraErrore(ex);
-      } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
-      }
-    }*/
-    
-    /**
+        /**
      * Rimozione di un autore al libro
      */
-    private void rimuoviAutore() {
+    /*private void rimuoviIndirizzo() {
         try {
-            DBConnection.rimuoviAutoreLibro(autoreID, isbn);
+            DBConnection.rimuoviIndirizzo(autoreID, isbn);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         aggiornaTabella();
-    }
-    
-    /**
-     * Aggiunta di un autore alla composizione del libro
-     */
-    private void aggiungiAutore() {
-        try {
-            
-            ResultSet autori = DBConnection.eseguiQuery("SELECT * FROM AUTORI");
-            int[] autoriInLibro = new int[modelloTabella.getRowCount()];
-            for (int i = 0; i < autoriInLibro.length; i++) {
-                autoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(cursore - 1, 0).toString());
-            }
-            LinkedList<Autore> listaAutori = new LinkedList();
-            while (autori.next()) {
-                if (autoreNonPresente(autoriInLibro, autori.getInt(1)))
-                    listaAutori.add(new Autore(autori.getInt(1),autori.getString(2), autori.getString(3)));
-            }
-            Autore[] elencoAutori = listaAutori.toArray(new Autore[listaAutori.size()]);
-            Autore risposta = (Autore)JOptionPane.showInputDialog(this, "Seleziona l'autore da aggiungere al libro", "Aggiungi autore", JOptionPane.QUESTION_MESSAGE, null, elencoAutori, JOptionPane.OK_CANCEL_OPTION);
-            if (risposta != null) {
-                DBConnection.aggiungiAutoreLibro(risposta.getId(), isbn);
-                aggiornaTabella();}
-        } catch (SQLException ex) {
-            Logger.getLogger(FinestraAutoriLibro.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    /**
-     * Restituisce true se l'autore è già presente nell'elenco degli autori
-     * del libro
-     * @param idAutori array degli ID degli autori
-     * @param autore id dell'autore da verificare
-     * @return true se non è presente, false altrimenti
-     */
-    private boolean autoreNonPresente(int[] idAutori, int autore) {
-        for (int i = 0; i < idAutori.length; i++) {
-            if (idAutori[i] == autore)
-                return false;
-        }
-        return true;
-    }
-    
-    private void abilitaPulsanteElimina(boolean stato) {
-        bDeleteAuthor.setEnabled(stato);
-    }
+    }*/
     
     /**
      * Questo metodo stampa l'errore SQL. È facoltativo.
@@ -222,8 +150,9 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
-        bAddAuthor = new javax.swing.JButton();
         bDeleteAuthor = new javax.swing.JButton();
+        bDeleteAddress = new javax.swing.JButton();
+        bAddAddress = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -240,13 +169,6 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tabella);
 
-        bAddAuthor.setText("Aggiungi autore");
-        bAddAuthor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAddAuthorActionPerformed(evt);
-            }
-        });
-
         bDeleteAuthor.setText("Elimina autore");
         bDeleteAuthor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -254,41 +176,60 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
             }
         });
 
+        bDeleteAddress.setText("Elimina indirizzo");
+        bDeleteAddress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDeleteAddressActionPerformed(evt);
+            }
+        });
+
+        bAddAddress.setText("Aggiungi indirizzo");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(bAddAuthor)
+                .addComponent(bAddAddress)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bDeleteAuthor)
-                .addGap(6, 6, 6))
+                .addComponent(bDeleteAddress))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(150, 150, 150)
+                    .addComponent(bDeleteAuthor)
+                    .addContainerGap(151, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bAddAuthor)
-                    .addComponent(bDeleteAuthor)))
+                    .addComponent(bDeleteAddress)
+                    .addComponent(bAddAddress)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(138, 138, 138)
+                    .addComponent(bDeleteAuthor)
+                    .addContainerGap(139, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void bDeleteAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAuthorActionPerformed
-        rimuoviAutore();
+
     }//GEN-LAST:event_bDeleteAuthorActionPerformed
 
-    private void bAddAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAuthorActionPerformed
-        aggiungiAutore();
-    }//GEN-LAST:event_bAddAuthorActionPerformed
+    private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
+//        rimuoviIndirizzo();
+    }//GEN-LAST:event_bDeleteAddressActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bAddAuthor;
+    private javax.swing.JButton bAddAddress;
+    private javax.swing.JButton bDeleteAddress;
     private javax.swing.JButton bDeleteAuthor;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;

@@ -133,50 +133,12 @@ public final class TabOggetti extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     private void setService2() {
         switch (nomeTabella) {
-//                case "UTENTI": serviceButton2.setText("Gestione utente");
-                /*serviceButton2.addActionListener(new java.awt.event.ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaUtente(evt);}});
-                     */
-//                break;
-                   
-
-
-
-
-//            
-//                /*GESTIONE METODO: Apre una finestra dove selezionare 5 cose:
-//                **1) Visualizza liste desideri
-//                **2) Visualizza carrello
-//                **3) Visualizza ordini già effettuati
-//            
-//                **1) Visualizza liste desideri chiamerà il metodo in DBConnection visualizzaListeDesideri,
-//                **   che riceverà in ingresso l'ID dell'utente selezionato.
-//                **2) Visualizza carrello chiamerà il metodo in DBConnection visualizzaCarrello,
-//                **   il quale riceverà sempre in ingresso l'ID dell'utente. Verrà poi visualizzato
-//                **   in fondo alla pagina il costo complessivo in base alla somma dei costi degli articoli nel carrello.
-//                **3) Visualizza ordini chiamerà il metodo in DBConnection visualizzaOrdini,
-//                **   il quale riceverà sempre in ingresso l'ID dell'utente.
-//                */
-//                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
-//                    @Override
-//                    public void actionPerformed(java.awt.event.ActionEvent evt) {gestioneUtente(evt);}});
-//                break;
+            case "UTENTI": serviceButton2.setText("Visualizza rubrica utente");
+                serviceButton2.addActionListener(new java.awt.event.ActionListener() {
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRubricaUtente(evt);}});
+                break;
             case "VENDITORI": serviceButton2.setText("Aggiungi libro a venditore");
-                
-                /*GESTIONE METODO: Selezionato il venditore, apre una tabella dove selezionare tutti i libri, quindi una finestra che dà
-                  gli stessi risultati di visualizzaListinoLibri(). Una volta selezionato il libro, si inseriscono
-                  quattro ulteriori informazioni:
-                  1) Formato_Nome (menù a tendina con i formati disponibili presi dalla tabella IMPOSTAZIONI)
-                  2) TipoCondizione (menù a tendina con "Nuovo", "Usato" e "Ricondizionato")
-                  3) PezziDisponibili
-                  4) Prezzo di vendita
-                  
-                  Alla funzione presente in DB Connection inserisciLibro gli passeremo quindi:
-                  1) L'ID del prodotto
-                  2) I Pezzi Disponibili
-                  3) Il Prezzo di vendita
-                */
                 serviceButton2.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {inserisciLibro(evt);}});
@@ -192,11 +154,6 @@ public final class TabOggetti extends javax.swing.JPanel {
     
     private void setService3() {
         switch (nomeTabella) {
-            case "UTENTI": serviceButton3.setText("Visualizza rubrica utente");
-                serviceButton3.addActionListener(new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {visualizzaRecensioniVenditore(evt);}});
-                break;
             case "VENDITORI": serviceButton3.setText("Visualizza recensioni");
                 serviceButton3.addActionListener(new java.awt.event.ActionListener() {
                     @Override
@@ -231,12 +188,12 @@ public final class TabOggetti extends javax.swing.JPanel {
         String nome = (String)utente.get(1) + " " + (String)utente.get(2);
         mainWindow.impostaUtente(id, nome);
     }
-    /*
-    private void visualizzaUtente(java.awt.event.ActionEvent evt) {
-        FinestraInfoUtente utente = new FinestraInfoUtente(mainWindow, false, getSelectedID());
-        utente.setVisible(true);
+    
+    private void visualizzaRubricaUtente(java.awt.event.ActionEvent evt) {
+        FinestraRubricaUtente rubricaUtente = new FinestraRubricaUtente(mainWindow, true, Integer.parseInt(getSelectedID()));
+        rubricaUtente.setVisible(true);
     }
-    */
+    
     private void visualizzaLibriAutore(java.awt.event.ActionEvent evt) {
         FinestraLibriAutore libriAutore = new FinestraLibriAutore(mainWindow, true, getSelectedID());
         libriAutore.setVisible(true);
