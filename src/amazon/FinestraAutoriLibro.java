@@ -7,8 +7,12 @@
 package amazon;
 
 import amazon.modelliTabelle.DBTableModel;
+import amazon.utility.Autore;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -147,6 +151,36 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         aggiornaTabella();
     }
     
+    private void aggiungiAutore() {
+        try {
+            
+            ResultSet autori = DBConnection.eseguiQuery("SELECT * FROM AUTORI");
+            int[] autoriInLibro = new int[modelloTabella.getRowCount()];
+            for (int i = 0; i < autoriInLibro.length; i++) {
+                autoriInLibro[i] = Integer.parseInt(modelloTabella.getValueAt(cursore - 1, 0).toString());
+            }
+            LinkedList<Autore> listaAutori = new LinkedList();
+            while (autori.next()) {
+                if (autoreNonPresente(autoriInLibro, autori.getInt(1)))
+                    listaAutori.add(new Autore(autori.getInt(1),autori.getString(2), autori.getString(3)));
+            }
+            Autore[] elencoAutori = listaAutori.toArray(new Autore[listaAutori.size()]);
+            Autore risposta = (Autore)JOptionPane.showInputDialog(this, "Seleziona l'autore da aggiungere al libro", "Aggiungi autore", JOptionPane.QUESTION_MESSAGE, null, elencoAutori, JOptionPane.OK_CANCEL_OPTION);
+            if (risposta != null)
+                DBConnection.aggiungiAutoreLibro(risposta.getId(), isbn);
+        } catch (SQLException ex) {
+            Logger.getLogger(FinestraAutoriLibro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private boolean autoreNonPresente(int[] idAutori, int autore) {
+        for (int i = 0; i < idAutori.length; i++) {
+            if (idAutori[i] == autore)
+                return false;
+        }
+        return true;
+    }
+    
     private void abilitaPulsanteElimina(boolean stato) {
         bDeleteAuthor.setEnabled(stato);
     }
@@ -193,6 +227,11 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         jScrollPane1.setViewportView(tabella);
 
         bAddAuthor.setText("Aggiungi autore");
+        bAddAuthor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAddAuthorActionPerformed(evt);
+            }
+        });
 
         bDeleteAuthor.setText("Elimina autore");
         bDeleteAuthor.addActionListener(new java.awt.event.ActionListener() {
@@ -229,6 +268,10 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
     private void bDeleteAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAuthorActionPerformed
         rimuoviAutore();
     }//GEN-LAST:event_bDeleteAuthorActionPerformed
+
+    private void bAddAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAuthorActionPerformed
+        aggiungiAutore();
+    }//GEN-LAST:event_bAddAuthorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAuthor;
