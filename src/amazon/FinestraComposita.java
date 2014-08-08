@@ -277,9 +277,7 @@ public abstract class FinestraComposita extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
-          if (!rs.isLast()) {
-             rs.next();
-          }
+          rs.first();
        } catch (SQLException e) {
           mostraErrore(e);
        }

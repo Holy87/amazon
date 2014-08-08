@@ -620,7 +620,7 @@ public class DBConnection {
    
    public static ResultSet cercaLibriAutore(int idAutore, String chiave) throws SQLException {
        PreparedStatement pstmt;
-       String query = "SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB NATURAL JOIN LIBRI WHERE AUTORE_ID = ? AND LIBRI.LIBRO_NOME LIKE ?";
+       String query = "SELECT LIBRI.LIBRO_NOME FROM AUTORI_LIB NATURAL JOIN LIBRI WHERE AUTORE_ID = ? AND UPPER(LIBRI.LIBRO_NOME) LIKE UPPER(?)";
        pstmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idAutore);
@@ -656,11 +656,11 @@ public class DBConnection {
     */
    public static ResultSet cercaLibroEditore(int idEditore, String query) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI NATURAL JOIN EDITORI_LIB WHERE EDI_ID = ? AND LIBRO_NOME LIKE ?",
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME FROM LIBRI NATURAL JOIN EDITORI_LIB WHERE EDI_ID = ? AND UPPER(LIBRO_NOME) LIKE UPPER(?)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idEditore);
-       pstmt.setString(2,query);
+       pstmt.setString(2,"%"+query+"%");
        
        return pstmt.executeQuery();
    }
@@ -706,12 +706,11 @@ public class DBConnection {
     */
    public static ResultSet visualizzaMagazzino(int idVenditore, String query) throws SQLException   {
        PreparedStatement pstmt;
-       query = query.replace('%', ' ');
-       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO WHERE VENDITORE_ID = ? AND LIBRI_NOME LIKE %?%",
+       pstmt = conn.prepareStatement("SELECT DISTINCT LIBRO_NOME, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO WHERE VENDITORE_ID = ? AND UPPER(LIBRO_NOME) LIKE UPPER(?)",
                ResultSet.TYPE_SCROLL_INSENSITIVE,
                ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idVenditore);
-       pstmt.setString(2, query);
+       pstmt.setString(2, "%"+query+"%");
        
        return pstmt.executeQuery();
        /*RISULTATO QUERY: LIBRO_NOME    AUT_NOME    AUT_COGNOME     EDI_NOME    ISBN            VENDITORE_ID

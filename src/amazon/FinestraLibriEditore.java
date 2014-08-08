@@ -55,7 +55,7 @@ public class FinestraLibriEditore extends FinestraComposita {
 
     @Override
     protected ResultSet resultSetRicerca(String query) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return DBConnection.cercaLibroEditore(Integer.parseInt(id), query);
     }
 
     @Override
