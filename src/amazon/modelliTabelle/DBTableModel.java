@@ -7,6 +7,7 @@
 package amazon.modelliTabelle;
 
 import amazon.DBConnection;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -121,6 +122,8 @@ public class DBTableModel extends AbstractTableModel {
      * @return 
      */
     public double getColumnSum(int columnIndex1, int columnIndex2) {
+        
+        
         double sum = 0;
         for (int i = 0; i < getRowCount(); i++) {
             try {
@@ -129,7 +132,10 @@ public class DBTableModel extends AbstractTableModel {
                 System.out.println("ERRORE SOMMA");
             }
         }
-        return sum;
+        
+        BigDecimal bd = new BigDecimal(sum);
+        bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
     }
     
     /**
