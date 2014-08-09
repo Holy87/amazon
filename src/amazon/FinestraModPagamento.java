@@ -24,6 +24,7 @@ public class FinestraModPagamento extends javax.swing.JDialog {
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
+     * @param idUtente ID dell'utente impostato
      */
     public FinestraModPagamento(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
@@ -214,7 +215,7 @@ public class FinestraModPagamento extends javax.swing.JDialog {
     }//GEN-LAST:event_bDeleteAddressActionPerformed
 
     private void bAddAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAddressActionPerformed
-        FinestraCreaModPagamento creamod = new FinestraCreaModPagamento(this, true, idUtente);
+        FinestraCreaModPagamento creamod = new FinestraCreaModPagamento(null, true, idUtente, this);
         creamod.setVisible(true);
     }//GEN-LAST:event_bAddAddressActionPerformed
 
