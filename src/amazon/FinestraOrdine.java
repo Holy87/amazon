@@ -129,6 +129,29 @@ public class FinestraOrdine extends javax.swing.JDialog {
         }
     }
     
+    private void impostaIndirizzi() {
+        try {
+            ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
+            cSpedizione.removeAllItems();
+            indirizzi = new LinkedList();
+            System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
+            //indirizzi.first();
+            while (rsIndirizzi.next()) {
+                String[] lista = {rsIndirizzi.getString(1), //id contatto;
+                rsIndirizzi.getString(2), //nome contatto
+                rsIndirizzi.getString(3), //cognome
+                rsIndirizzi.getString(4), //indirizzo 1
+                rsIndirizzi.getString(5)}; //indirizzo 2
+                indirizzi.add(lista);
+                String stringa = lista[1] + " " + lista[2] + " in " + lista[3];
+                cSpedizione.addItem(stringa);
+            }
+            cSpedizione.setSelectedIndex(0);
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+    
     /**
      * Restituisce l'ID del metodo di pagamento selezionato
      * @return 
@@ -176,28 +199,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
         aggiornaTabellaSconti(); //Qui vengono visualizzati gli elementi dei record con Sconto e codice
     }
     
-    private void impostaIndirizzi() {
-        try {
-            ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
-            cSpedizione.removeAllItems();
-            indirizzi = new LinkedList();
-            System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
-            //indirizzi.first();
-            while (rsIndirizzi.next()) {
-                String[] lista = {rsIndirizzi.getString(1), //id contatto;
-                rsIndirizzi.getString(2), //nome contatto
-                rsIndirizzi.getString(3), //cognome
-                rsIndirizzi.getString(4), //indirizzo 1
-                rsIndirizzi.getString(5)}; //indirizzo 2
-                indirizzi.add(lista);
-                String stringa = lista[1] + " " + lista[2] + " in " + lista[3];
-                cSpedizione.addItem(stringa);
-            }
-            cSpedizione.setSelectedIndex(0);
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-    }
     
     /**
      * Aggiorna i dati della tabella con tutti i dati del database.

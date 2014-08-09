@@ -70,7 +70,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="bDeleteAddress">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Elimina indirizzo"/>
+        <Property name="text" type="java.lang.String" value="Elimina Modalit&#xe0; di Pagamento"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bDeleteAddressActionPerformed"/>
@@ -78,7 +78,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="bAddAddress">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Aggiungi indirizzo"/>
+        <Property name="text" type="java.lang.String" value="Aggiungi Modalit&#xe0; di Pagamento"/>
       </Properties>
     </Component>
   </SubComponents>

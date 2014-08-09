@@ -218,7 +218,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaOrdiniUtente(int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT ORDINE_ID, DATAORDINE, PREZZOTOTALE FROM ORDINI WHERE UTENTE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
@@ -242,12 +242,58 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   /**
+    * Restituisce le modalità di pagamento di un utente
+    * @param idUtente
+    * @return *
+    * @throws SQLException
+    */
+   
    public static ResultSet visualizzaModPagamento (int idUtente) throws SQLException {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM MOD_PAGAMENTO NATURAL JOIN MOD_PAGAMENTO_CC NATURAL JOIN RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
+       
+       return pstmt.executeQuery();
+   }
+   
+   /**
+    * Inserisce una nuova modalità di pagamento per un utente
+    * @param idUtente
+    * @throws SQLException
+    */
+   public static void creaModPagamento (int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
+       PreparedStatement pstmt, pstmt2;
+       pstmt = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO_CC VALUES (?,?,?,?,?,?)",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, numeroCC);
+       pstmt.setString(2, nomeCC);
+       pstmt.setString(3, cognomeCC);
+       pstmt.setString(4, tipoCC);
+       pstmt.setString(5, scadenzaCC);
+       pstmt.setInt(6, codSicurezzaCC);
+       
+       pstmt2 = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO (CONTACT_ID, NUMEROCARTACREDITO) VALUES (?,?)",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt2.setInt(1, contactID);
+       pstmt2.setString(2, numeroCC);
+   }
+   
+      public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
+       //Esempio: UTENTE_ID = 423575;
+       /*RISULTATO QUERY:
+                    TITOLARECARTA_NOME      TITOLARECARTA_COGNOME   TIPOCARTA   NUMEROCARTACREDITO      DATASCADENZA
+                    Roberto                 Di Carlo                Mastercard	4172836483428572	01-GEN-24
+       */
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM RUBRICA_INDIRIZZI NATURAL JOIN MOD_PAGAMENTO NATURAL JOIN MOD_PAGAMENTO_CC WHERE UTENTE_ID=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, utenteId);
        
        return pstmt.executeQuery();
    }
@@ -352,20 +398,6 @@ public class DBConnection {
     * @return MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA
     * @throws SQLException 
     */
-   public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
-       //Esempio: UTENTE_ID = 423575;
-       /*RISULTATO QUERY:
-                    TITOLARECARTA_NOME      TITOLARECARTA_COGNOME   TIPOCARTA   NUMEROCARTACREDITO      DATASCADENZA
-                    Roberto                 Di Carlo                Mastercard	4172836483428572	01-GEN-24
-       */
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM RUBRICA_INDIRIZZI NATURAL JOIN MOD_PAGAMENTO NATURAL JOIN MOD_PAGAMENTO_CC WHERE UTENTE_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, utenteId);
-       
-       return pstmt.executeQuery();
-   }
    
    /**
     * Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore

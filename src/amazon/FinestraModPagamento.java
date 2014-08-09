@@ -171,14 +171,14 @@ public class FinestraModPagamento extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tabella);
 
-        bDeleteAddress.setText("Elimina indirizzo");
+        bDeleteAddress.setText("Elimina Modalità di Pagamento");
         bDeleteAddress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bDeleteAddressActionPerformed(evt);
             }
         });
 
-        bAddAddress.setText("Aggiungi indirizzo");
+        bAddAddress.setText("Aggiungi Modalità di Pagamento");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
