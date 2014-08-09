@@ -120,11 +120,11 @@ public class DBTableModel extends AbstractTableModel {
      * @param columnIndex
      * @return 
      */
-    public double getColumnSum(int columnIndex) {
+    public double getColumnSum(int columnIndex1, int columnIndex2) {
         double sum = 0;
         for (int i = 0; i < getRowCount(); i++) {
             try {
-                sum += Double.parseDouble(getValueAt(i,columnIndex).toString());
+                sum =  sum + (Double.parseDouble(getValueAt(i,columnIndex1).toString()) * Double.parseDouble(getValueAt(i,columnIndex2).toString()));
             } catch (NumberFormatException ex) {
                 System.out.println("ERRORE SOMMA");
             }
