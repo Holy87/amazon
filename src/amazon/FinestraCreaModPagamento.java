@@ -32,7 +32,7 @@ public class FinestraCreaModPagamento extends EditForm {
         initComponents();
         impostaContatti();
         impostaTipoCarta();
-        aggiornaTipoCartaSelezionato();
+        aggiornaRubricaSelezionato();
         aggiornaTipoCartaSelezionato();
     }
     
@@ -41,16 +41,16 @@ public class FinestraCreaModPagamento extends EditForm {
         this.utenteID=utenteID;
         initComponents();
         impostaContatti();
-        //impostaTipoCarta();
-        contattoRubricaSelezionato();
-        //aggiornaTipoCartaSelezionato();
+        impostaTipoCarta();
+        aggiornaRubricaSelezionato();
+        aggiornaTipoCartaSelezionato();
     }
     
     private int contattoSelezionato;
     private String tipoCartaSelezionato;
     private final int utenteID;
     private ArrayList<String[]> contatti = new ArrayList();
-    private LinkedList<String> tipiCarta;
+    private LinkedList<String> tipiCarta = new LinkedList();
     
     private void impostaContatti() {
         try {
@@ -96,16 +96,18 @@ public class FinestraCreaModPagamento extends EditForm {
             jComboBoxTipoCC.addItem("CartaSi Mastercard");
             tipiCarta.add("Maestro");
             jComboBoxTipoCC.addItem("Maestro");
+            
+            jComboBoxTipoCC.setSelectedIndex(0);
     }
     
     private int contattoRubricaSelezionato() {
         return Integer.parseInt(contatti.get(jComboBoxContactID.getSelectedIndex())[0]);
     }
-    /*
+
     private String tipoCartaSelezionato() {
         return tipiCarta.get(jComboBoxTipoCC.getSelectedIndex());
     }
-    */
+    
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     private void aggiornaRubricaSelezionato() {
         try {
