@@ -26,9 +26,10 @@ public class FinestraCreaModPagamento extends EditForm {
      * @param parent finestra principale
      * @param modal 1 se è un'aggiunta, 2 se è una modifica
      */
-    public FinestraCreaModPagamento(java.awt.Frame parent, boolean modal, int utenteID) {
+    public FinestraCreaModPagamento(java.awt.Frame parent, boolean modal, int utenteID, FinestraModPagamento finestraMod) {
         super(parent, modal);
         this.utenteID=utenteID;
+        this.finestraMod = finestraMod;
         initComponents();
         impostaContatti();
         impostaTipoCarta();
@@ -36,7 +37,7 @@ public class FinestraCreaModPagamento extends EditForm {
         aggiornaTipoCartaSelezionato();
     }
     
-    public FinestraCreaModPagamento(java.awt.Dialog parent, boolean modal, int utenteID) {
+    /*public FinestraCreaModPagamento(java.awt.Dialog parent, boolean modal, int utenteID) {
         super(parent, modal);
         this.utenteID=utenteID;
         initComponents();
@@ -44,11 +45,12 @@ public class FinestraCreaModPagamento extends EditForm {
         impostaTipoCarta();
         aggiornaRubricaSelezionato();
         aggiornaTipoCartaSelezionato();
-    }
+    }*/
     
     private int contattoSelezionato;
     private String tipoCartaSelezionato;
     private final int utenteID;
+    private final FinestraModPagamento finestraMod;
     private ArrayList<String[]> contatti = new ArrayList();
     private LinkedList<String> tipiCarta = new LinkedList();
     
@@ -359,6 +361,7 @@ public class FinestraCreaModPagamento extends EditForm {
         try {
             setVisible(false);
             DBConnection.creaModPagamento(contattoRubricaSelezionato(), tnumeroCC.getText(), tnomeCC.getText(), tcognomeCC.getText(), tipoCartaSelezionato(), tscadenzaCC, Integer.parseInt(tcodSicurezzaCC.getText()));
+            finestraMod.aggiornaTabella();
             //chiudiFinestra();
            
         } catch (SQLException ex) {
