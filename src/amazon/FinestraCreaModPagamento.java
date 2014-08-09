@@ -128,7 +128,7 @@ public class FinestraCreaModPagamento extends EditForm {
         //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());
         //tScadenzaCarta.setText(pagamento.get(5).toString());
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -297,7 +297,7 @@ public class FinestraCreaModPagamento extends EditForm {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOkActionPerformed
-        //eseguiOk();
+        eseguiOk();
     }//GEN-LAST:event_bOkActionPerformed
 
     private void bEscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEscActionPerformed
@@ -352,6 +352,20 @@ public class FinestraCreaModPagamento extends EditForm {
         tscadenzaCC_mm.setText("");
         tcodSicurezzaCC.setText("");
     }
+    
+    private void eseguiOk() {
+        String tscadenzaCC = "20"+tscadenzaCC_aa.getText()+"-"+tscadenzaCC_mm.getText()+"-01 00:00:00";
+        
+        try {
+            setVisible(false);
+            DBConnection.creaModPagamento(contattoRubricaSelezionato(), tnumeroCC.getText(), tnomeCC.getText(), tcognomeCC.getText(), tipoCartaSelezionato(), tscadenzaCC, Integer.parseInt(tcodSicurezzaCC.getText()));
+            //chiudiFinestra();
+           
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
+        
   /*  
     private void eseguiOk()
     {

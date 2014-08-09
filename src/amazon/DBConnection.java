@@ -266,7 +266,15 @@ public class DBConnection {
     */
    public static void creaModPagamento (int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
        PreparedStatement pstmt, pstmt2;
-       pstmt = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO_CC VALUES (?,?,?,?,?,?)",
+       System.out.println(contactID);
+       System.out.println(numeroCC);
+       System.out.println(nomeCC);
+       System.out.println(cognomeCC);
+       System.out.println(tipoCC);
+       System.out.println(scadenzaCC);
+       System.out.println(codSicurezzaCC);
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO_CC VALUES (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, numeroCC);
@@ -276,11 +284,15 @@ public class DBConnection {
        pstmt.setString(5, scadenzaCC);
        pstmt.setInt(6, codSicurezzaCC);
        
+       pstmt.close();
+       
        pstmt2 = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO (CONTACT_ID, NUMEROCARTACREDITO) VALUES (?,?)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt2.setInt(1, contactID);
        pstmt2.setString(2, numeroCC);
+       
+       pstmt2.close();
    }
    
       public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
