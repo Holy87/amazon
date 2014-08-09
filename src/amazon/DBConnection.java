@@ -283,7 +283,7 @@ public class DBConnection {
        pstmt.setString(4, tipoCC);
        pstmt.setString(5, scadenzaCC);
        pstmt.setInt(6, codSicurezzaCC);
-       
+       pstmt.executeUpdate();
        pstmt.close();
        
        pstmt2 = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO (CONTACT_ID, NUMEROCARTACREDITO) VALUES (?,?)",
@@ -291,8 +291,10 @@ public class DBConnection {
                     ResultSet.CONCUR_READ_ONLY);
        pstmt2.setInt(1, contactID);
        pstmt2.setString(2, numeroCC);
-       
+       pstmt2.executeUpdate();
        pstmt2.close();
+       
+
    }
    
       public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
