@@ -22,12 +22,13 @@ import javax.swing.JOptionPane;
 public class FinestraCreaModPagamento extends EditForm {
 
     /**
-     * Creates new form FinestraUtente
+     * Creates new form FinestraCreaModPagamento
      * @param parent finestra principale
      * @param modal 1 se è un'aggiunta, 2 se è una modifica
      */
-    public FinestraCreaModPagamento(java.awt.Frame parent, boolean modal) {
+    public FinestraCreaModPagamento(java.awt.Frame parent, boolean modal, int utenteID) {
         super(parent, modal);
+        this.utenteID=utenteID;
         initComponents();
         impostaContatti();
         impostaTipoCarta();
@@ -35,8 +36,19 @@ public class FinestraCreaModPagamento extends EditForm {
         aggiornaTipoCartaSelezionato();
     }
     
-    private int contattoSelezionato, tipoCartaSelezionato;
-    private int utenteID;
+    public FinestraCreaModPagamento(java.awt.Dialog parent, boolean modal, int utenteID) {
+        super(parent, modal);
+        this.utenteID=utenteID;
+        initComponents();
+        impostaContatti();
+        //impostaTipoCarta();
+        contattoRubricaSelezionato();
+        //aggiornaTipoCartaSelezionato();
+    }
+    
+    private int contattoSelezionato;
+    private String tipoCartaSelezionato;
+    private final int utenteID;
     private ArrayList<String[]> contatti = new ArrayList();
     private LinkedList<String> tipiCarta;
     
@@ -69,6 +81,7 @@ public class FinestraCreaModPagamento extends EditForm {
     private void impostaTipoCarta() {
         //'Visa', 'Mastercard', 'Postepay', 'American_Express', 'CartaSi_Visa', 'CartaSi_Mastercard', 'Maestro'
             jComboBoxTipoCC.removeAllItems();
+            
             tipiCarta.add("Visa");
             jComboBoxTipoCC.addItem("VISA");
             tipiCarta.add("Mastercard");
@@ -88,11 +101,11 @@ public class FinestraCreaModPagamento extends EditForm {
     private int contattoRubricaSelezionato() {
         return Integer.parseInt(contatti.get(jComboBoxContactID.getSelectedIndex())[0]);
     }
-    
-    private int tipoCartaSelezionato() {
-        return Integer.parseInt(tipiCarta.get(jComboBoxTipoCC.getSelectedIndex()));
+    /*
+    private String tipoCartaSelezionato() {
+        return tipiCarta.get(jComboBoxTipoCC.getSelectedIndex());
     }
-    
+    */
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     private void aggiornaRubricaSelezionato() {
         try {
@@ -101,18 +114,19 @@ public class FinestraCreaModPagamento extends EditForm {
             contattoSelezionato = 0;
         }
     }
-    
+
     private void aggiornaTipoCartaSelezionato() {
         try {
-            tipoCartaSelezionato = Integer.parseInt(tipiCarta.get(jComboBoxTipoCC.getSelectedIndex()));
+            tipoCartaSelezionato = tipiCarta.get(jComboBoxTipoCC.getSelectedIndex());
         } catch (Exception ex) {
-            tipoCartaSelezionato = 0;
+            tipoCartaSelezionato = "";
         }
         //LinkedList pagamento = metodiPagamento.get(cPagamento.getSelectedIndex());
         //pagamentoSelezionato = Integer.parseInt(pagamento.get(0).toString());
         //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());
         //tScadenzaCarta.setText(pagamento.get(5).toString());
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

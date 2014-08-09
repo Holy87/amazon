@@ -67,45 +67,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private final int SPEDMID = 2;
     private final int SPEDRAP = 3;
     
-    private void inserisciCodice() {
-        String codice = codiceSconto.getText().toUpperCase();
-        codiceSconto.setText("");
-        try {
-            controllaSeGiaInserito(codice);
-            double sconto = verificaSconto(codice);
-            scontoCompl = sommaSconti();
-            sconti.add(new Scontotemp(codice, sconto));
-            modelloTabellaSconti.setSconti(sconti);
-            aggiornaTotale();
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        } catch (CodeAlreadyUsedException ex) {
-            JOptionPane.showMessageDialog(this, "Questo codice è già stato inserito nel carrello!", null, ERROR_MESSAGE);
-        } catch (CodeNotValidException ex) {
-            JOptionPane.showMessageDialog(this, "Il codice sconto inserito è già stato usato o non è valido.", null, ERROR_MESSAGE);
-        } catch (TooMuchDealsException ex) {
-            JOptionPane.showMessageDialog(this, "Il totale dei codici sconto supera il prezzo degli articoli.", null, ERROR_MESSAGE);
-        }
-    }
-    
-    private double sommaSconti() throws TooMuchDealsException {
-        double scontoTotale = 0.0;
-        for (Scontotemp sconto : sconti) {
-            scontoTotale += sconto.getSconto();
-        }
-        if (scontoTotale > netto())
-            throw new TooMuchDealsException();
-        return scontoTotale;
-    }
-    
-    private void controllaSeGiaInserito(String codice) throws CodeAlreadyUsedException {
-        for (Scontotemp sconto : sconti) {
-            if (sconto.getcodPromo().equals(codice)) {
-                throw new CodeAlreadyUsedException();
-            }
-        }
-    }
-    
     private void impostaMetodiPagamento() {
         try {
             ResultSet pagamenti = DBConnection.sceltaModPagamento(idUtente);
@@ -162,6 +123,45 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private int indirizzoSelezionato() {
         return Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
+    }
+    
+    private void inserisciCodice() {
+        String codice = codiceSconto.getText().toUpperCase();
+        codiceSconto.setText("");
+        try {
+            controllaSeGiaInserito(codice);
+            double sconto = verificaSconto(codice);
+            scontoCompl = sommaSconti();
+            sconti.add(new Scontotemp(codice, sconto));
+            modelloTabellaSconti.setSconti(sconti);
+            aggiornaTotale();
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        } catch (CodeAlreadyUsedException ex) {
+            JOptionPane.showMessageDialog(this, "Questo codice è già stato inserito nel carrello!", null, ERROR_MESSAGE);
+        } catch (CodeNotValidException ex) {
+            JOptionPane.showMessageDialog(this, "Il codice sconto inserito è già stato usato o non è valido.", null, ERROR_MESSAGE);
+        } catch (TooMuchDealsException ex) {
+            JOptionPane.showMessageDialog(this, "Il totale dei codici sconto supera il prezzo degli articoli.", null, ERROR_MESSAGE);
+        }
+    }
+    
+    private double sommaSconti() throws TooMuchDealsException {
+        double scontoTotale = 0.0;
+        for (Scontotemp sconto : sconti) {
+            scontoTotale += sconto.getSconto();
+        }
+        if (scontoTotale > netto())
+            throw new TooMuchDealsException();
+        return scontoTotale;
+    }
+    
+    private void controllaSeGiaInserito(String codice) throws CodeAlreadyUsedException {
+        for (Scontotemp sconto : sconti) {
+            if (sconto.getcodPromo().equals(codice)) {
+                throw new CodeAlreadyUsedException();
+            }
+        }
     }
     
     @SuppressWarnings("Convert2Lambda")

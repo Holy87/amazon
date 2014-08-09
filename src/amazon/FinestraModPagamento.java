@@ -179,6 +179,11 @@ public class FinestraModPagamento extends javax.swing.JDialog {
         });
 
         bAddAddress.setText("Aggiungi Modalità di Pagamento");
+        bAddAddress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAddAddressActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -207,6 +212,11 @@ public class FinestraModPagamento extends javax.swing.JDialog {
     private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
         //rimuoviModPagamento();
     }//GEN-LAST:event_bDeleteAddressActionPerformed
+
+    private void bAddAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAddressActionPerformed
+        FinestraCreaModPagamento creamod = new FinestraCreaModPagamento(this, true, idUtente);
+        creamod.setVisible(true);
+    }//GEN-LAST:event_bAddAddressActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAddress;
