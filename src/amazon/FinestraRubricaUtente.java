@@ -38,6 +38,8 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabella; //modello della tabella per i dati
     private int cursore = 1; //memorizza la riga selezionata
+    protected final int EDIT = 1;   //modalità di modifica
+    protected final int ADDN = 2;   //modalità di aggiunta
     
     /**
      * Inizializza i dati della tabella, assegnandogli il modello e il rs.
@@ -129,6 +131,10 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         aggiornaTabella();
     }
     
+    private void aggiungiIndirizzo() {
+        
+    }
+    
     /**
      * Questo metodo stampa l'errore SQL. È facoltativo.
      * @param ex è l'eccezione da stampare
@@ -179,6 +185,11 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         });
 
         bAddAddress.setText("Aggiungi indirizzo");
+        bAddAddress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAddAddressActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -207,6 +218,10 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
         rimuoviIndirizzo();
     }//GEN-LAST:event_bDeleteAddressActionPerformed
+
+    private void bAddAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAddressActionPerformed
+        aggiungiIndirizzo();
+    }//GEN-LAST:event_bAddAddressActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAddress;

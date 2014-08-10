@@ -24,7 +24,7 @@ import javax.swing.event.ListSelectionEvent;
 public class FinestraDettagliLibro extends javax.swing.JDialog {
 
     /**
-     * Creates new form FinestraDettagliLibro
+     * Crea una nuova finestra FinestraDettagliLibro
      * @param parent la finestra chiamante
      * @param modal sempre false
      * @param isbn il codice del libro da visualizzare

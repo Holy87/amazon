@@ -555,8 +555,11 @@ public class DBConnection {
         pstmt.executeQuery(); 
     }
    
-   
-   
+   public static void aggiungiIndirizzo(int utenteID, String nome, String cognome, String indirizzo1, String indirizzo2, String cap, String citta, String provincia, String paese, String telefono) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("INSERT INTO RUBRICA_INDIRIZZI(UTENTE_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI)");
+       pstmt.setInt(1, utenteID);
+   }
    /**
     * Metodo di creazione dell'autore
     * @param nome
