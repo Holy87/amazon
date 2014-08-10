@@ -189,6 +189,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                     DBConnection.creaListaDesideri(idUtente, nomeLista, prodId);
                     DBConnection.inserisciArticoloLista(DBConnection.ultimaListaDesideri(), prodId, Double.parseDouble(prezzo));
                     JOptionPane.showMessageDialog(this, titolo + " aggiunto a " + nomeLista);
+                    aggiornaListeDesideri();
                 } catch (SQLException ex) {
                     mostraErrore(ex);
                 }

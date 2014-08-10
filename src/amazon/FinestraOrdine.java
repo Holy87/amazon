@@ -95,7 +95,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
             cSpedizione.removeAllItems();
             indirizzi = new LinkedList();
-            System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
+            //System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
             //indirizzi.first();
             while (rsIndirizzi.next()) {
                 String[] lista = {rsIndirizzi.getString(1), //id contatto;

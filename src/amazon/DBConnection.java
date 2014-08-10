@@ -291,9 +291,17 @@ public class DBConnection {
    }
    
    /**
-    * Aggiorna una nuova modalità di pagamento per un utente
-    * @param idUtente
-    * @throws SQLException
+    * Aggiorna la modalità di pagamento
+    * @param modPagamentoID id della mod pag
+    * @param oldNumeroCC id del numero di carta vecchio
+    * @param contactID id dell'ID dell'indirizzo di fatturazione
+    * @param numeroCC nuovo numero di carta di credito
+    * @param nomeCC nome dell'intestatario
+    * @param cognomeCC cognome dell'intestatario
+    * @param tipoCC VISA, MASTERCARD ecc...
+    * @param scadenzaCC in stringa, AAAA-MM-DD
+    * @param codSicurezzaCC codice di sicurezza CIV
+    * @throws SQLException 
     */
    public static void aggiornaModPagamento (int modPagamentoID, String oldNumeroCC, int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
        PreparedStatement pstmt, pstmt2;

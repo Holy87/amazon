@@ -278,7 +278,7 @@ public final class TabOggetti extends javax.swing.JPanel {
             modelloTabella.setRS(rs);
             rs.absolute(cursore);
             ultimaRicerca = null;
-            mostraDati();
+            aggiornaCursore();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -301,13 +301,12 @@ public final class TabOggetti extends javax.swing.JPanel {
      */
     private void aggiornaTabella(PreparedStatement pstmt)
     {
-        System.out.println("qui ci arrivo");
         ultimaRicerca = pstmt;
         try {
             rs = pstmt.executeQuery();
             modelloTabella.setRS(rs);
             rs.absolute(cursore);
-            mostraDati();
+            aggiornaCursore();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -316,7 +315,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     /**
      * Mostra infine i dati sulla tabella dopo un aggiornamento
      */
-    private void mostraDati() {
+    private void aggiornaCursore() {
       try {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
@@ -336,7 +335,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     {
         try {
             rs.absolute(tabella.getSelectionModel().getMinSelectionIndex() + 1);
-            mostraDati();
+            aggiornaCursore();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -714,7 +713,7 @@ public final class TabOggetti extends javax.swing.JPanel {
        } catch (SQLException e) {
           mostraErrore(e);
        }
-       mostraDati();
+       aggiornaCursore();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -725,7 +724,7 @@ public final class TabOggetti extends javax.swing.JPanel {
        } catch (SQLException e) {
           mostraErrore(e);
        }
-       mostraDati();
+       aggiornaCursore();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -736,7 +735,7 @@ public final class TabOggetti extends javax.swing.JPanel {
        } catch (SQLException e) {
           mostraErrore(e);
        }
-       mostraDati();
+       aggiornaCursore();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -745,7 +744,7 @@ public final class TabOggetti extends javax.swing.JPanel {
        } catch (SQLException e) {
           mostraErrore(e);
        }
-       mostraDati();
+       aggiornaCursore();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void searchBoxKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchBoxKeyTyped
