@@ -266,13 +266,6 @@ public class DBConnection {
     */
    public static void creaModPagamento (int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
        PreparedStatement pstmt, pstmt2;
-       System.out.println(contactID);
-       System.out.println(numeroCC);
-       System.out.println(nomeCC);
-       System.out.println(cognomeCC);
-       System.out.println(tipoCC);
-       System.out.println(scadenzaCC);
-       System.out.println(codSicurezzaCC);
        
        pstmt = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO_CC VALUES (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -295,6 +288,34 @@ public class DBConnection {
        pstmt2.close();
        
 
+   }
+   
+   /**
+    * Aggiorna una nuova modalità di pagamento per un utente
+    * @param idUtente
+    * @throws SQLException
+    */
+   public static void aggiornaModPagamento (int modPagamentoID, String oldNumeroCC, int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
+       PreparedStatement pstmt, pstmt2;
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO_CC SET NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS'), CODICESICUREZZA = ? WHERE NUMEROCARTACREDITO = ?");
+       
+       pstmt.setString(1, numeroCC);
+       pstmt.setString(2, nomeCC);
+       pstmt.setString(3, cognomeCC);
+       pstmt.setString(4, tipoCC);
+       pstmt.setString(5, scadenzaCC);
+       pstmt.setInt(6, codSicurezzaCC);
+       pstmt.setString(7, oldNumeroCC);
+       pstmt.executeUpdate();
+       pstmt.close();
+       
+       pstmt2 = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ? WHERE MOD_PAGAMENTO_ID = ?");
+       pstmt2.setInt(1, contactID);
+       pstmt2.setString(2, numeroCC);
+       pstmt2.setInt(3, modPagamentoID);
+       pstmt2.executeUpdate();
+       pstmt2.close();
    }
    
       public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
