@@ -251,7 +251,7 @@ public class DBConnection {
    
    public static ResultSet visualizzaModPagamento (int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM MOD_PAGAMENTO NATURAL JOIN MOD_PAGAMENTO_CC NATURAL JOIN RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
+       pstmt = conn.prepareStatement("SELECT * FROM MOD_PAGAMENTO NATURAL JOIN RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
@@ -277,35 +277,25 @@ public class DBConnection {
     * @throws SQLException
     */
    public static void creaModPagamento (int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
-       PreparedStatement pstmt, pstmt2;
+       PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO_CC VALUES (?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)",
+       pstmt = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO (CONTACT_ID,NUMEROCARTACREDITO,TITOLARECARTA_NOME,TITOLARECARTA_COGNOME,TIPOCARTA,DATASCADENZA,CODICESICUREZZA) VALUES (?, ?, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-       pstmt.setString(1, numeroCC);
-       pstmt.setString(2, nomeCC);
-       pstmt.setString(3, cognomeCC);
-       pstmt.setString(4, tipoCC);
-       pstmt.setString(5, scadenzaCC);
-       pstmt.setInt(6, codSicurezzaCC);
+       pstmt.setInt(1, contactID);
+       pstmt.setString(2, numeroCC);
+       pstmt.setString(3, nomeCC);
+       pstmt.setString(4, cognomeCC);
+       pstmt.setString(5, tipoCC);
+       pstmt.setString(6, scadenzaCC);
+       pstmt.setInt(7, codSicurezzaCC);
        pstmt.executeUpdate();
-       pstmt.close();
-       
-       pstmt2 = conn.prepareStatement("INSERT INTO MOD_PAGAMENTO (CONTACT_ID, NUMEROCARTACREDITO) VALUES (?,?)",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt2.setInt(1, contactID);
-       pstmt2.setString(2, numeroCC);
-       pstmt2.executeUpdate();
-       pstmt2.close();
-       
-
+       pstmt.close();    
    }
    
    /**
     * Aggiorna la modalità di pagamento
     * @param modPagamentoID id della mod pag
-    * @param oldNumeroCC id del numero di carta vecchio
     * @param contactID id dell'ID dell'indirizzo di fatturazione
     * @param numeroCC nuovo numero di carta di credito
     * @param nomeCC nome dell'intestatario
@@ -315,27 +305,21 @@ public class DBConnection {
     * @param codSicurezzaCC codice di sicurezza CIV
     * @throws SQLException 
     */
-   public static void aggiornaModPagamento (int modPagamentoID, String oldNumeroCC, int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
-       PreparedStatement pstmt, pstmt2;
+   public static void aggiornaModPagamento (int modPagamentoID, int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
+       PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO_CC SET NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS'), CODICESICUREZZA = ? WHERE NUMEROCARTACREDITO = ?");
+       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS'), CODICESICUREZZA = ? WHERE MOD_PAGAMENTO_ID = ?");
        
-       pstmt.setString(1, numeroCC);
-       pstmt.setString(2, nomeCC);
-       pstmt.setString(3, cognomeCC);
-       pstmt.setString(4, tipoCC);
-       pstmt.setString(5, scadenzaCC);
-       pstmt.setInt(6, codSicurezzaCC);
-       pstmt.setString(7, oldNumeroCC);
+       pstmt.setInt(1, contactID);
+       pstmt.setString(2, numeroCC);
+       pstmt.setString(3, nomeCC);
+       pstmt.setString(4, cognomeCC);
+       pstmt.setString(5, tipoCC);
+       pstmt.setString(6, scadenzaCC);
+       pstmt.setInt(7, codSicurezzaCC);
+       pstmt.setInt(8, modPagamentoID);
        pstmt.executeUpdate();
        pstmt.close();
-       
-       pstmt2 = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ? WHERE MOD_PAGAMENTO_ID = ?");
-       pstmt2.setInt(1, contactID);
-       pstmt2.setString(2, numeroCC);
-       pstmt2.setInt(3, modPagamentoID);
-       pstmt2.executeUpdate();
-       pstmt2.close();
    }
    
       public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
@@ -345,7 +329,7 @@ public class DBConnection {
                     Roberto                 Di Carlo                Mastercard	4172836483428572	01-GEN-24
        */
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM RUBRICA_INDIRIZZI NATURAL JOIN MOD_PAGAMENTO NATURAL JOIN MOD_PAGAMENTO_CC WHERE UTENTE_ID=?",
+       pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM RUBRICA_INDIRIZZI NATURAL JOIN MOD_PAGAMENTO WHERE UTENTE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, utenteId);
@@ -583,7 +567,7 @@ public class DBConnection {
     */
    public static void aggiungiIndirizzo(int utenteID, String nome, String cognome, String indirizzo1, String indirizzo2, String cap, String citta, String provincia, String paese, String telefono) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("INSERT INTO RUBRICA_INDIRIZZI(UTENTE_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI) VALUES (?,?,?,?,?,?,?,?,?,?)");
+       pstmt = conn.prepareStatement("INSERT INTO RUBRICA_INDIRIZZI(UTENTE_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono) VALUES (?,?,?,?,?,?,?,?,?,?)");
        pstmt.setInt(1, utenteID);
        pstmt.setString(2,nome);
        pstmt.setString(3, cognome);

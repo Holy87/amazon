@@ -305,7 +305,7 @@ public class FinestraModificaMetodoPagamento extends EditForm {
                         BoxUtility.getTipoCarta(tCarta), getScadenza(),
                         Integer.parseInt(tCiv.getText()));
             else
-                DBConnection.aggiornaModPagamento(pagamentoID, oldNum,
+                DBConnection.aggiornaModPagamento(pagamentoID,
                         BoxUtility.getIndirizzoId(cContatto),
                         tNumero.getText(), tNome.getText(), tCognome.getText(),
                         BoxUtility.getTipoCarta(tCarta), getScadenza(),
