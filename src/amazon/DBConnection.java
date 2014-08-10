@@ -259,6 +259,10 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   public static void eliminaModPagamento(int pagamentoID) {
+       PreparedStatement pstmt;
+   }
+   
    /**
     * Inserisce una nuova modalità di pagamento per un utente
     * @param idUtente
@@ -555,11 +559,66 @@ public class DBConnection {
         pstmt.executeQuery(); 
     }
    
+   /**
+    * Inserimento di un contatto indirizzo all'utente
+    * @param utenteID utente proprietario dell'indirizzo
+    * @param nome nome destinatario
+    * @param cognome cognome destinatario
+    * @param indirizzo1 indirizzo generico
+    * @param indirizzo2 dettagli dell'indirizzo
+    * @param cap codice avviamento postale
+    * @param citta città del cap
+    * @param provincia provincia della città
+    * @param paese paese della provincia
+    * @param telefono del destinatario
+    * @throws SQLException 
+    */
    public static void aggiungiIndirizzo(int utenteID, String nome, String cognome, String indirizzo1, String indirizzo2, String cap, String citta, String provincia, String paese, String telefono) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("INSERT INTO RUBRICA_INDIRIZZI(UTENTE_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI)");
+       pstmt = conn.prepareStatement("INSERT INTO RUBRICA_INDIRIZZI(UTENTE_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI) VALUES (?,?,?,?,?,?,?,?,?,?)");
        pstmt.setInt(1, utenteID);
+       pstmt.setString(2,nome);
+       pstmt.setString(3, cognome);
+       pstmt.setString(4, indirizzo1);
+       pstmt.setString(5, indirizzo2);
+       pstmt.setString(6, cap);
+       pstmt.setString(7, citta);
+       pstmt.setString(8, provincia);
+       pstmt.setString(9, paese);
+       pstmt.setString(10, telefono);
+       pstmt.execute();
    }
+   
+   /**
+    * Aggiornamento di un indirizzo
+    * @param contactID id dell'indirizzo
+    * @param nome nome destinatario
+    * @param cognome cognome destinatario
+    * @param indirizzo1 indirizzo generico
+    * @param indirizzo2 dettagli dell'indirizzo
+    * @param cap codice avviamento postale
+    * @param citta città del cap
+    * @param provincia provincia della città
+    * @param paese paese della provincia
+    * @param telefono del destinatario
+    * @throws SQLException 
+    */
+   public static void aggiornaIndirizzo(int contactID, String nome, String cognome, String indirizzo1, String indirizzo2, String cap, String citta, String provincia, String paese, String telefono) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("UPDATE RUBRICA_INDIRIZZI SET (CONTACT_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI) VALUES (?,?,?,?,?,?,?,?,?,?)");
+       pstmt.setInt(1, contactID);
+       pstmt.setString(2,nome);
+       pstmt.setString(3, cognome);
+       pstmt.setString(4, indirizzo1);
+       pstmt.setString(5, indirizzo2);
+       pstmt.setString(6, cap);
+       pstmt.setString(7, citta);
+       pstmt.setString(8, provincia);
+       pstmt.setString(9, paese);
+       pstmt.setString(10, telefono);
+       pstmt.executeUpdate();
+   }
+   
    /**
     * Metodo di creazione dell'autore
     * @param nome

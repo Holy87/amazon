@@ -9,6 +9,8 @@ package amazon;
 import amazon.modelliTabelle.DBTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -24,6 +26,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
      * Creates new form EsempioTabella
      * @param parent va inserita la finestra chiamante (un jFrame)
      * @param modal va sempre in false
+     * @param idUtente utente proprietario degli indirizzi
      */
     public FinestraRubricaUtente(java.awt.Frame parent, boolean modal, int idUtente) {
         super(parent, modal);
@@ -132,7 +135,27 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
     }
     
     private void aggiungiIndirizzo() {
-        
+        FinestraModificaIndirizzo finestra = new FinestraModificaIndirizzo(this, true, idUtente);
+        finestra.show(ADDN, null, null);
+    }
+    
+    private void modificaIndirizzo() {
+        FinestraModificaIndirizzo finestra = new FinestraModificaIndirizzo(this, true, idUtente);
+        finestra.show(EDIT, getDataCollection(), null);
+    }
+    
+    private List getDataCollection()
+    {
+        List dati = new LinkedList();
+        for (int i = 0; i < modelloTabella.getColumnCount(); i++)
+        {
+            try {
+                dati.add((String)modelloTabella.getValueAt(cursore-1, i).toString());
+            } catch (NullPointerException ex) {
+                dati.add("");
+            }
+        }
+        return dati;
     }
     
     /**
@@ -160,6 +183,7 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         tabella = new javax.swing.JTable();
         bDeleteAddress = new javax.swing.JButton();
         bAddAddress = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -191,6 +215,13 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
             }
         });
 
+        jButton1.setText("Modifica indirizzo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -198,6 +229,8 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bAddAddress)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bDeleteAddress))
@@ -209,7 +242,8 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bDeleteAddress)
-                    .addComponent(bAddAddress)))
+                    .addComponent(bAddAddress)
+                    .addComponent(jButton1)))
         );
 
         pack();
@@ -223,9 +257,14 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         aggiungiIndirizzo();
     }//GEN-LAST:event_bAddAddressActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        modificaIndirizzo();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAddress;
     private javax.swing.JButton bDeleteAddress;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

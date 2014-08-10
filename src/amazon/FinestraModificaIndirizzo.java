@@ -261,9 +261,15 @@ public class FinestraModificaIndirizzo extends EditForm {
         setVisible(false);
         try {
             if (mode == ADDN) {
-                //INSERIRE METODO INSERIMENTO RUBRICA
+                DBConnection.aggiungiIndirizzo(utenteID, tNome.getText(),
+                        tCognome.getText(), tIndirizzo1.getText(),
+                        tIndirizzo2.getText(), tCap.getText(), tCitta.getText(), 
+                        tProvincia.getText(), tPaese.getText(), tTelefono.getText());
             } else {
-                //INSERIRE METODO AGGIORNAMENTO RUBRICA
+                DBConnection.aggiornaIndirizzo(contattoID, tNome.getText(),
+                        tCognome.getText(), tIndirizzo1.getText(),
+                        tIndirizzo2.getText(), tCap.getText(), tCitta.getText(), 
+                        tProvincia.getText(), tPaese.getText(), tTelefono.getText());
             }
             genitore.aggiornaTabella();
             chiudiFinestra();
