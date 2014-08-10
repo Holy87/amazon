@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -241,7 +243,12 @@ public class FinestraModPagamento extends javax.swing.JDialog {
     private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
         int response = JOptionPane.showConfirmDialog(this, "Vuoi eliminare questo metodo di pagamento?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
-            //INSERIRE DBConnection.eliminaModPagamento(...)
+            try {
+                DBConnection.eliminaModPagamento(modID);
+                aggiornaTabella();
+            } catch (SQLException ex) {
+                mostraErrore(ex);
+            }
         }
     }//GEN-LAST:event_bDeleteAddressActionPerformed
 

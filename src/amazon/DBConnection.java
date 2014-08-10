@@ -259,13 +259,21 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
-   public static void eliminaModPagamento(int pagamentoID) {
+   public static void eliminaModPagamento(int pagamentoID) throws SQLException {
        PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("DELETE FROM MOD_PAGAMENTO WHERE ");
+       //NON FUNZIONA, DA FINIRE
    }
    
    /**
     * Inserisce una nuova modalità di pagamento per un utente
-    * @param idUtente
+     * @param contactID
+     * @param numeroCC
+     * @param nomeCC
+     * @param cognomeCC
+     * @param tipoCC
+     * @param scadenzaCC
+     * @param codSicurezzaCC
     * @throws SQLException
     */
    public static void creaModPagamento (int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
