@@ -8,7 +8,6 @@ package amazon;
 
 import amazon.utility.BoxUtility;
 import amazon.utility.Contatto;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -22,6 +21,7 @@ public class FinestraModificaMetodoPagamento extends EditForm {
      * Creazione della finestra
      * @param parent finestra chiamante
      * @param modal true per bloccare il genitore
+     * @param utenteID id dell'utente
      */
     public FinestraModificaMetodoPagamento(java.awt.Dialog parent, boolean modal, int utenteID) {
         super(parent, modal);
@@ -33,7 +33,6 @@ public class FinestraModificaMetodoPagamento extends EditForm {
     private int pagamentoID;
     private final int utenteID;
     private String oldNum;
-    private LinkedList<Contatto> contatti;
     private FinestraModPagamento genitore;
 
     /**

@@ -6,17 +6,21 @@
 
 package amazon;
 
-import amazon.utility.Scontotemp;
 import static amazon.DBConnection.verificaSconto;
 import amazon.exceptions.CodeAlreadyUsedException;
 import amazon.exceptions.CodeNotValidException;
 import amazon.exceptions.TooMuchDealsException;
 import amazon.modelliTabelle.DBTableModel;
 import amazon.modelliTabelle.ScontiModel;
+import amazon.utility.BoxUtility;
+import amazon.utility.ModPagamento;
+import amazon.utility.Scontotemp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -69,45 +73,38 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void impostaMetodiPagamento() {
         try {
-            ResultSet pagamenti = DBConnection.sceltaModPagamento(idUtente);
-            cPagamento.removeAllItems();
-            System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
-            while (pagamenti.next()) {
-                String[] lista = {pagamenti.getString(1),//id metodo
-                pagamenti.getString(2),//nome
-                pagamenti.getString(3),//cognome
-                pagamenti.getString(4),//tipo
-                pagamenti.getString(5),//numero
-                pagamenti.getString(6)};//data
-                String numcarta = lista[4];
-                String stringa = lista[3] + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
-                metodiPagamento.add(lista);
-                cPagamento.addItem(stringa);
-            }
-            cPagamento.setSelectedIndex(0);
+            BoxUtility.impostaModPagamento(cPagamento, idUtente);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
     }
     
+//    private void impostaMetodiPagamento() {
+//        try {
+//            ResultSet pagamenti = DBConnection.sceltaModPagamento(idUtente);
+//            cPagamento.removeAllItems();
+//            System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
+//            while (pagamenti.next()) {
+//                String[] lista = {pagamenti.getString(1),//id metodo
+//                pagamenti.getString(2),//nome
+//                pagamenti.getString(3),//cognome
+//                pagamenti.getString(4),//tipo
+//                pagamenti.getString(5),//numero
+//                pagamenti.getString(6)};//data
+//                String numcarta = lista[4];
+//                String stringa = lista[3] + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
+//                metodiPagamento.add(lista);
+//                cPagamento.addItem(stringa);
+//            }
+//            cPagamento.setSelectedIndex(0);
+//        } catch (SQLException ex) {
+//            mostraErrore(ex);
+//        }
+//    }
+    
     private void impostaIndirizzi() {
         try {
-            ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
-            cSpedizione.removeAllItems();
-            indirizzi = new LinkedList();
-            //System.out.println("Numero indirizzi: "+DBConnection.contaRigheResultSet(rsIndirizzi));
-            //indirizzi.first();
-            while (rsIndirizzi.next()) {
-                String[] lista = {rsIndirizzi.getString(1), //id contatto;
-                rsIndirizzi.getString(2), //nome contatto
-                rsIndirizzi.getString(3), //cognome
-                rsIndirizzi.getString(4), //indirizzo 1
-                rsIndirizzi.getString(5)}; //indirizzo 2
-                indirizzi.add(lista);
-                String stringa = lista[1] + " " + lista[2] + " in " + lista[3];
-                cSpedizione.addItem(stringa);
-            }
-            cSpedizione.setSelectedIndex(0);
+            BoxUtility.impostaPerIndirizzi(cSpedizione, idUtente);
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -196,7 +193,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } 
                 
         );
-        aggiornaTabellaSconti(); //Qui vengono visualizzati gli elementi dei record con Sconto e codice
     }
     
     
@@ -219,27 +215,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
-        
-    }
-    
-    public void aggiornaTabellaSconti()
-    {
-        /*try {
-            
-            rsArticoli = DBConnection.visualizzaCarrello(idUtente);
-            modelloTabellaArticoli.setRS(rsArticoli);
-            rsArticoli.absolute(cursoreArticoli);
-            mostraDati();
-            tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
-            tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
-            tabellaArticoli.getColumnModel().getColumn(1).setMinWidth(0);
-            tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
-            tabellaArticoli.getColumnModel().getColumn(2).setMinWidth(0);
-            tabellaArticoli.getColumnModel().getColumn(2).setMaxWidth(0);
-        } catch (SQLException ex) {
-            mostraErrore(ex);
-        }
-            */
         
     }
     
@@ -349,17 +324,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void aggiornaPagamentoSelezionato() {
         try {
-            String[] pagamenti = metodiPagamento.get(cPagamento.getSelectedIndex());
-            pagamentoSelezionato = Integer.parseInt(pagamenti[0]);
-            tIntestatario.setText(pagamenti[1] + " " + pagamenti[2]);
-            tScadenzaCarta.setText(pagamenti[5]);
-        } catch (Exception ex) {
-            pagamentoSelezionato = 0;
-        }
-        //LinkedList pagamento = metodiPagamento.get(cPagamento.getSelectedIndex());
-        //pagamentoSelezionato = Integer.parseInt(pagamento.get(0).toString());
-        //tIntestatario.setText(pagamento.get(1).toString() + " " + pagamento.get(2).toString());
-        //tScadenzaCarta.setText(pagamento.get(5).toString());
+            ModPagamento pagamento = (ModPagamento) cPagamento.getSelectedItem();
+            pagamentoSelezionato = pagamento.getId();
+            tIntestatario.setText(pagamento.getNomeIntestatario() + " " + pagamento.getCognomeIntestatario());
+            tScadenzaCarta.setText(pagamento.getData());
+        } catch (NullPointerException ex) {}
     }
     
     private void clickDestro(java.awt.event.MouseEvent evt) {
@@ -377,7 +346,19 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }
     
     private void modificaQuantita() {
-        
+        try {
+            String risposta = JOptionPane.showInputDialog(this, "Scegli la quantità", rsArticoli.getInt(8));
+            if (risposta != null) {
+                try {
+                    int quantita = Integer.parseInt(risposta);
+                    //QUI VA IL METODO PER LA MODIFICA DEL NUMERO
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, "Il valore inserito non è corretto");
+                }
+            }
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }
 
     /**

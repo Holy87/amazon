@@ -27,17 +27,10 @@ public class BoxUtility {
         ResultSet rsIndirizzi = DBConnection.visualizzaRubricaUtente(idUtente);
         menu.removeAllItems();
         while (rsIndirizzi.next()) {
-            Contatto indirizzo = new Contatto(
-                    Integer.parseInt(rsIndirizzi.getString(1)),
-                    rsIndirizzi.getString(2),
-                    rsIndirizzi.getString(3)
-            );
-            indirizzo.setCap(rsIndirizzi.getString(6));
-            indirizzo.setCitta(rsIndirizzi.getString(7));
-            indirizzo.setProv(rsIndirizzi.getString(8));
+            Contatto indirizzo = DBConnection.ottieniContatto(rsIndirizzi.getInt(1));
             menu.addItem(indirizzo);
         }
-        menu.setSelectedIndex(0);
+        //menu.setSelectedIndex(0);
     }
     
     /**
@@ -108,4 +101,27 @@ public class BoxUtility {
     public static String getTipoCarta(JComboBox menu) {
         return menu.getSelectedItem().toString();
     }
+    
+    public static void impostaModPagamento(JComboBox menu, int utenteId) throws SQLException {
+        menu.removeAllItems();
+        ResultSet modPagamenti = DBConnection.visualizzaModPagamento(utenteId);
+        while (modPagamenti.next()) {
+            Contatto indirizzo = DBConnection.ottieniContatto(modPagamenti.getInt(1));
+            int id = modPagamenti.getInt(2);
+            String nome = modPagamenti.getString(4);
+            String cognome = modPagamenti.getString(5);
+            String tipo = modPagamenti.getString(6);
+            String numero = modPagamenti.getString(3);
+            String dataScadenza = modPagamenti.getString(7);
+            int civ = modPagamenti.getInt(8);
+            ModPagamento pagamento = new ModPagamento(id, numero, tipo, indirizzo);
+            pagamento.setData(dataScadenza);
+            pagamento.setNomeIntestatario(nome);
+            pagamento.setCognomeIntestatario(cognome);
+            pagamento.setCiv(civ);
+            menu.addItem(pagamento);
+        }
+        //menu.setSelectedIndex(0);
+    }
+    
 }

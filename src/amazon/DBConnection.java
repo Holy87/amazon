@@ -6,15 +6,17 @@
 
 package amazon;
 
-import amazon.utility.Scontotemp;
 import amazon.exceptions.CodeNotValidException;
+import amazon.utility.Contatto;
+import amazon.utility.ModPagamento;
+import amazon.utility.Scontotemp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import oracle.jdbc.pool.*;
 import java.util.LinkedList;
+import oracle.jdbc.pool.*;
 /**
  *
  * @author Francesco
@@ -248,7 +250,6 @@ public class DBConnection {
     * @return *
     * @throws SQLException
     */
-   
    public static ResultSet visualizzaModPagamento (int idUtente) throws SQLException {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT * FROM MOD_PAGAMENTO NATURAL JOIN RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
@@ -259,6 +260,11 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   /**
+    * Elimina una modalità di pagamento
+    * @param pagamentoID pagamento bersaglio
+    * @throws SQLException 
+    */
    public static void eliminaModPagamento(int pagamentoID) throws SQLException {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("DELETE FROM MOD_PAGAMENTO WHERE MOD_PAGAMENTO_ID = ?");
@@ -542,6 +548,31 @@ public class DBConnection {
         1234567	Roberto	Fasullo     Via Roma, 323       80100   Napoli  NA      Italia  5551029387
         1234568	Marco   Carrozzo    Via Dei Sub, 41     80100	Napoli	NA	Italia	5559876543
        */
+   }
+   
+   /**
+    * Preleva e crea un oggetto contatto dal database
+    * @param idContatto contatto da creare
+    * @return contatto creato
+    * @throws SQLException 
+    */
+   public static Contatto ottieniContatto(int idContatto) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI WHERE CONTACT_ID=?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, idContatto);
+       ResultSet rsIndirizzi = pstmt.executeQuery();
+       rsIndirizzi.first();
+       Contatto indirizzo = new Contatto(
+                    idContatto,
+                    rsIndirizzi.getString(1),
+                    rsIndirizzi.getString(2)
+            );
+            indirizzo.setCap(rsIndirizzi.getString(5));
+            indirizzo.setCitta(rsIndirizzi.getString(6));
+            indirizzo.setProv(rsIndirizzi.getString(7));
+       return indirizzo;
    }
    
    public static void rimuoviIndirizzo(int contactID) throws SQLException {
