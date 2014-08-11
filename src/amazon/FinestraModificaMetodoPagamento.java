@@ -94,15 +94,15 @@ public class FinestraModificaMetodoPagamento extends EditForm {
 
         jLabel4.setText("mm");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(224, 180, 24, 16);
+        jLabel4.setBounds(220, 180, 24, 16);
         getContentPane().add(tMese);
         tMese.setBounds(177, 174, 41, 28);
 
-        jLabel5.setText("aa");
+        jLabel5.setText("aaaa");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(305, 180, 14, 16);
+        jLabel5.setBounds(320, 180, 30, 16);
         getContentPane().add(tAnno);
-        tAnno.setBounds(260, 174, 39, 28);
+        tAnno.setBounds(260, 174, 60, 28);
 
         jLabel6.setText("Indirizzo di Fatturazione");
         getContentPane().add(jLabel6);
@@ -283,7 +283,7 @@ public class FinestraModificaMetodoPagamento extends EditForm {
     
     private String getScadenza() {
         String mese = tMese.getText();
-        String anno = "20"+tAnno.getText();
+        String anno = tAnno.getText();
         return anno+"-"+mese+"01";
     }
     
