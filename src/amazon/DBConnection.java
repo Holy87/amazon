@@ -1269,6 +1269,24 @@ public class DBConnection {
  }
    
    /**
+    * Viene modificata la quantità di un articolo in un carrello
+    * @param utenteID id dell'utente
+    * @param prodID id del prodotto
+    * @param quantita quantità da modificare
+    * @throws SQLException 
+    */
+
+   public static void modificaQuantitaArticolo(int utenteID, int prodID, int quantita) throws SQLException {
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("UPDATE COMPARTICOLI SET Quantità = ? WHERE UTENTE_ID = ? AND PROD_ID = ?");
+        pstmt.setInt(1, quantita);  
+        pstmt.setInt(2, utenteID);
+        pstmt.setInt(3, prodID);
+         
+        pstmt.executeQuery(); 
+ }
+   
+   /**
     * Creazione della lista dei desideri
     * @param utenteID intero, id del proprietario della lista
     * @param nomeLista stringa, nome della lista
