@@ -4,8 +4,11 @@
  * and open the template in the editor.
  */
 
-package amazon;
+package amazon.temp;
 
+import amazon.DBConnection;
+import amazon.EditForm;
+import amazon.FinestraModPagamento;
 import amazon.exceptions.NoFormatSelectedException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
