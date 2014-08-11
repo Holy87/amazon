@@ -261,8 +261,11 @@ public class DBConnection {
    
    public static void eliminaModPagamento(int pagamentoID) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("DELETE FROM MOD_PAGAMENTO WHERE ");
-       //NON FUNZIONA, DA FINIRE
+       pstmt = conn.prepareStatement("DELETE FROM MOD_PAGAMENTO WHERE MOD_PAGAMENTO_ID = ?");
+       pstmt.setInt(1,pagamentoID);
+       
+       pstmt.executeUpdate();
+       pstmt.close(); 
    }
    
    /**
