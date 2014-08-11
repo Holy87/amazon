@@ -372,9 +372,9 @@ public final class TabOggetti extends javax.swing.JPanel {
                 case 's': if (ok == true)
                             preQuery += " OR "; 
                     if (query.contains("%"))
-                        preQuery += colonna + " LIKE ?";
+                        preQuery += "UPPER(" + colonna + ") LIKE UPPER(?)";
                     else
-                        preQuery += colonna + " = ?";
+                        preQuery += "UPPER(" + colonna + ") = UPPER(?)";
                     tab2.add('s');
                     ok = true;
                     break;
