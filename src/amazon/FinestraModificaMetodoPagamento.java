@@ -283,7 +283,7 @@ public class FinestraModificaMetodoPagamento extends EditForm {
     
     private String getScadenza() {
         String mese = tMese.getText();
-        String anno = tAnno.getText();
+        String anno = "20"+tAnno.getText();
         return anno+"-"+mese+"01";
     }
     
