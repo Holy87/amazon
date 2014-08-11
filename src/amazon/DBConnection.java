@@ -356,7 +356,7 @@ public class DBConnection {
    public static double verificaSconto(String codice) throws SQLException, CodeNotValidException {
         ResultSet rs;
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO='?' AND ORDINE_ID IS NULL",
+        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE '?' AND ORDINE_ID IS NULL",
                      ResultSet.TYPE_SCROLL_INSENSITIVE,
                      ResultSet.CONCUR_READ_ONLY);
         pstmt.setString(1, codice);
@@ -631,17 +631,18 @@ public class DBConnection {
     */
    public static void aggiornaIndirizzo(int contactID, String nome, String cognome, String indirizzo1, String indirizzo2, String cap, String citta, String provincia, String paese, String telefono) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("UPDATE RUBRICA_INDIRIZZI SET (CONTACT_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, Provincia, Paese, Numtelefono FROM RUBRICA_INDIRIZZI) VALUES (?,?,?,?,?,?,?,?,?,?)");
-       pstmt.setInt(1, contactID);
-       pstmt.setString(2,nome);
-       pstmt.setString(3, cognome);
-       pstmt.setString(4, indirizzo1);
-       pstmt.setString(5, indirizzo2);
-       pstmt.setString(6, cap);
-       pstmt.setString(7, citta);
-       pstmt.setString(8, provincia);
-       pstmt.setString(9, paese);
-       pstmt.setString(10, telefono);
+       pstmt = conn.prepareStatement("UPDATE RUBRICA_INDIRIZZI SET CONTACT_NOME=?, CONTACT_COGNOME=?, INDIRIZZOR1=?, INDIRIZZOR2=?, CAP=?, città=?, Provincia=?, Paese=?, Numtelefono=? WHERE CONTACT_ID=?");
+       pstmt.setString(1,nome);
+       pstmt.setString(2, cognome);
+       pstmt.setString(3, indirizzo1);
+       pstmt.setString(4, indirizzo2);
+       pstmt.setString(5, cap);
+       pstmt.setString(6, citta);
+       pstmt.setString(7, provincia);
+       pstmt.setString(8, paese);
+       pstmt.setString(9, telefono);
+       pstmt.setInt(10, contactID);
+
        pstmt.executeUpdate();
    }
    

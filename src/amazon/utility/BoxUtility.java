@@ -67,9 +67,9 @@ public class BoxUtility {
             menu.addItem("VISA");
             menu.addItem("Mastercard");
             menu.addItem("Postepay");
-            menu.addItem("American Express");
-            menu.addItem("CartaSi Visa");
-            menu.addItem("CartaSi Mastercard");
+            menu.addItem("American_Express");
+            menu.addItem("CartaSi_Visa");
+            menu.addItem("CartaSi_Mastercard");
             menu.addItem("Maestro");
             menu.setSelectedIndex(0);
     }
