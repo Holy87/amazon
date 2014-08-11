@@ -13,14 +13,12 @@ import amazon.exceptions.TooMuchDealsException;
 import amazon.modelliTabelle.DBTableModel;
 import amazon.modelliTabelle.ScontiModel;
 import amazon.utility.BoxUtility;
+import amazon.utility.Contatto;
 import amazon.utility.ModPagamento;
 import amazon.utility.Scontotemp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -59,8 +57,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private int cursoreArticoli = 1;
     private int cursoreSconti = 1;
     private int indirizzoSelezionato, pagamentoSelezionato;
-    private LinkedList<String[]> indirizzi;
-    private ArrayList<String[]> metodiPagamento = new ArrayList();
     private LinkedList<Scontotemp> sconti = new LinkedList();
     
     private int idUtente, prodID, prodNum;
@@ -79,29 +75,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
         }
     }
     
-//    private void impostaMetodiPagamento() {
-//        try {
-//            ResultSet pagamenti = DBConnection.sceltaModPagamento(idUtente);
-//            cPagamento.removeAllItems();
-//            System.out.println("Metodi di pagamento: "+DBConnection.contaRigheResultSet(pagamenti));
-//            while (pagamenti.next()) {
-//                String[] lista = {pagamenti.getString(1),//id metodo
-//                pagamenti.getString(2),//nome
-//                pagamenti.getString(3),//cognome
-//                pagamenti.getString(4),//tipo
-//                pagamenti.getString(5),//numero
-//                pagamenti.getString(6)};//data
-//                String numcarta = lista[4];
-//                String stringa = lista[3] + " ****-****-****-" + numcarta.substring(numcarta.length()-5, numcarta.length()-1);
-//                metodiPagamento.add(lista);
-//                cPagamento.addItem(stringa);
-//            }
-//            cPagamento.setSelectedIndex(0);
-//        } catch (SQLException ex) {
-//            mostraErrore(ex);
-//        }
-//    }
-    
     private void impostaIndirizzi() {
         try {
             BoxUtility.impostaPerIndirizzi(cSpedizione, idUtente);
@@ -115,11 +88,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
      * @return 
      */
     private int metodoPagamentoSelezionato() {
-        return Integer.parseInt(metodiPagamento.get(cPagamento.getSelectedIndex())[0]);
+        return pagamentoSelezionato;
     }
     
     private int indirizzoSelezionato() {
-        return Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
+        return indirizzoSelezionato;
     }
     
     private void inserisciCodice() {
@@ -307,7 +280,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     private void aggiornaIndirizzoSelezionato() {
         try {
-            indirizzoSelezionato = Integer.parseInt(indirizzi.get(cSpedizione.getSelectedIndex())[0]);
+            Contatto indirizzo = (Contatto)cSpedizione.getSelectedItem();
+            indirizzoSelezionato = indirizzo.getId();
         } catch (Exception ex) {
             indirizzoSelezionato = 0;
         }

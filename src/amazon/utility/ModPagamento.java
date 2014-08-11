@@ -20,7 +20,6 @@ public class ModPagamento {
     public ModPagamento(int id, String numero, String tipo) {
         this.numero = numero;
         this.tipo = tipo;
-        this.civ = civ;
         this.id = id;
     }
     
@@ -34,13 +33,12 @@ public class ModPagamento {
     public ModPagamento(int id, String numero, String tipo, Contatto indir) {
         this.numero = numero;
         this.tipo = tipo;
-        this.civ = civ;
         this.id = id;
         indirizzoFatturazione = indir;
     }
     
     private int civ, meseScadenza, annoScadenza, id;
-    private String numero, tipo, nomeIntestatario, cognomeIntestatario, dataScadenza;
+    private String numero, tipo, nomeIntestatario, cognomeIntestatario;
     private Contatto indirizzoFatturazione;
     
     /**
@@ -57,7 +55,6 @@ public class ModPagamento {
      * @param data 
      */
     public void setData(String data) {
-        dataScadenza = data;
         meseScadenza = Integer.parseInt(data.substring(5, 7));
         annoScadenza = Integer.parseInt(data.substring(0, 4));
     }
@@ -67,7 +64,6 @@ public class ModPagamento {
      * @return AAAA-MM-01
      */
     public String getData() {
-        //return dataScadenza;
         return annoScadenza+"-"+meseScadenza+"01";
     }
 

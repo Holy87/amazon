@@ -8,7 +8,6 @@ package amazon;
 
 import amazon.exceptions.CodeNotValidException;
 import amazon.utility.Contatto;
-import amazon.utility.ModPagamento;
 import amazon.utility.Scontotemp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -168,6 +167,7 @@ public class DBConnection {
     * @param isbn stringa, isbn dell'entità libri
     * @param venditoreId intero id del venditore
     * @param formatoId intero formato del libro
+    * @param tipoCondizione "Nuovo", "Usato" o "Ricondizionato"
     * @return ID del prodotto PROD_ID
     * @throws SQLException 
     */
@@ -1252,7 +1252,7 @@ public class DBConnection {
    
    /**
     * Viene effettuato l'inserimento nel carrello di un articolo
-    * @param utenteId id dell'utente
+    * @param utenteID id dell'utente
     * @param prodID id del prodotto
     * @param quantita quantità richiesta
     * @throws SQLException 
@@ -1276,7 +1276,7 @@ public class DBConnection {
     * @throws SQLException 
     */
    public static void creaListaDesideri(int utenteID, String nomeLista, int privacy) throws SQLException {
-       String nomePrivacy = "Privata";
+       String nomePrivacy;
        switch (privacy) {
            case 0: nomePrivacy = "Privata";
            break;
@@ -1314,7 +1314,7 @@ public class DBConnection {
    public static void modificaListaDesideri(int listaID, int privacy) throws SQLException {
        
        PreparedStatement pstmt;
-       String nomePrivacy = "Privata";
+       String nomePrivacy;
        switch (privacy) {
            case 0: nomePrivacy = "Privata";
            break;
