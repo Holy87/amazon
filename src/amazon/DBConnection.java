@@ -866,6 +866,80 @@ public class DBConnection {
        
        pstmt.executeUpdate();
    }
+   /**
+    * Applica le modalità di spedizione che un corriere ha a disposizione
+    * @param idCorriere identificatore del corriere
+    * @param d1 se dispone della spedizione in un giorno
+    * @param d2 se dispone della spedizione in 2-3 giorni
+    * @param d3 se dispone della spedizione in 3-5 giorni
+    * @throws SQLException 
+    */
+   public static void creaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
+   {
+       if(d1)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, 1_Giorno, 8)");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d2)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, 2-3_Giorni, 4)");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d3)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, 3-5_Giorni, 0)");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+   }
+   /**
+    * Modifica le modalità di spedizione che un corriere ha a disposizione
+    * @param idCorriere identificatore del corriere
+    * @param d1 se dispone della spedizione in un giorno
+    * @param d2 se dispone della spedizione in 2-3 giorni
+    * @param d3 se dispone della spedizione in 3-5 giorni
+    * @throws SQLException 
+    */
+      public static void aggiornaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
+   {
+       if(d1)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED=1_Giorno, COSTOSPED=8 WHERE CORRIERE_ID=?");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d2)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED=2-3_Giorni, COSTOSPED=4 WHERE CORRIERE_ID=?");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d3)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED=3-5_Giorni, COSTOSPED=0 WHERE CORRIERE_ID=?");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+   }
    
       public static void creaVenditore(String nomeVenditore) throws SQLException
    {
