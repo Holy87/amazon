@@ -123,6 +123,12 @@ public class FinestraLibro extends EditForm {
 
         jLabel14.setText("Data Uscita");
 
+        tDataUscita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tDataUscitaActionPerformed(evt);
+            }
+        });
+
         tDescrizione.setColumns(20);
         tDescrizione.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         tDescrizione.setLineWrap(true);
@@ -168,7 +174,7 @@ public class FinestraLibro extends EditForm {
                         .addComponent(bEsc))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -292,6 +298,10 @@ public class FinestraLibro extends EditForm {
         tListinoKindle.setEnabled(cKindle.isSelected());
     }//GEN-LAST:event_cKindleActionPerformed
 
+    private void tDataUscitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tDataUscitaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tDataUscitaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bEsc;
@@ -363,7 +373,7 @@ public class FinestraLibro extends EditForm {
             else
                 DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
             chiudiFinestra();
-        aggiornaListinoLibro();
+            aggiornaListinoLibro();
         }
         catch(SQLException ex){
             mostraErrore(ex);

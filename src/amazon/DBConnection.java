@@ -190,7 +190,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaCarrello(int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT VIEW_INFO.ISBN, VIEW_INFO.FORMATO_ID, VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, MAGAZZINO_LIBRI.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, COMPARTICOLI.QUANTITÀ, MAGAZZINO_LIBRI.PROD_ID FROM COMPARTICOLI LEFT OUTER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.PROD_ID = COMPARTICOLI.PROD_ID JOIN VIEW_INFO ON VIEW_INFO.PROD_ID = COMPARTICOLI.PROD_ID WHERE UTENTE_ID=? AND ORDINE_ID IS NULL",
+       pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.ISBN, VIEW_INFO.FORMATO_ID, VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.TIPOCONDIZIONE, MAGAZZINO_LIBRI.PREZZOVENDITA, VIEW_INFO.VENDITORE_NOME, COMPARTICOLI.QUANTITÀ, MAGAZZINO_LIBRI.PROD_ID FROM COMPARTICOLI LEFT OUTER JOIN MAGAZZINO_LIBRI ON MAGAZZINO_LIBRI.PROD_ID = COMPARTICOLI.PROD_ID JOIN VIEW_INFO ON VIEW_INFO.PROD_ID = COMPARTICOLI.PROD_ID WHERE UTENTE_ID=? AND ORDINE_ID IS NULL",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
@@ -317,7 +317,7 @@ public class DBConnection {
    public static void aggiornaModPagamento (int modPagamentoID, int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
        PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS'), CODICESICUREZZA = ? WHERE MOD_PAGAMENTO_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD'), CODICESICUREZZA = ? WHERE MOD_PAGAMENTO_ID = ?");
        
        pstmt.setInt(1, contactID);
        pstmt.setString(2, numeroCC);
@@ -412,7 +412,7 @@ public class DBConnection {
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int idOrder=0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setInt(1, idUtente);
@@ -420,9 +420,18 @@ public class DBConnection {
        pstmt.setDouble(3, sconto);
        pstmt.setInt(4, modpagamento);
        
-       rs=pstmt.executeQuery();
-       idOrder=rs.getInt(2); //Ottenimento ORDINE_ID riga inserita
+       pstmt.executeUpdate();
        pstmt.close();
+       
+       PreparedStatement getID; //Statement per ottenere l'ID
+       getID = conn.prepareStatement("SELECT ORDINE_ID FROM ORDINI WHERE UTENTE_ID = ? ORDER BY DATAORDINE DESC");
+       getID.setInt(1, idUtente);
+       rs=getID.executeQuery();
+       rs.next();
+       
+       idOrder=rs.getInt(1); //Ottenimento ORDINE_ID riga inserita
+       
+       getID.close();
        
        PreparedStatement pstmt2; //Statement per il richiamo della funzione per il completamento
        
@@ -432,6 +441,7 @@ public class DBConnection {
        pstmt2.setInt(3, sped);
        pstmt2.setInt(4, modpagamento);
        pstmt2.setInt(5, contactID);
+       pstmt2.execute();
        
        if ( sconti.isEmpty() ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
@@ -722,7 +732,7 @@ public class DBConnection {
        
        //Quando si crea un libro bisogna aggiungere: COD_AUTORE, EDITORE, LINGUA, PREZZO
        
-       pstmt = conn.prepareStatement("INSERT INTO LIBRI(LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+       pstmt = conn.prepareStatement("INSERT INTO LIBRI(LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, TO_DATE(?, 'DD/MM/YYYY'))");
        pstmt.setString(1, nomeLibro);
        pstmt.setInt(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -752,7 +762,7 @@ public class DBConnection {
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS') WHERE ISBN LIKE ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'DD/MM/YYYY') WHERE ISBN LIKE ?");
        pstmt.setString(1, nomeLibro);
        pstmt.setInt(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -773,6 +783,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2001,?)");
            pstmt.setString(1,isbn);
            pstmt.setDouble(2,prezzoFlessibile);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoRigida > 0) {
@@ -780,6 +792,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2002,?)");
            pstmt.setString(1,isbn);
            pstmt.setDouble(2,prezzoRigida);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoKindle > 0) {
@@ -787,6 +801,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2003,?)");
            pstmt.setString(1,isbn);
            pstmt.setDouble(2,prezzoKindle);
+           
+           pstmt.executeUpdate();
        }
    }
    
@@ -797,6 +813,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
            pstmt.setDouble(1,prezzoFlessibile);
            pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoRigida > 0) {
@@ -804,6 +822,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
            pstmt.setDouble(1,prezzoRigida);
            pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoKindle > 0) {
@@ -811,6 +831,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
            pstmt.setDouble(1,prezzoKindle);
            pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
        }
    }
    
@@ -854,6 +876,80 @@ public class DBConnection {
        pstmt.setInt(2, idCorriere);
        
        pstmt.executeUpdate();
+   }
+   /**
+    * Applica le modalità di spedizione che un corriere ha a disposizione
+    * @param idCorriere identificatore del corriere
+    * @param d1 se dispone della spedizione in un giorno
+    * @param d2 se dispone della spedizione in 2-3 giorni
+    * @param d3 se dispone della spedizione in 3-5 giorni
+    * @throws SQLException 
+    */
+   public static void creaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
+   {
+       if(d1)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, 1_Giorno, 8)");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d2)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, 2-3_Giorni, 4)");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d3)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, 3-5_Giorni, 0)");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+   }
+   /**
+    * Modifica le modalità di spedizione che un corriere ha a disposizione
+    * @param idCorriere identificatore del corriere
+    * @param d1 se dispone della spedizione in un giorno
+    * @param d2 se dispone della spedizione in 2-3 giorni
+    * @param d3 se dispone della spedizione in 3-5 giorni
+    * @throws SQLException 
+    */
+      public static void aggiornaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
+   {
+       if(d1)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED=1_Giorno, COSTOSPED=8 WHERE CORRIERE_ID=?");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d2)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED=2-3_Giorni, COSTOSPED=4 WHERE CORRIERE_ID=?");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
+       
+       if(d3)   {
+       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+       
+       pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED=3-5_Giorni, COSTOSPED=0 WHERE CORRIERE_ID=?");
+       pstmt.setInt(1, idCorriere);
+
+       pstmt.executeUpdate();
+       }
    }
    
       public static void creaVenditore(String nomeVenditore) throws SQLException
@@ -1207,7 +1303,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, int venditoreID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
