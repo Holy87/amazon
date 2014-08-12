@@ -199,9 +199,9 @@ public class FinestraModificaMetodoPagamento extends EditForm {
 
     @Override
     protected void fillContents() {
-        pagamentoID = Integer.parseInt(dati.get(2).toString());
+        pagamentoID = Integer.parseInt(dati.get(1).toString());
         BoxUtility.impostaTipoCarta(tCarta, dati.get(5).toString());
-        oldNum = dati.get(1).toString();
+        oldNum = dati.get(2).toString();
         tNumero.setText(oldNum);
         tCiv.setText(dati.get(7).toString());
         tMese.setText(getMese(dati.get(6).toString()));
