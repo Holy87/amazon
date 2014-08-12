@@ -325,7 +325,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             if (risposta != null) {
                 try {
                     int quantita = Integer.parseInt(risposta);
-                    //QUI VA IL METODO PER LA MODIFICA DEL NUMERO
+                    DBConnection.modificaQuantitaArticolo(idUtente, prodID, quantita);
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Il valore inserito non è corretto");
                 }

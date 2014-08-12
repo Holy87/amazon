@@ -490,7 +490,7 @@ public class DBConnection {
     * @param cellulare
     * @throws SQLException 
     */
-   public static void creaUtente(String nome, String cognome, String mail, String password, long cellulare) throws SQLException
+   public static void creaUtente(String nome, String cognome, String mail, String password, String cellulare) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -499,7 +499,7 @@ public class DBConnection {
        pstmt.setString(2, cognome);
        pstmt.setString(3, mail);
        pstmt.setString(4, password);
-       pstmt.setLong(5, cellulare);
+       pstmt.setString(5, cellulare);
        
        pstmt.executeUpdate();
    }
@@ -514,7 +514,7 @@ public class DBConnection {
     * @param cellulare
     * @throws SQLException 
     */
-   public static void aggiornaUtente(int id, String nome, String cognome, String mail, String password, long cellulare) throws SQLException {
+   public static void aggiornaUtente(int id, String nome, String cognome, String mail, String password, String cellulare) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
        pstmt = conn.prepareStatement("UPDATE UTENTI SET NOME = ?, COGNOME = ?, EMAIL = ?, PSW = ?, NUMCELLULARE = ? WHERE UTENTE_ID = ?");
@@ -522,7 +522,7 @@ public class DBConnection {
        pstmt.setString(2, cognome);
        pstmt.setString(3, mail);
        pstmt.setString(4, password);
-       pstmt.setLong(5, cellulare);
+       pstmt.setString(5, cellulare);
        pstmt.setInt(6, id);
        
        pstmt.executeUpdate();
@@ -1265,6 +1265,24 @@ public class DBConnection {
         pstmt.setInt(2, prodID);
         pstmt.setInt(3, quantita);   
         
+        pstmt.executeQuery(); 
+ }
+   
+   /**
+    * Viene modificata la quantità di un articolo in un carrello
+    * @param utenteID id dell'utente
+    * @param prodID id del prodotto
+    * @param quantita quantità da modificare
+    * @throws SQLException 
+    */
+
+   public static void modificaQuantitaArticolo(int utenteID, int prodID, int quantita) throws SQLException {
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("UPDATE COMPARTICOLI SET Quantità = ? WHERE UTENTE_ID = ? AND PROD_ID = ?");
+        pstmt.setInt(1, quantita);  
+        pstmt.setInt(2, utenteID);
+        pstmt.setInt(3, prodID);
+         
         pstmt.executeQuery(); 
  }
    
