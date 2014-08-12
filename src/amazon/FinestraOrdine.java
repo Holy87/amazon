@@ -239,13 +239,13 @@ public class FinestraOrdine extends javax.swing.JDialog {
           cursoreArticoli = rsArticoli.getRow();
           tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
-          prodID = rsArticoli.getInt(10);
-          prodNum = rsArticoli.getInt(9);
+          prodID = rsArticoli.getInt(9);
+          prodNum = rsArticoli.getInt(8);
           //if (SwingUtilities.isRightMouseButton(null))
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          System.out.println("illegalarg, aggiornaSelezione - "+ex.getMessage());
       }
     }
     
@@ -289,8 +289,14 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void completaAcquisto() {
         try {
+            System.out.println(idUtente);
+            System.out.println(costoSpedizione());
+            System.out.println(metodoPagamentoSelezionato());
+            System.out.println(indirizzoSelezionato());
             DBConnection.creaOrdine(idUtente, (int)costoSpedizione(), scontoCompl, metodoPagamentoSelezionato(), indirizzoSelezionato(), sconti);
-            //DBConnection.creaOrdine(ID DELL'UTENTE, COSTO SPEDIZIONE, SCONTO COMPLESSIVO, ID MODALITA' PAGAMENTO, ID indirizzo spedizione, ARRAY SCONTI);
+            setVisible(false);
+            JOptionPane.showMessageDialog(this, "L'ordine è stato effettuato.");
+            dispose();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -314,6 +320,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void rimuoviArticolo() {
         try {
             DBConnection.eliminaArticoloCarrello(idUtente, prodID);
+            aggiornaTabella();
+            aggiornaTotale();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -325,7 +333,12 @@ public class FinestraOrdine extends javax.swing.JDialog {
             if (risposta != null) {
                 try {
                     int quantita = Integer.parseInt(risposta);
-                    DBConnection.modificaQuantitaArticolo(idUtente, prodID, quantita);
+                    if (quantita <= 0)
+                        DBConnection.eliminaArticoloCarrello(idUtente, prodID);
+                    else
+                        DBConnection.modificaQuantitaArticolo(idUtente, prodID, quantita);
+                    aggiornaTabella();
+                    aggiornaTotale();
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Il valore inserito non è corretto");
                 }
