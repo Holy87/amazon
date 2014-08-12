@@ -239,7 +239,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
           cursoreArticoli = rsArticoli.getRow();
           tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
-          prodID = rsArticoli.getInt(8);
+          prodID = rsArticoli.getInt(10);
           prodNum = rsArticoli.getInt(9);
           //if (SwingUtilities.isRightMouseButton(null))
       } catch (SQLException ex) {
@@ -321,7 +321,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void modificaQuantita() {
         try {
-            String risposta = JOptionPane.showInputDialog(this, "Scegli la quantità", rsArticoli.getInt(8));
+            String risposta = JOptionPane.showInputDialog(this, "Scegli la quantità", prodNum);
             if (risposta != null) {
                 try {
                     int quantita = Integer.parseInt(risposta);
