@@ -6,7 +6,9 @@
 
 package amazon;
 
+import amazon.exceptions.NoFormatSelectedException;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,7 +25,8 @@ public class FinestraCorriere extends EditForm {
         super(parent, modal);
         initComponents();
     }
-
+    public boolean d1, d2, d3;
+    public int corriereID;
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -39,14 +42,13 @@ public class FinestraCorriere extends EditForm {
         tCorriere_Nome = new javax.swing.JTextField();
         bEsc = new javax.swing.JButton();
         bOk = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
+        jCheckBox_d1 = new javax.swing.JCheckBox();
+        jCheckBox_d2 = new javax.swing.JCheckBox();
+        jCheckBox_d3 = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modifica Autore");
-        setLocationByPlatform(true);
 
         jLabel1.setText("Corriere_ID");
 
@@ -74,19 +76,24 @@ public class FinestraCorriere extends EditForm {
             }
         });
 
-        jCheckBox1.setText("1 Giorno");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBox_d1.setText("1 Giorno");
+        jCheckBox_d1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                jCheckBox_d1ActionPerformed(evt);
             }
         });
 
-        jCheckBox2.setText("2-3 Giorni");
-
-        jCheckBox3.setText("3-5 Giorni");
-        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBox_d2.setText("2-3 Giorni");
+        jCheckBox_d2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox3ActionPerformed(evt);
+                jCheckBox_d2ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox_d3.setText("3-5 Giorni");
+        jCheckBox_d3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox_d3ActionPerformed(evt);
             }
         });
 
@@ -113,11 +120,11 @@ public class FinestraCorriere extends EditForm {
                                 .addComponent(tCorriere_ID, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(tCorriere_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(jCheckBox1)
+                            .addComponent(jCheckBox_d1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jCheckBox2)
+                            .addComponent(jCheckBox_d2)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jCheckBox3))
+                            .addComponent(jCheckBox_d3))
                         .addComponent(jLabel3)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -136,9 +143,9 @@ public class FinestraCorriere extends EditForm {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox3))
+                    .addComponent(jCheckBox_d1)
+                    .addComponent(jCheckBox_d2)
+                    .addComponent(jCheckBox_d3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bEsc)
@@ -161,21 +168,25 @@ public class FinestraCorriere extends EditForm {
         // TODO add your handling code here:
     }//GEN-LAST:event_tCorriere_NomeActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    private void jCheckBox_d1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox_d1ActionPerformed
+        d1=jCheckBox_d1.isSelected();
+    }//GEN-LAST:event_jCheckBox_d1ActionPerformed
 
-    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox3ActionPerformed
+    private void jCheckBox_d3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox_d3ActionPerformed
+        d3=jCheckBox_d3.isSelected();
+    }//GEN-LAST:event_jCheckBox_d3ActionPerformed
+
+    private void jCheckBox_d2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox_d2ActionPerformed
+        d2=jCheckBox_d2.isSelected();
+    }//GEN-LAST:event_jCheckBox_d2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bEsc;
     private javax.swing.JButton bOk;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBox jCheckBox_d1;
+    private javax.swing.JCheckBox jCheckBox_d2;
+    private javax.swing.JCheckBox jCheckBox_d3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -197,19 +208,41 @@ public class FinestraCorriere extends EditForm {
     
     private void eseguiOk()
     {
-        setVisible(false);
+        
         try {
-            if (mode == ADDN)
-                DBConnection.creaCorriere(tCorriere_Nome.getText());
+            tuttiDisattivati();
+            setVisible(false);
+            if (mode == ADDN)   {
+                corriereID = DBConnection.creaCorriere(tCorriere_Nome.getText());
+            System.out.println(d1);
+            System.out.println(d2);
+            System.out.println(d3);
+            System.out.println(corriereID);
+            }
             else
                 DBConnection.aggiornaCorriere(Integer.parseInt(tCorriere_ID.getText()), tCorriere_Nome.getText());
             chiudiFinestra();
+            aggiornaModSped();
         }
         catch(SQLException ex){
             mostraErrore(ex);
             setVisible(true);
+        } catch (NoFormatSelectedException ex) {
+            JOptionPane.showMessageDialog(this, "Devi selezionare almeno un formato", "Errore!", JOptionPane.ERROR_MESSAGE, null);
         }
+    }
+    
+    private void aggiornaModSped() throws SQLException {
+        if (mode == EDIT)
+            DBConnection.aggiornaModSpedizione(Integer.parseInt(tCorriere_ID.getText()), d1, d2, d3);
+        else
+            DBConnection.aggiungiModSpedizione(corriereID, d1, d2, d3);
+    }
         
+
+    private void tuttiDisattivati() throws NoFormatSelectedException {
+        if (jCheckBox_d1.isSelected() && jCheckBox_d2.isSelected() && jCheckBox_d3.isSelected())
+            throw new NoFormatSelectedException();
     }
     
     @Override
