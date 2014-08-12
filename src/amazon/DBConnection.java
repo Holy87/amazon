@@ -751,7 +751,7 @@ public class DBConnection {
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS') WHERE ISBN LIKE ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') WHERE ISBN LIKE ?");
        pstmt.setString(1, nomeLibro);
        pstmt.setInt(2, nEdizione);
        pstmt.setString(3, isbn);
