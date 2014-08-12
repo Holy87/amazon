@@ -569,9 +569,10 @@ public class DBConnection {
                     rsIndirizzi.getString(1),
                     rsIndirizzi.getString(2)
             );
-            indirizzo.setCap(rsIndirizzi.getString(5));
-            indirizzo.setCitta(rsIndirizzi.getString(6));
-            indirizzo.setProv(rsIndirizzi.getString(7));
+       indirizzo.setIndirizzo1(rsIndirizzi.getString(3));
+       indirizzo.setCap(rsIndirizzi.getString(5));
+       indirizzo.setCitta(rsIndirizzi.getString(6));
+       indirizzo.setProv(rsIndirizzi.getString(7));
        return indirizzo;
    }
    
