@@ -1292,7 +1292,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, int venditoreID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
