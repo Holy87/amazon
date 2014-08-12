@@ -373,7 +373,7 @@ public class FinestraLibro extends EditForm {
             else
                 DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
             chiudiFinestra();
-        aggiornaListinoLibro();
+            aggiornaListinoLibro();
         }
         catch(SQLException ex){
             mostraErrore(ex);
