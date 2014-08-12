@@ -57,7 +57,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jLabel14" pref="56" max="32767" attributes="0"/>
+                          <Component id="jLabel14" max="32767" attributes="0"/>
                           <Component id="jLabel13" max="32767" attributes="0"/>
                           <Component id="jLabel11" max="32767" attributes="0"/>
                           <Component id="jLabel10" alignment="0" max="32767" attributes="0"/>
@@ -255,6 +255,9 @@
     <Component class="javax.swing.JTextField" name="tPesoSped">
     </Component>
     <Component class="javax.swing.JTextField" name="tDataUscita">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tDataUscitaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="tISBN">
     </Component>

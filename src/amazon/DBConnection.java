@@ -731,7 +731,7 @@ public class DBConnection {
        
        //Quando si crea un libro bisogna aggiungere: COD_AUTORE, EDITORE, LINGUA, PREZZO
        
-       pstmt = conn.prepareStatement("INSERT INTO LIBRI(LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+       pstmt = conn.prepareStatement("INSERT INTO LIBRI(LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, DATAUSCITA) VALUES(?, ?, ?, ?, ?, ?, ?, TO_DATE(?, 'DD/MM/YYYY'))");
        pstmt.setString(1, nomeLibro);
        pstmt.setInt(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -761,7 +761,7 @@ public class DBConnection {
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
-       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS') WHERE ISBN LIKE ?");
+       pstmt = conn.prepareStatement("UPDATE LIBRI SET LIBRO_NOME = ?, EDIZIONE_N = ?, ISBN = ?, DESCRIZIONE = ?, GENERE = ?, PAGINE_N = ?, PESOSPED = ?, DATAUSCITA = TO_DATE(?, 'DD/MM/YYYY') WHERE ISBN LIKE ?");
        pstmt.setString(1, nomeLibro);
        pstmt.setInt(2, nEdizione);
        pstmt.setString(3, isbn);
@@ -782,6 +782,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2001,?)");
            pstmt.setString(1,isbn);
            pstmt.setDouble(2,prezzoFlessibile);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoRigida > 0) {
@@ -789,6 +791,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2002,?)");
            pstmt.setString(1,isbn);
            pstmt.setDouble(2,prezzoRigida);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoKindle > 0) {
@@ -796,6 +800,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2003,?)");
            pstmt.setString(1,isbn);
            pstmt.setDouble(2,prezzoKindle);
+           
+           pstmt.executeUpdate();
        }
    }
    
@@ -806,6 +812,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
            pstmt.setDouble(1,prezzoFlessibile);
            pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoRigida > 0) {
@@ -813,6 +821,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
            pstmt.setDouble(1,prezzoRigida);
            pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
        }
        
        if ( prezzoKindle > 0) {
@@ -820,6 +830,8 @@ public class DBConnection {
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
            pstmt.setDouble(1,prezzoKindle);
            pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
        }
    }
    
