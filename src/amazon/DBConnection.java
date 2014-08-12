@@ -412,7 +412,7 @@ public class DBConnection {
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int idOrder=0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setInt(1, idUtente);
@@ -420,9 +420,18 @@ public class DBConnection {
        pstmt.setDouble(3, sconto);
        pstmt.setInt(4, modpagamento);
        
-       rs=pstmt.executeQuery();
-       idOrder=rs.getInt(2); //Ottenimento ORDINE_ID riga inserita
+       pstmt.executeUpdate();
        pstmt.close();
+       
+       PreparedStatement getID; //Statement per ottenere l'ID
+       getID = conn.prepareStatement("SELECT ORDINE_ID FROM ORDINI WHERE UTENTE_ID = ? ORDER BY DATAORDINE DESC");
+       getID.setInt(1, idUtente);
+       rs=getID.executeQuery();
+       rs.next();
+       
+       idOrder=rs.getInt(1); //Ottenimento ORDINE_ID riga inserita
+       
+       getID.close();
        
        PreparedStatement pstmt2; //Statement per il richiamo della funzione per il completamento
        
@@ -432,6 +441,7 @@ public class DBConnection {
        pstmt2.setInt(3, sped);
        pstmt2.setInt(4, modpagamento);
        pstmt2.setInt(5, contactID);
+       pstmt2.execute();
        
        if ( sconti.isEmpty() ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
