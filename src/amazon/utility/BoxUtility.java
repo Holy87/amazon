@@ -64,12 +64,12 @@ public class BoxUtility {
     public static void impostaTipoCarta(JComboBox menu) {
         //'Visa', 'Mastercard', 'Postepay', 'American_Express', 'CartaSi_Visa', 'CartaSi_Mastercard', 'Maestro'
             menu.removeAllItems();
-            menu.addItem("Visa");
+            menu.addItem("VISA");
             menu.addItem("Mastercard");
             menu.addItem("Postepay");
-            menu.addItem("American_Express");
-            menu.addItem("CartaSi_Visa");
-            menu.addItem("CartaSi_Mastercard");
+            menu.addItem("American Express");
+            menu.addItem("CartaSi VISA");
+            menu.addItem("CartaSi Mastercard");
             menu.addItem("Maestro");
             menu.setSelectedIndex(0);
     }
