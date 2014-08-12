@@ -317,7 +317,7 @@ public class DBConnection {
    public static void aggiornaModPagamento (int modPagamentoID, int contactID, String numeroCC, String nomeCC, String cognomeCC, String tipoCC, String scadenzaCC, int codSicurezzaCC) throws SQLException {
        PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS.SSSSS'), CODICESICUREZZA = ? WHERE MOD_PAGAMENTO_ID = ?");
+       pstmt = conn.prepareStatement("UPDATE MOD_PAGAMENTO SET CONTACT_ID = ?, NUMEROCARTACREDITO = ?, TITOLARECARTA_NOME = ?, TITOLARECARTA_COGNOME = ?, TIPOCARTA = ?, DATASCADENZA = TO_DATE(?, 'YYYY-MM-DD'), CODICESICUREZZA = ? WHERE MOD_PAGAMENTO_ID = ?");
        
        pstmt.setInt(1, contactID);
        pstmt.setString(2, numeroCC);
