@@ -490,7 +490,7 @@ public class DBConnection {
     * @param cellulare
     * @throws SQLException 
     */
-   public static void creaUtente(String nome, String cognome, String mail, String password, long cellulare) throws SQLException
+   public static void creaUtente(String nome, String cognome, String mail, String password, String cellulare) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -499,7 +499,7 @@ public class DBConnection {
        pstmt.setString(2, cognome);
        pstmt.setString(3, mail);
        pstmt.setString(4, password);
-       pstmt.setLong(5, cellulare);
+       pstmt.setString(5, cellulare);
        
        pstmt.executeUpdate();
    }
@@ -514,7 +514,7 @@ public class DBConnection {
     * @param cellulare
     * @throws SQLException 
     */
-   public static void aggiornaUtente(int id, String nome, String cognome, String mail, String password, long cellulare) throws SQLException {
+   public static void aggiornaUtente(int id, String nome, String cognome, String mail, String password, String cellulare) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
        pstmt = conn.prepareStatement("UPDATE UTENTI SET NOME = ?, COGNOME = ?, EMAIL = ?, PSW = ?, NUMCELLULARE = ? WHERE UTENTE_ID = ?");
@@ -522,7 +522,7 @@ public class DBConnection {
        pstmt.setString(2, cognome);
        pstmt.setString(3, mail);
        pstmt.setString(4, password);
-       pstmt.setLong(5, cellulare);
+       pstmt.setString(5, cellulare);
        pstmt.setInt(6, id);
        
        pstmt.executeUpdate();
