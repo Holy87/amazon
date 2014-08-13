@@ -206,7 +206,6 @@ public class FinestraCorriere extends EditForm {
             
             ResultSet spedizioni = DBConnection.visualizzaModSpedizione(corriereID);
             while(spedizioni.next())    {
-                
                 if (spedizioni.getInt(1) == 8)  {
                     System.out.println("Entra 8");
                     jCheckBox_d1.setSelected(true);
@@ -219,7 +218,6 @@ public class FinestraCorriere extends EditForm {
                     System.out.println("Entra 0");
                     jCheckBox_d3.setSelected(true);
                 }
-                
             }
         } catch (SQLException ex) {
             Logger.getLogger(FinestraCorriere.class.getName()).log(Level.SEVERE, null, ex);
