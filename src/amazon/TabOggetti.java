@@ -173,6 +173,16 @@ public final class TabOggetti extends javax.swing.JPanel {
         }
     }
     
+    private void impostaAbilitazionePulsanti(boolean abilitazione) {
+        editRecord.setEnabled(abilitazione);
+        deleteRecord.setEnabled(abilitazione);
+        jButton2.setEnabled(abilitazione);
+        jButton3.setEnabled(abilitazione);
+        serviceButton1.setEnabled(abilitazione);
+        serviceButton2.setEnabled(abilitazione);
+        serviceButton3.setEnabled(abilitazione);
+    }
+    
     /**
      * Attivazione del secondo pulsante inizialmente impostato come disabilitato
      */
@@ -276,10 +286,12 @@ public final class TabOggetti extends javax.swing.JPanel {
         try {
             rs = DBConnection.eseguiQuery("SELECT * FROM " + getTableName());
             modelloTabella.setRS(rs);
-            rs.absolute(cursore);
+            rs.first();
+            //rs.absolute(cursore);
             ultimaRicerca = null;
             aggiornaCursore();
         } catch (SQLException ex) {
+            System.out.println("aggiornaTabella");
             mostraErrore(ex);
         }
         
@@ -293,6 +305,12 @@ public final class TabOggetti extends javax.swing.JPanel {
             aggiornaTabella();
         else
             aggiornaTabella(ultimaRicerca);
+        try {
+            modelloTabella.getValueAt(cursore - 1, 0);
+        } catch (java.lang.IllegalArgumentException ex)
+        {
+            impostaAbilitazionePulsanti(false);
+        }
     }
     
     /**
@@ -305,9 +323,11 @@ public final class TabOggetti extends javax.swing.JPanel {
         try {
             rs = pstmt.executeQuery();
             modelloTabella.setRS(rs);
-            rs.absolute(cursore);
+            rs.first();
+            //rs.absolute(cursore);
             aggiornaCursore();
         } catch (SQLException ex) {
+            System.out.println("aggiornaTabella");
             mostraErrore(ex);
         }
     }
@@ -319,11 +339,13 @@ public final class TabOggetti extends javax.swing.JPanel {
       try {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
-          tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
+          //tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
+          impostaAbilitazionePulsanti(true);
       } catch (SQLException ex) {
+          System.out.println("aggiornaCursore");
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          //nulla
+          impostaAbilitazionePulsanti(false);
       }
     }
     
@@ -454,6 +476,7 @@ public final class TabOggetti extends javax.swing.JPanel {
         errore += "\nCodice: " + ex.getErrorCode();
         errore += "\nMessaggio: " + ex.getMessage();
         errore += "\n\n" + ex.getSQLState();
+        errore += "\n" + ex.getCause();
         JOptionPane.showMessageDialog(mainWindow, "Errore: " + errore, null, ERROR_MESSAGE);
     }
     

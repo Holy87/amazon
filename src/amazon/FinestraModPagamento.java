@@ -117,11 +117,17 @@ public class FinestraModPagamento extends javax.swing.JDialog {
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
           modID = rs.getInt(1);
+          impostaAbilitazioneComandi(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          impostaAbilitazioneComandi(false);
       }
+    }
+    
+    private void impostaAbilitazioneComandi(boolean abilitazione) {
+        bModifica.setEnabled(abilitazione);
+        bElimina.setEnabled(abilitazione);
     }
     
     private List getDataCollection()
@@ -173,9 +179,9 @@ public class FinestraModPagamento extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabella = new javax.swing.JTable();
-        bDeleteAddress = new javax.swing.JButton();
+        bElimina = new javax.swing.JButton();
         bAddAddress = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        bModifica = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -192,10 +198,10 @@ public class FinestraModPagamento extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tabella);
 
-        bDeleteAddress.setText("Elimina Modalità di Pagamento");
-        bDeleteAddress.addActionListener(new java.awt.event.ActionListener() {
+        bElimina.setText("Elimina Modalità di Pagamento");
+        bElimina.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bDeleteAddressActionPerformed(evt);
+                bEliminaActionPerformed(evt);
             }
         });
 
@@ -206,10 +212,10 @@ public class FinestraModPagamento extends javax.swing.JDialog {
             }
         });
 
-        jButton1.setText("Modifica modalità di pagamento");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        bModifica.setText("Modifica modalità di pagamento");
+        bModifica.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                bModificaActionPerformed(evt);
             }
         });
 
@@ -220,11 +226,11 @@ public class FinestraModPagamento extends javax.swing.JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(bModifica)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bAddAddress)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bDeleteAddress))
+                .addComponent(bElimina))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,15 +238,15 @@ public class FinestraModPagamento extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bDeleteAddress)
+                    .addComponent(bElimina)
                     .addComponent(bAddAddress)
-                    .addComponent(jButton1)))
+                    .addComponent(bModifica)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bDeleteAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteAddressActionPerformed
+    private void bEliminaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminaActionPerformed
         int response = JOptionPane.showConfirmDialog(this, "Vuoi eliminare questo metodo di pagamento?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             try {
@@ -250,22 +256,30 @@ public class FinestraModPagamento extends javax.swing.JDialog {
                 mostraErrore(ex);
             }
         }
-    }//GEN-LAST:event_bDeleteAddressActionPerformed
+    }//GEN-LAST:event_bEliminaActionPerformed
 
     private void bAddAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddAddressActionPerformed
-        FinestraModificaMetodoPagamento creamod = new FinestraModificaMetodoPagamento(this, true, idUtente);
-        creamod.show(ADDN, null, null);
+        try {
+            if (DBConnection.contaRigheResultSet(DBConnection.visualizzaRubricaUtente(idUtente)) == 0) {
+                JOptionPane.showMessageDialog(this, "Attenzione, l'utente deve prima avere un indirizzo memorizzato!", "Non puoi creare il metodo ora", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                FinestraModificaMetodoPagamento creamod = new FinestraModificaMetodoPagamento(this, true, idUtente);
+                creamod.show(ADDN, null, null);
+            }
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
     }//GEN-LAST:event_bAddAddressActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void bModificaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificaActionPerformed
         FinestraModificaMetodoPagamento creamod = new FinestraModificaMetodoPagamento(this, true, idUtente);
         creamod.show(EDIT, getDataCollection(), null);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_bModificaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAddress;
-    private javax.swing.JButton bDeleteAddress;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton bElimina;
+    private javax.swing.JButton bModifica;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

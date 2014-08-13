@@ -123,15 +123,16 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
           autoreID = rs.getInt(1);
-          if (modelloTabella.getRowCount() == 0)
-            abilitaPulsanteElimina(false);
-          else
-            abilitaPulsanteElimina(true);
+          impostaAbilitazionePulsanti(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          impostaAbilitazionePulsanti(false);
       }
+    }
+    
+    private void impostaAbilitazionePulsanti(boolean abi) {
+        bDeleteAuthor.setEnabled(abi);
     }
     
     /*private void impostaAutoreSelezionato() {
@@ -203,8 +204,9 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         return true;
     }
     
-    private void abilitaPulsanteElimina(boolean stato) {
-        bDeleteAuthor.setEnabled(stato);
+    private void creaAutore() {
+        FinestraAutore finestraAutore = new FinestraAutore(this, true);
+        finestraAutore.show(2, null, null);
     }
     
     /**
@@ -232,6 +234,7 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         tabella = new javax.swing.JTable();
         bAddAuthor = new javax.swing.JButton();
         bDeleteAuthor = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -263,6 +266,13 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
             }
         });
 
+        jButton1.setText("Crea nuovo autore");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -270,6 +280,8 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bAddAuthor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bDeleteAuthor)
@@ -282,7 +294,8 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bAddAuthor)
-                    .addComponent(bDeleteAuthor)))
+                    .addComponent(bDeleteAuthor)
+                    .addComponent(jButton1)))
         );
 
         pack();
@@ -296,9 +309,14 @@ public class FinestraAutoriLibro extends javax.swing.JDialog {
         aggiungiAutore();
     }//GEN-LAST:event_bAddAuthorActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        creaAutore();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddAuthor;
     private javax.swing.JButton bDeleteAuthor;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

@@ -23,6 +23,16 @@ public class FinestraEditore extends EditForm {
         super(parent, modal);
         initComponents();
     }
+    
+    /**
+     * Creates new form FinestraUtente
+     * @param parent
+     * @param modal
+     */
+    public FinestraEditore(java.awt.Dialog parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

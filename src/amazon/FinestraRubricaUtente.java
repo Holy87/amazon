@@ -18,7 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author Francesco
+ * @author Giuseppe Senese
  */
 public class FinestraRubricaUtente extends javax.swing.JDialog {
 
@@ -75,7 +75,8 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts.
             modelloTabella.setRS(rs);   //non credo serva, ma il prof lo mette..
-            rs.absolute(cursore);   //attiva la riga del cursore attuale
+            rs.first();
+            //rs.absolute(cursore);   //attiva la riga del cursore attuale
             mostraDati();           //imposta la selezione a riga singola
         } catch (SQLException ex) {
             mostraErrore(ex);
@@ -100,7 +101,6 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
         try {
             rs.absolute(tabella.getSelectionModel().getMinSelectionIndex() + 1);
             mostraDati();
-            System.out.println("ok");
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -115,11 +115,22 @@ public class FinestraRubricaUtente extends javax.swing.JDialog {
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
           contactID = rs.getInt(1);
+          impostaAbilitazionePulsanti(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          impostaAbilitazionePulsanti(false); //modifica e elimina non disponibili
       }
+    }
+    
+    /**
+     * Disabilita i pulsanti modifica ed elimina quando non è selezionata
+     * alcuna riga
+     * @param abilitazione true se abilitati, false disabilita
+     */
+    private void impostaAbilitazionePulsanti(boolean abilitazione) {
+        jButton1.setEnabled(abilitazione);
+        bDeleteAddress.setEnabled(abilitazione);
     }
     
         /**

@@ -38,6 +38,13 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
                             // da impostare il set di dati
     }
     
+    public FinestraEditoriLibro(java.awt.Dialog parent, boolean modal, String isbn) {
+        super(parent, modal);
+        this.isbn = isbn;
+        initComponents();
+        impostaTabella();
+    }
+    
     private final String isbn; //ISBN selezionato in precedenta da TabOggetti
     private int editoreID;
     private ResultSet rs; //ResultSet su cui si basano i dati della tabella
@@ -115,15 +122,16 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
           editoreID = rs.getInt(1);
-          if (modelloTabella.getRowCount() == 0)
-            abilitaPulsanteElimina(false);
-          else
-            abilitaPulsanteElimina(true);
+          impostaAbilitazionePulsanti(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          impostaAbilitazionePulsanti(false);
       }
+    }
+    
+    private void impostaAbilitazionePulsanti(boolean abi) {
+        bDeleteEditor.setEnabled(abi);
     }
     
     /**
@@ -179,8 +187,9 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
         return true;
     }
     
-    private void abilitaPulsanteElimina(boolean stato) {
-        bDeleteEditor.setEnabled(stato);
+    private void creaEditore() {
+        FinestraEditore finestraEditore = new FinestraEditore(this, true);
+        finestraEditore.show(2, null, null);
     }
     
     /**
@@ -208,6 +217,7 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
         tabella = new javax.swing.JTable();
         bAddEditor = new javax.swing.JButton();
         bDeleteEditor = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -239,6 +249,13 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
             }
         });
 
+        jButton1.setText("Crea nuovo editore");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -246,6 +263,8 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bAddEditor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bDeleteEditor)
@@ -258,7 +277,8 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bAddEditor)
-                    .addComponent(bDeleteEditor)))
+                    .addComponent(bDeleteEditor)
+                    .addComponent(jButton1)))
         );
 
         pack();
@@ -272,9 +292,14 @@ public class FinestraEditoriLibro extends javax.swing.JDialog {
         aggiungiEditore();
     }//GEN-LAST:event_bAddEditorActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        creaEditore();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddEditor;
     private javax.swing.JButton bDeleteEditor;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabella;
     // End of variables declaration//GEN-END:variables

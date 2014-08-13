@@ -92,7 +92,10 @@ public abstract class EditForm extends javax.swing.JDialog {
      */
     protected void chiudiFinestra() {
         setVisible(false);
-        scheda.aggiornaTabellaConQuery();
+        if (scheda != null) {
+            scheda.aggiornaTabellaConQuery();
+        }
+        dispose();
     }
     
     // Titoli della finestra in modifica e aggiunta

@@ -8,8 +8,6 @@ package amazon;
 
 import amazon.exceptions.NoFormatSelectedException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -367,10 +365,14 @@ public class FinestraLibro extends EditForm {
         
         try {
             tuttiDisattivati();
-            setVisible(false);
-            if (mode == ADDN)
+            //setVisible(false);
+            if (mode == ADDN) {
                 DBConnection.creaLibro(tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
-            else
+                FinestraAutoriLibro finestraAutori = new FinestraAutoriLibro(this, true, tISBN.getText());
+                finestraAutori.setVisible(true);
+                FinestraEditoriLibro finestraEditori = new FinestraEditoriLibro(this, true, tISBN.getText());
+                finestraEditori.setVisible(true);
+            } else
                 DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
             chiudiFinestra();
             aggiornaListinoLibro();
@@ -384,8 +386,12 @@ public class FinestraLibro extends EditForm {
         
     }
     
+    /**
+     * Lancia un'eccezione quando nessun formato è selezionato
+     * @throws NoFormatSelectedException 
+     */
     private void tuttiDisattivati() throws NoFormatSelectedException {
-        if (cRigida.isSelected() && cFlessibile.isSelected() && cKindle.isSelected())
+        if (!cRigida.isSelected() && !cFlessibile.isSelected() && !cKindle.isSelected())
             throw new NoFormatSelectedException();
     }
     
