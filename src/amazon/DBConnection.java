@@ -809,6 +809,17 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   public static ResultSet verificaListino (String isbn, int formatoID) throws SQLException {
+       
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_ID FROM LIBRI INNER JOIN LISTINO_PREZZI ON LIBRI.ISBN=LISTINO_PREZZI.ISBN WHERE LIBRI.ISBN=? AND FORMATO_ID=?");
+       pstmt.setString(1, isbn);
+       pstmt.setInt(2, formatoID);
+       
+       return pstmt.executeQuery();
+   }
+   
    public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
        
        if ( prezzoFlessibile > 0) {

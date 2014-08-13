@@ -284,7 +284,10 @@ public final class TabOggetti extends javax.swing.JPanel {
     public void aggiornaTabella()
     {
         try {
-            rs = DBConnection.eseguiQuery("SELECT * FROM " + getTableName());
+            if (getTableName() != "LIBRI")
+                rs = DBConnection.eseguiQuery("SELECT * FROM " + getTableName());
+            else
+                rs = DBConnection.eseguiQuery("SELECT LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, TO_CHAR(DATAUSCITA, 'DD/MM/YYYY') AS DATA_USCITA FROM LIBRI");
             modelloTabella.setRS(rs);
             rs.first();
             //rs.absolute(cursore);
