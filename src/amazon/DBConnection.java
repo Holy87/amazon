@@ -844,7 +844,7 @@ public class DBConnection {
        if ( prezzoFlessibile > 0) {
            PreparedStatement pstmt;
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
-           pstmt.setDouble(1,prezzoFlessibile);
+           pstmt.setDouble(1,prezzoRigida);
            pstmt.setString(2,isbn);
            
            pstmt.executeUpdate();
@@ -853,7 +853,7 @@ public class DBConnection {
        if ( prezzoRigida > 0) {
            PreparedStatement pstmt;
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
-           pstmt.setDouble(1,prezzoRigida);
+           pstmt.setDouble(1,prezzoFlessibile);
            pstmt.setString(2,isbn);
            
            pstmt.executeUpdate();
