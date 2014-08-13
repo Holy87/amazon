@@ -270,7 +270,7 @@ public class FinestraModificaMetodoPagamento extends EditForm {
     @Override
     protected void cleanContents() {
         BoxUtility.impostaTipoCarta(tCarta);
-        tNumero.setText("");
+        tNumero.setDocument(new JTextFieldLimit(16));
         tCiv.setDocument(new JTextFieldLimit(3));
         tMese.setDocument(new JTextFieldLimit(2));
         tAnno.setDocument(new JTextFieldLimit(4));
