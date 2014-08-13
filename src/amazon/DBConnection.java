@@ -897,6 +897,117 @@ public class DBConnection {
        }
    }
    
+   /**
+    * 
+    * @param isbn ISBN del libro da aggiungere/modificare
+    * @param prezzo prezzo del prezzo listino relativo al formato Copertina Flessibile
+    * @param mod modalità di gestione: 1) Inserisce un nuovo formato, 2 o DEFAULT) Aggiorna un formato già esistente, 3) Elimina un formato
+    * @throws SQLException 
+    */
+   public static void modificaListinoFlessibile (String isbn, double prezzo, int mod) throws SQLException {
+       
+       PreparedStatement pstmt;
+       
+       switch (mod) { //INSERTING
+           case 1:
+               pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2001,?)");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+           case 2:
+               pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+           case 3:
+               pstmt = conn.prepareStatement("DELETE FROM LISTINO_PREZZI WHERE ISBN LIKE ? AND FORMATO_ID=2001");
+               pstmt.setString(1,isbn);
+               break;
+           default:
+               pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+       }
+       
+       pstmt.executeUpdate();
+       
+   }
+   
+    /**
+    * 
+    * @param isbn ISBN del libro da aggiungere/modificare
+    * @param prezzo prezzo del prezzo listino relativo al formato Copertina Rigida
+    * @param mod modalità di gestione: 1) Inserisce un nuovo formato, 2 o DEFAUTL) Aggiorna un formato già esistente, 3) Elimina un formato
+    * @throws SQLException 
+    */
+   public static void modificaListinoRigida (String isbn, double prezzo, int mod) throws SQLException {
+       
+       PreparedStatement pstmt;
+       
+       switch (mod) { //INSERTING
+           case 1:
+               pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2002,?)");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+           case 2:
+               pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+           case 3:
+               pstmt = conn.prepareStatement("DELETE FROM LISTINO_PREZZI WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+               pstmt.setString(1,isbn);
+               break;
+           default:
+               pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+       }
+       
+       pstmt.executeUpdate();
+       
+   }
+   
+       /**
+    * 
+    * @param isbn ISBN del libro da aggiungere/modificare
+    * @param prezzo prezzo del prezzo listino relativo al formato Amazon Kindle
+    * @param mod modalità di gestione: 1) Inserisce un nuovo formato, 2 o DEFAULT) Aggiorna un formato già esistente, 3) Elimina un formato
+    * @throws SQLException 
+    */
+   public static void modificaListinoKindle (String isbn, double prezzo, int mod) throws SQLException {
+       
+       PreparedStatement pstmt;
+       
+       switch (mod) { //INSERTING
+           case 1:
+               pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2003,?)");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+           case 2:
+               pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+           case 3:
+               pstmt = conn.prepareStatement("DELETE FROM LISTINO_PREZZI WHERE ISBN LIKE ? AND FORMATO_ID=2003");
+               pstmt.setString(1,isbn);
+               break;
+           default:
+               pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
+               pstmt.setString(1,isbn);
+               pstmt.setDouble(2,prezzo);
+               break;
+       }
+       
+       pstmt.executeUpdate();
+       
+   }
+   
    public static void creaEditore(String nomeEditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
