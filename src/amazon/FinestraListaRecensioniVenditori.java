@@ -125,7 +125,7 @@ public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          //System.out.println(ex.getMessage());
       }
     }
     
@@ -207,7 +207,7 @@ public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addReceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addReceActionPerformed
-        FinestraRecensioneVenditore finestra = new FinestraRecensioneVenditore(null, false, utenteID, venditoreID, this);
+        FinestraRecensioneVenditore finestra = new FinestraRecensioneVenditore(this, true, utenteID, venditoreID);
         finestra.setVisible(true);
     }//GEN-LAST:event_addReceActionPerformed
 
