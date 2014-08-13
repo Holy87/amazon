@@ -207,7 +207,7 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addReceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addReceActionPerformed
-        FinestraRecensioneLibro finestra = new FinestraRecensioneLibro(null, false, utenteID, isbn, this);
+        FinestraRecensioneLibro finestra = new FinestraRecensioneLibro(this, false, utenteID, isbn, this);
         finestra.setVisible(true);
     }//GEN-LAST:event_addReceActionPerformed
 
