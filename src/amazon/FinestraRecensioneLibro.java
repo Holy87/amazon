@@ -12,7 +12,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco Bosso
  */
 public class FinestraRecensioneLibro extends javax.swing.JDialog {
 
@@ -28,22 +28,6 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
         this.idUtente = idUtente;
         this.isbn = isbn;
         this.finestraRecensioni = (FinestraListaRecensioniLibri) parent;
-        initComponents();
-    }
-    
-    public FinestraRecensioneLibro(java.awt.Dialog parent, boolean modal, int idUtente, String isbn, FinestraListaRecensioniLibri finestraRecensioni) {
-        super(parent, modal);
-        this.idUtente = idUtente;
-        this.isbn = isbn;
-        this.finestraRecensioni = finestraRecensioni;
-        initComponents();
-    }
-    
-    public FinestraRecensioneLibro(java.awt.Dialog parent, boolean modal, int idUtente, String isbn, FinestraListaRecensioniLibri finestraRecensioni) {
-        super(parent, modal);
-        this.idUtente = idUtente;
-        this.isbn = isbn;
-        this.finestraRecensioni = finestraRecensioni;
         initComponents();
     }
     
