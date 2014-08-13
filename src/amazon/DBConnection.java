@@ -205,11 +205,10 @@ public class DBConnection {
     */
    public static void eliminaArticoloCarrello(int idUtente, int prodID) throws SQLException {
        PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND PROD_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND PROD_ID=?");
         pstmt.setInt(1, idUtente);
         pstmt.setInt(2, prodID);
+        pstmt.execute();
    }
    
    /**
@@ -845,7 +844,7 @@ public class DBConnection {
        if ( prezzoFlessibile > 0) {
            PreparedStatement pstmt;
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
-           pstmt.setDouble(1,prezzoFlessibile);
+           pstmt.setDouble(1,prezzoRigida);
            pstmt.setString(2,isbn);
            
            pstmt.executeUpdate();
@@ -854,7 +853,7 @@ public class DBConnection {
        if ( prezzoRigida > 0) {
            PreparedStatement pstmt;
            pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
-           pstmt.setDouble(1,prezzoRigida);
+           pstmt.setDouble(1,prezzoFlessibile);
            pstmt.setString(2,isbn);
            
            pstmt.executeUpdate();
@@ -1642,9 +1641,7 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, utenteId);
-       ResultSet rs = pstmt.executeQuery();
-       rs.first();
-       return rs;
+       return pstmt.executeQuery();
    }
    
    /**
