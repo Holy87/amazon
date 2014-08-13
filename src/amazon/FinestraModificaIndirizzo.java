@@ -241,10 +241,10 @@ public class FinestraModificaIndirizzo extends EditForm {
         tIndirizzo1.setText("");
         tIndirizzo2.setText("");
         tCitta.setText("");
-        tCap.setText("");
-        tProvincia.setText("");
+        tCap.setDocument(new JTextFieldLimit(5));
+        tProvincia.setDocument(new JTextFieldLimit(2));
         tPaese.setText("");
-        tTelefono.setText("");
+        tTelefono.setDocument(new JTextFieldLimit(15));
     }
 
     @Override
