@@ -966,14 +966,6 @@ public class DBConnection {
 
             pstmt.executeUpdate();
        }
-       else {
-            PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       
-            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=8");
-            pstmt.setInt(1, idCorriere);
-
-            pstmt.executeUpdate();
-       }
        
        if(d2)   {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -1006,7 +998,7 @@ public class DBConnection {
    {   
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        if(d1)   {
-            pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED = '1_Giorno', COSTOSPED=8 WHERE CORRIERE_ID=?");
+            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
             pstmt.setInt(1, idCorriere);
 
             pstmt.executeUpdate();
@@ -1019,7 +1011,7 @@ public class DBConnection {
        }
        
        if(d2)   {
-            pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED = '2-3_Giorni', COSTOSPED=4 WHERE CORRIERE_ID=?");
+            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
             pstmt.setInt(1, idCorriere);
 
             pstmt.executeUpdate();
@@ -1034,7 +1026,7 @@ public class DBConnection {
        
        if(d3)   {
        
-            pstmt = conn.prepareStatement("UPDATE MOD_SPEDIZIONE SET MODSPED = '3-5_Giorni', COSTOSPED=0 WHERE CORRIERE_ID=?");
+            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
             pstmt.setInt(1, idCorriere);
 
             pstmt.executeUpdate();
