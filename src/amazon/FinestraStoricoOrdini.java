@@ -94,6 +94,8 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                                 //si può anche direttamente passare il reslts.
             modelloTabellaOrdini.setRS(rsStorico);   //non credo serva, ma il prof lo mette..
             rsStorico.absolute(cursoreStorico);   //attiva la riga del cursore attuale
+            if ( rsStorico.getRow() == 0 )
+                JOptionPane.showMessageDialog(this, "ERRORE: l'utente selezionato non ha ancora effettuato ordini", null, ERROR_MESSAGE);
             aggiornaSelezioneOrdine();           //imposta la selezione a riga singola
             
         } catch (SQLException ex) {
@@ -260,7 +262,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                 tFatturazione.setText("<html>"
                     +rsFatturazione.getString(1)+" "
                     +rsFatturazione.getString(2)+"<br />"
-                    +rsFatturazione.getString(3)+"<br />"
+                    +"Carta utilizzata: "+rsFatturazione.getString(3)+"<br />"
                     +rsFatturazione.getString(4)+"<br />"
                     +rsFatturazione.getString(5)+"<br />"
                     +rsFatturazione.getString(6)+" "
@@ -272,7 +274,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                 tFatturazione.setText("<html>"
                     +rsFatturazione.getString(1)+" "
                     +rsFatturazione.getString(2)+"<br />"
-                    +rsFatturazione.getString(3)+"<br />"
+                    +"Carta utilizzata: "+rsFatturazione.getString(3)+"<br />"
                     +rsFatturazione.getString(4)+"<br />"
                     +rsFatturazione.getString(6)+" "
                     +rsFatturazione.getString(7)+" ("
