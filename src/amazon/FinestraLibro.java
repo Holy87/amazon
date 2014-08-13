@@ -84,6 +84,9 @@ public class FinestraLibro extends EditForm {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modifica Libro");
+        setLocationByPlatform(true);
+        setModal(true);
+        setResizable(false);
 
         jLabel1.setText("Nome libro");
 
@@ -156,6 +159,12 @@ public class FinestraLibro extends EditForm {
             }
         });
 
+        tListinoRigida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tListinoRigidaActionPerformed(evt);
+            }
+        });
+
         jLabel5.setText("Prezzo listino:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -170,24 +179,6 @@ public class FinestraLibro extends EditForm {
                         .addComponent(bOk, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bEsc))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tDataUscita, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cRigida, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cFlessibile, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(cKindle))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tListinoRigida)
-                            .addComponent(tListinoFlessibile)
-                            .addComponent(tListinoKindle))
-                        .addGap(0, 101, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -198,11 +189,12 @@ public class FinestraLibro extends EditForm {
                                             .addComponent(jLabel2))
                                         .addGap(6, 6, 6))
                                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(0, 58, Short.MAX_VALUE))
+                                .addGap(0, 76, Short.MAX_VALUE))
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tPesoSped)
@@ -211,12 +203,34 @@ public class FinestraLibro extends EditForm {
                             .addComponent(tNEdizione, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
                             .addComponent(tNomeLibro, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tISBN)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tDataUscita)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tListinoRigida, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(cRigida, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(cFlessibile, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(cKindle))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(25, 25, 25)
+                                        .addComponent(jLabel5))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(tListinoFlessibile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(tListinoKindle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tNomeLibro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -264,10 +278,11 @@ public class FinestraLibro extends EditForm {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cKindle)
                     .addComponent(tListinoKindle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bEsc)
-                    .addComponent(bOk)))
+                    .addComponent(bOk)
+                    .addComponent(bEsc))
+                .addContainerGap())
         );
 
         pack();
@@ -300,6 +315,10 @@ public class FinestraLibro extends EditForm {
     private void tDataUscitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tDataUscitaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tDataUscitaActionPerformed
+
+    private void tListinoRigidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tListinoRigidaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tListinoRigidaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -347,6 +366,10 @@ public class FinestraLibro extends EditForm {
         tNPagine.setText((String)dati.get(5));
         tPesoSped.setText((String)dati.get(6));
         tDataUscita.setText((String)dati.get(7));
+        tListinoFlessibile.setText("");
+        tListinoRigida.setText("");
+        tListinoKindle.setText("");
+        impostaFinestreListino();
     }
 
     @Override
@@ -359,6 +382,15 @@ public class FinestraLibro extends EditForm {
         tNPagine.setText("");
         tPesoSped.setText("");
         tDataUscita.setText("");
+        tListinoKindle.setEnabled(false);
+        cKindle.setSelected(false);
+        tListinoRigida.setEnabled(false);
+        cRigida.setSelected(false);
+        tListinoFlessibile.setEnabled(false);
+        cFlessibile.setSelected(false);
+        tListinoFlessibile.setText("");
+        tListinoRigida.setText("");
+        tListinoKindle.setText("");
     }
     
     private void eseguiOk()
@@ -422,5 +454,42 @@ public class FinestraLibro extends EditForm {
     @Override
     protected String titoloModifica () {
         return "Modifica Libro";
+    }
+    
+    private void impostaFinestreListino() {
+        try {
+            double flessibile = DBConnection.verificaListino(oldISBN, 2001);
+            double rigida = DBConnection.verificaListino(oldISBN, 2002);
+            double kindle = DBConnection.verificaListino(oldISBN, 2003);
+            if (flessibile > 0) {
+                tListinoFlessibile.setText(""+flessibile);
+                tListinoFlessibile.setEnabled(true);
+                cFlessibile.setSelected(true);
+            } else {
+                tListinoFlessibile.setEnabled(false);
+                cFlessibile.setSelected(false);
+            }
+            
+            if (rigida > 0) {
+                tListinoRigida.setText(""+rigida);
+                tListinoRigida.setEnabled(true);
+                cRigida.setSelected(true);
+            } else {
+                tListinoRigida.setEnabled(false);
+                cRigida.setSelected(false);
+            }
+            
+            if (kindle > 0) {
+                tListinoKindle.setText(""+kindle);
+                tListinoKindle.setEnabled(true);
+                cKindle.setSelected(true);
+            } else {
+                tListinoKindle.setEnabled(false);
+                cKindle.setSelected(false);
+            }
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        
     }
 }

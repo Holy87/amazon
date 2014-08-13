@@ -12,12 +12,12 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 /**
  *
- * @author frbos_000
+ * @author Giuseppe Senese
  */
 public class FinestraRecensioneVenditore extends javax.swing.JDialog {
 
     /**
-     * 
+     * Crea una nuova FinestraRecensioneVenditore
      * @param parent
      * @param modal
      * @param idUtente
@@ -30,15 +30,6 @@ public class FinestraRecensioneVenditore extends javax.swing.JDialog {
         this.finestraRecensioni = (FinestraListaRecensioniVenditori) parent;
         initComponents();
     }
-    
-    public FinestraRecensioneVenditore(java.awt.Dialog parent, boolean modal, int idUtente, String venditoreID, FinestraListaRecensioniVenditori finestraRecensioni) {
-        super(parent, modal);
-        this.idUtente = idUtente;
-        this.venditoreID = venditoreID;
-        this.finestraRecensioni = finestraRecensioni;
-        initComponents();
-    }
-   
     
     private final int idUtente;
     private final String venditoreID;

@@ -205,11 +205,10 @@ public class DBConnection {
     */
    public static void eliminaArticoloCarrello(int idUtente, int prodID) throws SQLException {
        PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND PROD_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND PROD_ID=?");
         pstmt.setInt(1, idUtente);
         pstmt.setInt(2, prodID);
+        pstmt.execute();
    }
    
    /**
@@ -412,7 +411,7 @@ public class DBConnection {
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       int idOrder=0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setInt(1, idUtente);
@@ -677,7 +676,7 @@ public class DBConnection {
    
    /**
     * 
-    * @param ordineID
+     * @param modPagamentoID
     * @return Query con i seguenti campi: TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE
     * @throws SQLException 
     */
@@ -808,6 +807,34 @@ public class DBConnection {
        pstmt.setString(9, oldISBN);
        
        pstmt.executeUpdate();
+   }
+   
+   /**
+    * Verifica il prezzo di listino del libro
+    * @param isbn identificativo del libro
+    * @param formatoID 2001: flessibile, 2002: rigido, 2003: kindle
+    * @return double prezzo se esiste, 0 se non c'è nel listino il formato del libro
+    * @throws SQLException 
+    */
+   public static double verificaListino (String isbn, int formatoID) throws SQLException {
+       
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT PREZZOLISTINO FROM LIBRI INNER JOIN LISTINO_PREZZI ON LIBRI.ISBN=LISTINO_PREZZI.ISBN WHERE LIBRI.ISBN=? AND FORMATO_ID=?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       pstmt.setInt(2, formatoID);
+       ResultSet rs = pstmt.executeQuery();
+       try {
+            rs.first();
+            return rs.getDouble(1);
+       } catch (SQLException ex) {
+           if (ex.getErrorCode() == 17289)
+               return 0;
+           else
+               throw ex;
+       }
    }
    
    public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
@@ -1652,9 +1679,7 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, utenteId);
-       ResultSet rs = pstmt.executeQuery();
-       rs.first();
-       return rs;
+       return pstmt.executeQuery();
    }
    
    /**
@@ -1689,6 +1714,57 @@ public class DBConnection {
         return 0;
     }
     return size;
+   }
+   
+   /**
+    * Visualizza l'elenco dei codici di sconto
+    * @return CODICE, SCONTO, IDORDINE
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaCodiciSconto() throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT * FROM SCONTO_CODICI",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       return pstmt.executeQuery();
+   }
+   
+   /**
+    * Crea un nuovo codice di sconto
+    * @param codice di sconto
+    * @param sconto valore di risparmio
+    * @throws SQLException 
+    */
+   public static void creaCodiceSconto(String codice, double sconto) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("INSERT INTO SCONTO_CODICI (CODPROMO, SCONTO) VALUES (?, ?)");
+       pstmt.setString(1, codice.toUpperCase());
+       pstmt.setDouble(2, sconto);
+       pstmt.execute();
+   }
+   
+   /**
+    * Elimina un codice sconto
+    * @param codice sconto da eliminare
+    * @throws SQLException 
+    */
+   public static void eliminaCodiceSconto(String codice) throws SQLException {
+       PreparedStatement pstmt = conn.prepareStatement("DELETE FROM SCONTO_CODICI WHERE CODPROMO = ?");
+       pstmt.setString(1, codice.toUpperCase());
+       pstmt.execute();
+   }
+   
+   /**
+    * Modifica lo sconto ottenuto da un rispettivo codice. Non si cambia il codice,
+    * emglio eliminarlo.
+    * @param codice codice bersaglio
+    * @param sconto nuovo sconto
+    * @throws SQLException 
+    */
+   public static void aggiornaCodiceSconto(String codice, double sconto) throws SQLException {
+       PreparedStatement pstmt = conn.prepareStatement("UPDATE SCONTO_CODICI SET SCONTO = ? WHERE CODPROMO = ?");
+       pstmt.setDouble(1, sconto);
+       pstmt.setString(2, codice);
    }
 }
 
