@@ -185,9 +185,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
             tabellaArticoli.getColumnModel().getColumn(1).setMaxWidth(0);
             tabellaArticoli.getColumnModel().getColumn(8).setMinWidth(0);
             tabellaArticoli.getColumnModel().getColumn(8).setMaxWidth(0);
+            controlloAbilitazioneAcquisto();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
+        aggiornaTotale();
         
     }
     
@@ -237,16 +239,29 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private void aggiornaSelezione() {
       try {
           cursoreArticoli = rsArticoli.getRow();
-          tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
+          //tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
           prodID = rsArticoli.getInt(9);
           prodNum = rsArticoli.getInt(8);
+          abilitazioneComandi(true);
           //if (SwingUtilities.isRightMouseButton(null))
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println("illegalarg, aggiornaSelezione - "+ex.getMessage());
+          abilitazioneComandi(false);
       }
+    }
+    
+    private void abilitazioneComandi(boolean abi) {
+        jButton1.setEnabled(abi);
+        jButton3.setEnabled(abi);
+    }
+    
+    private void controlloAbilitazioneAcquisto() {
+        if (cPagamento.getSelectedItem() == null || cSpedizione.getSelectedItem() == null || modelloTabellaArticoli.getRowCount() == 0)
+            jButton2.setEnabled(false);
+        else
+            jButton2.setEnabled(true);
     }
     
     private void mostraErrore(SQLException ex) {
@@ -285,6 +300,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
         } catch (Exception ex) {
             indirizzoSelezionato = 0;
         }
+        controlloAbilitazioneAcquisto();
     }
     
     private void completaAcquisto() {
@@ -308,7 +324,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
             pagamentoSelezionato = pagamento.getId();
             tIntestatario.setText(pagamento.getNomeIntestatario() + " " + pagamento.getCognomeIntestatario());
             tScadenzaCarta.setText(pagamento.getData());
+            
         } catch (NullPointerException ex) {}
+        controlloAbilitazioneAcquisto();
     }
     
     private void clickDestro(java.awt.event.MouseEvent evt) {
@@ -319,9 +337,9 @@ public class FinestraOrdine extends javax.swing.JDialog {
     
     private void rimuoviArticolo() {
         try {
+            System.out.println(prodID);
             DBConnection.eliminaArticoloCarrello(idUtente, prodID);
             aggiornaTabella();
-            aggiornaTotale();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -338,7 +356,6 @@ public class FinestraOrdine extends javax.swing.JDialog {
                     else
                         DBConnection.modificaQuantitaArticolo(idUtente, prodID, quantita);
                     aggiornaTabella();
-                    aggiornaTotale();
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Il valore inserito non è corretto");
                 }

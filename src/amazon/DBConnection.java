@@ -205,11 +205,10 @@ public class DBConnection {
     */
    public static void eliminaArticoloCarrello(int idUtente, int prodID) throws SQLException {
        PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND PROD_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+        pstmt = conn.prepareStatement("DELETE FROM COMPARTICOLI WHERE UTENTE_ID=? AND PROD_ID=?");
         pstmt.setInt(1, idUtente);
         pstmt.setInt(2, prodID);
+        pstmt.execute();
    }
    
    /**
@@ -1642,9 +1641,7 @@ public class DBConnection {
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, utenteId);
-       ResultSet rs = pstmt.executeQuery();
-       rs.first();
-       return rs;
+       return pstmt.executeQuery();
    }
    
    /**

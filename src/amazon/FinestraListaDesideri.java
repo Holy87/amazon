@@ -108,16 +108,13 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
             //tabellaListe.getSelectionModel().setSelectionInterval(curLista - 1,curLista - 1);
             tabellaListe.setRowSelectionInterval(curLista - 1, curLista - 1);
             listaID = rsListe.getInt(1);
-            if (modelloListe.getRowCount() == 0)
-                abilitaPulsantiListeDesideri(false);
-            else
-                abilitaPulsantiListeDesideri(true);
+            abilitaPulsantiListeDesideri(true);
             aggiornaComboPrivacy();
             aggiornaTabellaArticoli();
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          abilitaPulsantiListeDesideri(false);
       } catch (NullPointerException ex) {
           abilitaPulsantiListeDesideri(false);
       }
@@ -166,14 +163,11 @@ public class FinestraListaDesideri extends javax.swing.JDialog {
             curArticoli = rsArticoli.getRow();
             tabellaArticoli.setRowSelectionInterval(curArticoli - 1, curArticoli - 1);
             prodID = rsArticoli.getInt(1);
-            if (modelloArticoli.getRowCount() == 0)
-                abilitaPulsantiArticolo(false);
-            else
-                abilitaPulsantiArticolo(true);
+            abilitaPulsantiArticolo(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
-          System.out.println(ex.getMessage());
+          abilitaPulsantiArticolo(false);
       }
     }
     
