@@ -1029,6 +1029,16 @@ public class DBConnection {
        }
    }
    
+    public static ResultSet visualizzaModSpedizione(int corriereID) throws SQLException   {
+        PreparedStatement pstmt;
+        pstmt = conn.prepareStatement("SELECT COSTOSPED FROM MOD_SPEDIZIONE WHERE CORRIERE_ID = ? ORDER BY COSTOSPED DESC",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+        pstmt.setInt(1, corriereID);
+       
+        return pstmt.executeQuery();
+    }
+      
       public static void creaVenditore(String nomeVenditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
