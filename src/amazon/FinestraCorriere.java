@@ -7,7 +7,10 @@
 package amazon;
 
 import amazon.exceptions.NoFormatSelectedException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -196,8 +199,29 @@ public class FinestraCorriere extends EditForm {
 
     @Override
     protected void fillContents() {
-        tCorriere_ID.setText((String)dati.get(0));
-        tCorriere_Nome.setText((String)dati.get(1));
+        try {
+            tCorriere_ID.setText((String)dati.get(0));
+            tCorriere_Nome.setText((String)dati.get(1));
+            corriereID = Integer.parseInt((String)dati.get(0));
+            
+            ResultSet spedizioni = DBConnection.visualizzaModSpedizione(corriereID);
+            while(spedizioni.next())    {
+                if (spedizioni.getInt(1) == 8)  {
+                    System.out.println("Entra 8");
+                    jCheckBox_d1.setSelected(true);
+                }
+                if (spedizioni.getInt(1) == 4)  {
+                    System.out.println("Entra 4");
+                    jCheckBox_d2.setSelected(true);
+                }
+                if (spedizioni.getInt(1) == 0)  {
+                    System.out.println("Entra 0");
+                    jCheckBox_d3.setSelected(true);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FinestraCorriere.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
