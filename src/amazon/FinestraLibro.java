@@ -366,6 +366,10 @@ public class FinestraLibro extends EditForm {
         tNPagine.setText((String)dati.get(5));
         tPesoSped.setText((String)dati.get(6));
         tDataUscita.setText((String)dati.get(7));
+        tListinoFlessibile.setText("");
+        tListinoRigida.setText("");
+        tListinoKindle.setText("");
+        impostaFinestreListino();
     }
 
     @Override
@@ -378,6 +382,15 @@ public class FinestraLibro extends EditForm {
         tNPagine.setText("");
         tPesoSped.setText("");
         tDataUscita.setText("");
+        tListinoKindle.setEnabled(false);
+        cKindle.setSelected(false);
+        tListinoRigida.setEnabled(false);
+        cRigida.setSelected(false);
+        tListinoFlessibile.setEnabled(false);
+        cFlessibile.setSelected(false);
+        tListinoFlessibile.setText("");
+        tListinoRigida.setText("");
+        tListinoKindle.setText("");
     }
     
     private void eseguiOk()
@@ -441,5 +454,42 @@ public class FinestraLibro extends EditForm {
     @Override
     protected String titoloModifica () {
         return "Modifica Libro";
+    }
+    
+    private void impostaFinestreListino() {
+        try {
+            double flessibile = DBConnection.verificaListino(oldISBN, 2001);
+            double rigida = DBConnection.verificaListino(oldISBN, 2002);
+            double kindle = DBConnection.verificaListino(oldISBN, 2003);
+            if (flessibile > 0) {
+                tListinoFlessibile.setText(""+flessibile);
+                tListinoFlessibile.setEnabled(true);
+                cFlessibile.setSelected(true);
+            } else {
+                tListinoFlessibile.setEnabled(false);
+                cFlessibile.setSelected(false);
+            }
+            
+            if (rigida > 0) {
+                tListinoRigida.setText(""+rigida);
+                tListinoRigida.setEnabled(true);
+                cRigida.setSelected(true);
+            } else {
+                tListinoRigida.setEnabled(false);
+                cRigida.setSelected(false);
+            }
+            
+            if (kindle > 0) {
+                tListinoKindle.setText(""+kindle);
+                tListinoKindle.setEnabled(true);
+                cKindle.setSelected(true);
+            } else {
+                tListinoKindle.setEnabled(false);
+                cKindle.setSelected(false);
+            }
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+        
     }
 }

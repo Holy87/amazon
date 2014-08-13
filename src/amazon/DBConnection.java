@@ -809,15 +809,32 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   public static ResultSet verificaListino (String isbn, int formatoID) throws SQLException {
+   /**
+    * Verifica il prezzo di listino del libro
+    * @param isbn identificativo del libro
+    * @param formatoID 2001: flessibile, 2002: rigido, 2003: kindle
+    * @return double prezzo se esiste, 0 se non c'è nel listino il formato del libro
+    * @throws SQLException 
+    */
+   public static double verificaListino (String isbn, int formatoID) throws SQLException {
        
        PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("SELECT LIBRO_NOME, FORMATO_ID FROM LIBRI INNER JOIN LISTINO_PREZZI ON LIBRI.ISBN=LISTINO_PREZZI.ISBN WHERE LIBRI.ISBN=? AND FORMATO_ID=?");
+       pstmt = conn.prepareStatement("SELECT PREZZOLISTINO FROM LIBRI INNER JOIN LISTINO_PREZZI ON LIBRI.ISBN=LISTINO_PREZZI.ISBN WHERE LIBRI.ISBN=? AND FORMATO_ID=?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
        pstmt.setInt(2, formatoID);
-       
-       return pstmt.executeQuery();
+       ResultSet rs = pstmt.executeQuery();
+       try {
+            rs.first();
+            return rs.getDouble(1);
+       } catch (SQLException ex) {
+           if (ex.getErrorCode() == 17289)
+               return 0;
+           else
+               throw ex;
+       }
    }
    
    public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
