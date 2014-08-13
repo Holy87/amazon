@@ -11,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -116,7 +114,7 @@ public class FinestraModPagamento extends javax.swing.JDialog {
           cursore = rs.getRow();
           tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
-          modID = rs.getInt(1);
+          modID = rs.getInt(2);
           impostaAbilitazioneComandi(true);
       } catch (SQLException ex) {
           mostraErrore(ex);
@@ -250,6 +248,7 @@ public class FinestraModPagamento extends javax.swing.JDialog {
         int response = JOptionPane.showConfirmDialog(this, "Vuoi eliminare questo metodo di pagamento?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             try {
+                System.out.println(modID);
                 DBConnection.eliminaModPagamento(modID);
                 aggiornaTabella();
             } catch (SQLException ex) {

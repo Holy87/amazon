@@ -114,7 +114,7 @@ public class FinestraListaRecensioniLibri extends javax.swing.JDialog {
     private void mostraDati() {
       try {
           cursore = rs.getRow();
-          tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
+          //tabella.getSelectionModel().setSelectionInterval(cursore - 1,cursore - 1);
           tabella.setRowSelectionInterval(cursore - 1, cursore - 1);
           tabella.getColumnModel().getColumn(0).setMinWidth(120);
           tabella.getColumnModel().getColumn(0).setMaxWidth(120);

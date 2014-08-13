@@ -658,6 +658,40 @@ public class DBConnection {
    }
    
    /**
+    * 
+    * @param ordineID
+    * @return Query con i seguenti campi: CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE
+    * @throws SQLException 
+    */
+   public static ResultSet ottieniIndSpedOrdine (int ordineID) throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE FROM SPEDIZIONI INNER JOIN RUBRICA_INDIRIZZI ON SPEDIZIONI.CONTACT_ID=RUBRICA_INDIRIZZI.CONTACT_ID WHERE ORDINE_ID=?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1,ordineID);
+       
+       return pstmt.executeQuery();
+       
+   }
+   
+   /**
+    * 
+    * @param ordineID
+    * @return Query con i seguenti campi: TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE
+    * @throws SQLException 
+    */
+   public static ResultSet ottieniFattSpedOrdine (int modPagamentoID) throws SQLException {
+       
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE FROM MOD_PAGAMENTO INNER JOIN RUBRICA_INDIRIZZI ON MOD_PAGAMENTO.CONTACT_ID=RUBRICA_INDIRIZZI.CONTACT_ID WHERE MOD_PAGAMENTO_ID=?");
+       pstmt.setInt(1,modPagamentoID);
+       
+       return pstmt.executeQuery();
+       
+   }
+   
+   /**
     * Metodo di creazione dell'autore
     * @param nome
     * @param cognome

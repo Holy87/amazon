@@ -16,7 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco Bosso <fr.bosso at outlook.it>
  */
 public class FinestraStoricoOrdini extends javax.swing.JDialog {
 
@@ -35,7 +35,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     }
     
     private final int utenteID;
-    private ResultSet rsStorico, rsArticoli; //ResultSet su cui si basano i dati della tabella
+    private ResultSet rsStorico, rsArticoli, rsIndirizzo, rsFatturazione; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabellaOrdini; //modello della tabella per i dati
     private DBTableModel modelloArticoli;
     private int cursoreStorico = 1; //memorizza la riga selezionata
@@ -94,7 +94,10 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                                 //si può anche direttamente passare il reslts.
             modelloTabellaOrdini.setRS(rsStorico);   //non credo serva, ma il prof lo mette..
             rsStorico.absolute(cursoreStorico);   //attiva la riga del cursore attuale
+            if ( rsStorico.getRow() == 0 )
+                JOptionPane.showMessageDialog(this, "ERRORE: l'utente selezionato non ha ancora effettuato ordini", null, ERROR_MESSAGE);
             aggiornaSelezioneOrdine();           //imposta la selezione a riga singola
+            
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
@@ -106,12 +109,19 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     public void aggiornaTabellaArticoli()
     {
         try {
+            rsIndirizzo = ottieniIndirizzo(idOrdine());
+            rsFatturazione = ottieniFatturazione(idModPag());
+            aggiornaDatiOrdine();
             rsArticoli = ottieniArticoli(idOrdine()); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts
             modelloArticoli.setRS(rsArticoli);   //non credo serva, ma il prof lo mette..
             rsArticoli.absolute(cursoreArticoli);   //attiva la riga del cursore attuale
             mostraDatiArticoli();           //imposta la selezione a riga singola
+            tabellaArticoli.getColumnModel().getColumn(4).setMinWidth(50);
+            tabellaArticoli.getColumnModel().getColumn(4).setMaxWidth(50);
+            tabellaArticoli.getColumnModel().getColumn(5).setMinWidth(50);
+            tabellaArticoli.getColumnModel().getColumn(5).setMaxWidth(50);
         } catch (SQLException ex) {
             mostraErrore(ex);
         } catch (NullPointerException ex) {}
@@ -130,8 +140,20 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         return DBConnection.visualizzaArticoliOrdine(idOrdine);
     }
     
+    private ResultSet ottieniIndirizzo (int idOrdine) throws SQLException {
+        return DBConnection.ottieniIndSpedOrdine(idOrdine);
+    }
+    
+    private ResultSet ottieniFatturazione (int modPagID) throws SQLException {
+        return DBConnection.ottieniFattSpedOrdine(modPagID);
+    }
+    
     private int idOrdine() {
         return Integer.parseInt(modelloTabellaOrdini.getValueAt(cursoreStorico - 1, 0).toString());
+    }
+    
+    private int idModPag () {
+        return Integer.parseInt(modelloTabellaOrdini.getValueAt(cursoreStorico - 1, 6).toString());
     }
     
     /**
@@ -173,6 +195,20 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
           tabellaStorico.setRowSelectionInterval(cursoreStorico - 1, cursoreStorico - 1);
           tabellaStorico.getColumnModel().getColumn(0).setMinWidth(0);
           tabellaStorico.getColumnModel().getColumn(0).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(2).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(2).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(3).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(3).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(4).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(4).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(5).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(5).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(6).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(6).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(7).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(7).setMaxWidth(0);
+          tabellaStorico.getColumnModel().getColumn(8).setMinWidth(0);
+          tabellaStorico.getColumnModel().getColumn(8).setMaxWidth(0);
           aggiornaTabellaArticoli();
       } catch (SQLException ex) {
           mostraErrore(ex);
@@ -189,8 +225,6 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
           cursoreArticoli = rsArticoli.getRow();
           tabellaArticoli.getSelectionModel().setSelectionInterval(cursoreArticoli - 1,cursoreArticoli - 1);
           tabellaArticoli.setRowSelectionInterval(cursoreArticoli - 1, cursoreArticoli - 1);
-          tabellaArticoli.getColumnModel().getColumn(0).setMinWidth(0);
-          tabellaArticoli.getColumnModel().getColumn(0).setMaxWidth(0);
       } catch (SQLException ex) {
           mostraErrore(ex);
       } catch (java.lang.IllegalArgumentException ex) {
@@ -198,7 +232,65 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
       }
     }
     
-    
+    private void aggiornaDatiOrdine() {
+        try {
+            rsIndirizzo.first();
+            if ( rsIndirizzo.getString(4) != null ) {
+                tIndirizzo.setText("<html>"
+                    +rsIndirizzo.getString(1)+" "
+                    +rsIndirizzo.getString(2)+"<br />"
+                    +rsIndirizzo.getString(3)+"<br />"
+                    +rsIndirizzo.getString(4)+"<br />"
+                    +rsIndirizzo.getString(5)+" "
+                    +rsIndirizzo.getString(6)+" ("
+                    +rsIndirizzo.getString(7)+")<br />"
+                    +rsIndirizzo.getString(8)+
+                    "</html>");
+            } else {
+                tIndirizzo.setText("<html>"
+                    +rsIndirizzo.getString(1)+" "
+                    +rsIndirizzo.getString(2)+"<br />"
+                    +rsIndirizzo.getString(3)+"<br />"
+                    +rsIndirizzo.getString(5)+" "
+                    +rsIndirizzo.getString(6)+" ("
+                    +rsIndirizzo.getString(7)+")<br />"
+                    +rsIndirizzo.getString(8)+
+                    "</html>");
+            }
+            rsFatturazione.next();
+            if ( rsFatturazione.getString(5) != null ) {
+                tFatturazione.setText("<html>"
+                    +rsFatturazione.getString(1)+" "
+                    +rsFatturazione.getString(2)+"<br />"
+                    +"Carta utilizzata: "+rsFatturazione.getString(3)+"<br />"
+                    +rsFatturazione.getString(4)+"<br />"
+                    +rsFatturazione.getString(5)+"<br />"
+                    +rsFatturazione.getString(6)+" "
+                    +rsFatturazione.getString(7)+" ("
+                    +rsFatturazione.getString(8)+")<br />"
+                    +rsFatturazione.getString(9)+
+                    "</html>");
+            } else {
+                tFatturazione.setText("<html>"
+                    +rsFatturazione.getString(1)+" "
+                    +rsFatturazione.getString(2)+"<br />"
+                    +"Carta utilizzata: "+rsFatturazione.getString(3)+"<br />"
+                    +rsFatturazione.getString(4)+"<br />"
+                    +rsFatturazione.getString(6)+" "
+                    +rsFatturazione.getString(7)+" ("
+                    +rsFatturazione.getString(8)+")<br />"
+                    +rsFatturazione.getString(9)+
+                    "</html>");
+            }
+            tPrezzi.setText("<html>"
+                +"Prezzo netto: "+rsStorico.getFloat(4)+"€<br />"
+                +"Sconto complessivo: "+rsStorico.getFloat(5)+"€<br />"
+                +"Costi di spedizione: "+rsStorico.getFloat(6)+"€<br />"
+                +"Prezzo totale: "+rsStorico.getFloat(3)+"€<html />");
+        } catch (SQLException ex) {
+            mostraErrore(ex);
+        }
+    }
     
     /**
      * Questo metodo stampa l'errore SQL. È facoltativo.
@@ -230,9 +322,12 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        tIndirizzo = new javax.swing.JLabel();
+        tFatturazione = new javax.swing.JLabel();
+        tPrezzi = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Liste dei desideri");
+        setTitle("Storico degli ordini");
         setLocationByPlatform(true);
 
         tabellaStorico.setModel(new javax.swing.table.DefaultTableModel(
@@ -270,10 +365,13 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
 
         jLabel2.setText("Articoli dell'Ordine:");
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("Indirizzo di Spedizione");
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setText("Indirizzo di Fatturazione");
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("Prezzi al Dettaglio");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -283,19 +381,23 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(85, 85, 85))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(6, 6, 6)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tIndirizzo, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tFatturazione, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(tPrezzi, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -310,11 +412,17 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
-                        .addGap(80, 80, 80)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tIndirizzo, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
-                        .addGap(80, 80, 80)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tFatturazione, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
-                        .addGap(0, 63, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tPrezzi, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
         );
@@ -334,7 +442,11 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel tFatturazione;
+    private javax.swing.JLabel tIndirizzo;
+    private javax.swing.JLabel tPrezzi;
     private javax.swing.JTable tabellaArticoli;
     private javax.swing.JTable tabellaStorico;
     // End of variables declaration//GEN-END:variables
+
 }
