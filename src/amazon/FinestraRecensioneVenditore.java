@@ -38,14 +38,7 @@ public class FinestraRecensioneVenditore extends javax.swing.JDialog {
         this.finestraRecensioni = finestraRecensioni;
         initComponents();
     }
-    
-    public FinestraRecensioneVenditore(java.awt.Dialog parent, boolean modal, int idUtente, String venditoreID, FinestraListaRecensioniVenditori finestraRecensioni) {
-        super(parent, modal);
-        this.idUtente = idUtente;
-        this.venditoreID = venditoreID;
-        this.finestraRecensioni = finestraRecensioni;
-        initComponents();
-    }
+   
     
     private final int idUtente;
     private final String venditoreID;
