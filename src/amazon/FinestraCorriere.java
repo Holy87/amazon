@@ -209,15 +209,15 @@ public class FinestraCorriere extends EditForm {
                 
                 if (spedizioni.getInt(1) == 8)  {
                     System.out.println("Entra 8");
-                    jCheckBox_d1.setEnabled(true);
+                    jCheckBox_d1.setSelected(true);
                 }
                 if (spedizioni.getInt(1) == 4)  {
                     System.out.println("Entra 4");
-                    jCheckBox_d2.setEnabled(true);
+                    jCheckBox_d2.setSelected(true);
                 }
                 if (spedizioni.getInt(1) == 0)  {
                     System.out.println("Entra 0");
-                    jCheckBox_d3.setEnabled(true);
+                    jCheckBox_d3.setSelected(true);
                 }
                 
             }
