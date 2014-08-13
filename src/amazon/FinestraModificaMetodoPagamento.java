@@ -8,8 +8,10 @@ package amazon;
 
 import amazon.utility.BoxUtility;
 import amazon.utility.Contatto;
+import java.awt.*;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import javax.swing.*;
 
 /**
  *
@@ -269,9 +271,9 @@ public class FinestraModificaMetodoPagamento extends EditForm {
     protected void cleanContents() {
         BoxUtility.impostaTipoCarta(tCarta);
         tNumero.setText("");
-        tCiv.setText("");
-        tMese.setText("");
-        tAnno.setText("");
+        tCiv.setDocument(new JTextFieldLimit(3));
+        tMese.setDocument(new JTextFieldLimit(2));
+        tAnno.setDocument(new JTextFieldLimit(4));
         tNome.setText("");
         tCognome.setText("");
         try {
