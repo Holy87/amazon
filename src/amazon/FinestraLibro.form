@@ -55,29 +55,6 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="bEsc" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jLabel14" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="tDataUscita" min="-2" pref="167" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="jLabel4" alignment="0" max="32767" attributes="0"/>
-                              <Component id="cRigida" alignment="0" max="32767" attributes="0"/>
-                              <Component id="cFlessibile" alignment="0" max="32767" attributes="0"/>
-                          </Group>
-                          <Component id="cKindle" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jLabel5" max="32767" attributes="0"/>
-                          <Component id="tListinoRigida" max="32767" attributes="0"/>
-                          <Component id="tListinoFlessibile" max="32767" attributes="0"/>
-                          <Component id="tListinoKindle" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="101" max="32767" attributes="0"/>
-                  </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
@@ -91,12 +68,13 @@
                                   </Group>
                                   <Component id="jLabel7" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="58" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="76" max="32767" attributes="0"/>
                           </Group>
                           <Component id="jLabel8" max="32767" attributes="0"/>
                           <Component id="jLabel10" max="32767" attributes="0"/>
                           <Component id="jLabel11" max="32767" attributes="0"/>
                           <Component id="jLabel13" max="32767" attributes="0"/>
+                          <Component id="jLabel14" pref="136" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -107,7 +85,37 @@
                           <Component id="tNomeLibro" alignment="1" max="32767" attributes="0"/>
                           <Component id="tISBN" max="32767" attributes="0"/>
                           <Component id="jScrollPane1" alignment="1" max="32767" attributes="0"/>
+                          <Component id="tDataUscita" max="32767" attributes="0"/>
                       </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="tListinoRigida" min="-2" pref="66" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="jLabel4" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="cRigida" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="cFlessibile" alignment="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="cKindle" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="tListinoFlessibile" alignment="1" min="-2" pref="66" max="-2" attributes="0"/>
+                                          <Component id="tListinoKindle" alignment="1" min="-2" pref="66" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -311,6 +319,9 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="tListinoRigida">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tListinoRigidaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
