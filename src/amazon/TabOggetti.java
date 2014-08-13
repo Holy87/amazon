@@ -505,9 +505,9 @@ public final class TabOggetti extends javax.swing.JPanel {
         finestraEdit.show(EDIT, getDataCollection(), this);
     }
     
-    private List getDataCollection()
+    private List<String> getDataCollection()
     {
-        List dati = new LinkedList();
+        List<String> dati = new LinkedList();
         for (int i = 0; i < modelloTabella.getColumnCount(); i++)
         {
             try {

@@ -411,7 +411,7 @@ public class DBConnection {
        
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        ResultSet rs; //Variabile dove inserire i risultati della Query
-       int idOrder=0; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
+       int idOrder; //id dell'ordine da usare per l'aggiunta in COMPARTICOLI e SPEDIZIONE
        
        pstmt = conn.prepareStatement("INSERT INTO ORDINI(UTENTE_ID, DATAORDINE, COSTOSPED, SCONTOCOMPL, MOD_PAGAMENTO_ID) VALUES(?,SYSDATE,?,?,?)");
        pstmt.setInt(1, idUtente);
@@ -676,7 +676,7 @@ public class DBConnection {
    
    /**
     * 
-    * @param ordineID
+     * @param modPagamentoID
     * @return Query con i seguenti campi: TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE
     * @throws SQLException 
     */
@@ -1676,6 +1676,57 @@ public class DBConnection {
         return 0;
     }
     return size;
+   }
+   
+   /**
+    * Visualizza l'elenco dei codici di sconto
+    * @return CODICE, SCONTO, IDORDINE
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaCodiciSconto() throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT * FROM SCONTO_CODICI",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       return pstmt.executeQuery();
+   }
+   
+   /**
+    * Crea un nuovo codice di sconto
+    * @param codice di sconto
+    * @param sconto valore di risparmio
+    * @throws SQLException 
+    */
+   public static void creaCodiceSconto(String codice, double sconto) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("INSERT INTO SCONTO_CODICI (CODPROMO, SCONTO) VALUES (?, ?)");
+       pstmt.setString(1, codice.toUpperCase());
+       pstmt.setDouble(2, sconto);
+       pstmt.execute();
+   }
+   
+   /**
+    * Elimina un codice sconto
+    * @param codice sconto da eliminare
+    * @throws SQLException 
+    */
+   public static void eliminaCodiceSconto(String codice) throws SQLException {
+       PreparedStatement pstmt = conn.prepareStatement("DELETE FROM SCONTO_CODICI WHERE CODPROMO = ?");
+       pstmt.setString(1, codice.toUpperCase());
+       pstmt.execute();
+   }
+   
+   /**
+    * Modifica lo sconto ottenuto da un rispettivo codice. Non si cambia il codice,
+    * emglio eliminarlo.
+    * @param codice codice bersaglio
+    * @param sconto nuovo sconto
+    * @throws SQLException 
+    */
+   public static void aggiornaCodiceSconto(String codice, double sconto) throws SQLException {
+       PreparedStatement pstmt = conn.prepareStatement("UPDATE SCONTO_CODICI SET SCONTO = ? WHERE CODPROMO = ?");
+       pstmt.setDouble(1, sconto);
+       pstmt.setString(2, codice);
    }
 }
 

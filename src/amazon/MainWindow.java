@@ -168,6 +168,8 @@ public class MainWindow extends javax.swing.JFrame {
         mDesideri = new javax.swing.JMenuItem();
         mOrdini = new javax.swing.JMenuItem();
         mCarrello = new javax.swing.JMenuItem();
+        mStrumenti = new javax.swing.JMenu();
+        mCodici = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gruppo 26 - Amazon");
@@ -322,6 +324,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu3);
 
+        mStrumenti.setText("Strumenti");
+
+        mCodici.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mCodici.setText("Codici sconto");
+        mCodici.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCodiciActionPerformed(evt);
+            }
+        });
+        mStrumenti.add(mCodici);
+
+        jMenuBar1.add(mStrumenti);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -410,6 +425,11 @@ public class MainWindow extends javax.swing.JFrame {
         finestraLD.setVisible(true);
     }//GEN-LAST:event_mDesideriActionPerformed
 
+    private void mCodiciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCodiciActionPerformed
+        FinestraCodiciSconto finestraCodiciSconto = new FinestraCodiciSconto(this);
+        finestraCodiciSconto.setVisible(true);
+    }//GEN-LAST:event_mCodiciActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -418,6 +438,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem1.setEnabled(!state);
         jMenuItem3.setEnabled(state);
         jTabbedPanel.setVisible(state);
+        mStrumenti.setVisible(state);
         mNuovo.setEnabled(state);
         if (state == true)
             connettiTutto();
@@ -495,11 +516,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lUtente;
     private javax.swing.JMenuItem mAcquisto;
     private javax.swing.JMenuItem mCarrello;
+    private javax.swing.JMenuItem mCodici;
     private javax.swing.JMenuItem mDesideri;
     private javax.swing.JMenuItem mEditore;
     private javax.swing.JMenuItem mLibro;
     private javax.swing.JMenu mNuovo;
     private javax.swing.JMenuItem mOrdini;
+    private javax.swing.JMenu mStrumenti;
     private javax.swing.JMenuItem mUtente;
     private javax.swing.JMenuItem mVenditore;
     private amazon.TabOggetti tabAutori;
