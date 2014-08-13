@@ -39,6 +39,14 @@ public class FinestraRecensioneLibro extends javax.swing.JDialog {
         initComponents();
     }
     
+    public FinestraRecensioneLibro(java.awt.Dialog parent, boolean modal, int idUtente, String isbn, FinestraListaRecensioniLibri finestraRecensioni) {
+        super(parent, modal);
+        this.idUtente = idUtente;
+        this.isbn = isbn;
+        this.finestraRecensioni = finestraRecensioni;
+        initComponents();
+    }
+    
     private int idUtente;
     private String isbn;
     private FinestraListaRecensioniLibri finestraRecensioni;
