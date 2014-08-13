@@ -251,7 +251,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaModPagamento (int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT * FROM MOD_PAGAMENTO NATURAL JOIN RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
+       pstmt = conn.prepareStatement("SELECT CONTACT_ID, MOD_PAGAMENTO_ID, NUMEROCARTACREDITO, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, TO_CHAR(DATASCADENZA, 'YYYY-MM') AS DATASCADENZA, CODICESICUREZZA, UTENTE_ID, CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE, NUMTELEFONO FROM MOD_PAGAMENTO NATURAL JOIN RUBRICA_INDIRIZZI WHERE UTENTE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);

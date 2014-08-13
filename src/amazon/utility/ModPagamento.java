@@ -37,8 +37,8 @@ public class ModPagamento {
         indirizzoFatturazione = indir;
     }
     
-    private int civ, meseScadenza, annoScadenza, id;
-    private String numero, tipo, nomeIntestatario, cognomeIntestatario;
+    private int civ, annoScadenza, id;
+    private String numero, tipo, nomeIntestatario, cognomeIntestatario, meseScadenza;
     private Contatto indirizzoFatturazione;
     
     /**
@@ -55,7 +55,7 @@ public class ModPagamento {
      * @param data 
      */
     public void setData(String data) {
-        meseScadenza = Integer.parseInt(data.substring(5, 7));
+        meseScadenza = data.substring(5, 7);
         annoScadenza = Integer.parseInt(data.substring(0, 4));
     }
     
@@ -64,7 +64,7 @@ public class ModPagamento {
      * @return AAAA-MM-01
      */
     public String getData() {
-        return annoScadenza+"-"+meseScadenza+"01";
+        return annoScadenza+"-"+meseScadenza;
     }
 
     /**
@@ -84,14 +84,14 @@ public class ModPagamento {
     /**
      * @return the meseScadenza
      */
-    public int getMeseScadenza() {
+    public String getMeseScadenza() {
         return meseScadenza;
     }
 
     /**
      * @param meseScadenza the meseScadenza to set
      */
-    public void setMeseScadenza(int meseScadenza) {
+    public void setMeseScadenza(String meseScadenza) {
         this.meseScadenza = meseScadenza;
     }
 
