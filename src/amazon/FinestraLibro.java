@@ -440,7 +440,8 @@ public class FinestraLibro extends EditForm {
     
     private double ottieniTesto(String testo) {
         try {
-            return Double.parseDouble(testo);
+            String testoreplaced = testo.replace(",", ".");
+            return Double.parseDouble(testoreplaced);
         } catch (IllegalArgumentException ex) {
             return 0.0;
         }
