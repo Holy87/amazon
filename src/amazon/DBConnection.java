@@ -1495,7 +1495,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaVenditoriLibro(String isbn) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VENDITORI WHERE ISBN = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT VENDITORE_ID, VENDITORE_NOME, PREZZOVENDITA_MINIMO FROM VIEW_LIBRIDISPONIBILI NATURAL JOIN VIEW_INFO NATURAL JOIN MAGAZZINO_LIBRI WHERE ISBN = ? AND (PEZZIDISPONIBILI > 0 OR PEZZIDISPONIBILI IS NULL)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
@@ -1512,7 +1512,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaFormatoLibroVenditore(String isbn, int venditoreID) throws SQLException   {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT DISTINCT PROD_ID, FORMATO_ID, FORMATO_NOME, TIPOCONDIZIONE, PEZZIDISPONIBILI, PREZZOVENDITA, PERCSCONTO FROM MAGAZZINO_LIBRI NATURAL JOIN VIEW_INFO NATURAL JOIN VIEW_PERCSCONTO WHERE ISBN = ? AND VENDITORE_ID = ? AND (PEZZIDISPONIBILI > 0 OR PEZZIDISPONIBILI IS NULL)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setString(1, isbn);
