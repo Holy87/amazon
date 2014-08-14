@@ -263,9 +263,12 @@ public class FinestraCorriere extends EditForm {
             DBConnection.aggiungiModSpedizione(corriereID, d1, d2, d3);
     }
         
-
+    /**
+     * Lancia eccezione se non sono stati selezionati dei tipi di spedizione.
+     * @throws NoFormatSelectedException 
+     */
     private void tuttiDisattivati() throws NoFormatSelectedException {
-        if (jCheckBox_d1.isSelected() && jCheckBox_d2.isSelected() && jCheckBox_d3.isSelected())
+        if (!jCheckBox_d1.isSelected() && !jCheckBox_d2.isSelected() && !jCheckBox_d3.isSelected())
             throw new NoFormatSelectedException();
     }
     
