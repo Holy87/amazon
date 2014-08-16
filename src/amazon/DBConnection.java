@@ -898,7 +898,7 @@ public class DBConnection {
    }
    
    /**
-    * 
+    * Modifica il listino della copertina flessibile per il libro
     * @param isbn ISBN del libro da aggiungere/modificare
     * @param prezzo prezzo del prezzo listino relativo al formato Copertina Flessibile
     * @param mod modalità di gestione: 1) Inserisce un nuovo formato, 2 o DEFAULT) Aggiorna un formato già esistente, 3) Elimina un formato
@@ -935,7 +935,7 @@ public class DBConnection {
    }
    
     /**
-    * 
+    * Modifica il listino della copertina rigida per il libro
     * @param isbn ISBN del libro da aggiungere/modificare
     * @param prezzo prezzo del prezzo listino relativo al formato Copertina Rigida
     * @param mod modalità di gestione: 1) Inserisce un nuovo formato, 2 o DEFAUTL) Aggiorna un formato già esistente, 3) Elimina un formato
@@ -971,8 +971,8 @@ public class DBConnection {
        
    }
    
-       /**
-    * 
+    /**
+    * Modifica il listino del kindle per il libro
     * @param isbn ISBN del libro da aggiungere/modificare
     * @param prezzo prezzo del prezzo listino relativo al formato Amazon Kindle
     * @param mod modalità di gestione: 1) Inserisce un nuovo formato, 2 o DEFAULT) Aggiorna un formato già esistente, 3) Elimina un formato

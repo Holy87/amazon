@@ -32,6 +32,8 @@ public class FinestraLibro extends EditForm {
     }
     
     private String oldISBN;
+    private double prezzoRigida, prezzoFlessibile, prezzoKindle;
+    private boolean selRigida = false, selFlessibile = false, selKindle = false;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -398,25 +400,77 @@ public class FinestraLibro extends EditForm {
         
         try {
             tuttiDisattivati();
-            //setVisible(false);
+            ottieniPrezziListini();
             if (mode == ADDN) {
                 DBConnection.creaLibro(tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
                 FinestraAutoriLibro finestraAutori = new FinestraAutoriLibro(this, true, tISBN.getText());
+                aggiungiFormatiLibri();
                 finestraAutori.setVisible(true);
                 FinestraEditoriLibro finestraEditori = new FinestraEditoriLibro(this, true, tISBN.getText());
                 finestraEditori.setVisible(true);
-            } else
+            } else {
+                setVisible(false);
                 DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
+                modificaEliminaFormatiLibri();
+            }
             chiudiFinestra();
-            aggiornaListinoLibro();
+            //aggiornaListinoLibro();
         }
         catch(SQLException ex){
             mostraErrore(ex);
             setVisible(true);
         } catch (NoFormatSelectedException ex) {
             JOptionPane.showMessageDialog(this, "Devi selezionare almeno un formato", "Errore!", JOptionPane.ERROR_MESSAGE, null);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, "I prezzi dei formati non sono corretti!", "Errore!", JOptionPane.ERROR_MESSAGE, null);
         }
         
+    }
+    
+    private void aggiungiFormatiLibri() throws SQLException {
+        if (cRigida.isSelected())
+            DBConnection.modificaListinoRigida(tISBN.getText(), prezzoRigida, 1);
+        if (cFlessibile.isSelected())
+            DBConnection.modificaListinoFlessibile(tISBN.getText(), prezzoFlessibile, 1);
+        if (cKindle.isSelected())
+            DBConnection.modificaListinoKindle(tISBN.getText(), prezzoKindle, 1);
+    }
+    
+    /**
+     * Modifca il listino a seconda delle checkbox
+     * @throws SQLException 
+     */
+    private void modificaEliminaFormatiLibri() throws SQLException {
+        if (selRigida != cRigida.isSelected()) {
+            if (cRigida.isSelected())
+                DBConnection.modificaListinoRigida(oldISBN, prezzoRigida, 1);
+            else
+                DBConnection.modificaListinoRigida(oldISBN, 0, 3);
+        } else
+            DBConnection.modificaListinoRigida(oldISBN, prezzoRigida, 2);
+        if (selFlessibile != cFlessibile.isSelected()) {
+            if (cFlessibile.isSelected())
+                DBConnection.modificaListinoFlessibile(oldISBN, prezzoFlessibile, 1);
+            else
+                DBConnection.modificaListinoFlessibile(oldISBN, 0, 3);
+        } else
+            DBConnection.modificaListinoFlessibile(oldISBN, prezzoFlessibile, 2);
+        if (selKindle != cKindle.isSelected()) {
+            if (cKindle.isSelected())
+                DBConnection.modificaListinoKindle(oldISBN, prezzoKindle, 2);
+            else
+                DBConnection.modificaListinoKindle(oldISBN, 0, 3);
+        } else
+            DBConnection.modificaListinoKindle(oldISBN, prezzoKindle, 2);
+    }
+    
+    private void ottieniPrezziListini() throws IllegalArgumentException {
+        if (cRigida.isSelected())
+            prezzoRigida = Double.parseDouble(tListinoRigida.getText());
+        if (cFlessibile.isSelected())
+            prezzoFlessibile = Double.parseDouble(tListinoFlessibile.getText());
+        if (cKindle.isSelected())
+            prezzoKindle = Double.parseDouble(tListinoKindle.getText());
     }
     
     /**
@@ -463,6 +517,7 @@ public class FinestraLibro extends EditForm {
             double rigida = DBConnection.verificaListino(oldISBN, 2002);
             double kindle = DBConnection.verificaListino(oldISBN, 2003);
             if (flessibile > 0) {
+                selFlessibile = true;
                 tListinoFlessibile.setText(""+flessibile);
                 tListinoFlessibile.setEnabled(true);
                 cFlessibile.setSelected(true);
@@ -472,6 +527,7 @@ public class FinestraLibro extends EditForm {
             }
             
             if (rigida > 0) {
+                selRigida = true;
                 tListinoRigida.setText(""+rigida);
                 tListinoRigida.setEnabled(true);
                 cRigida.setSelected(true);
@@ -481,6 +537,7 @@ public class FinestraLibro extends EditForm {
             }
             
             if (kindle > 0) {
+                selKindle = true;
                 tListinoKindle.setText(""+kindle);
                 tListinoKindle.setEnabled(true);
                 cKindle.setSelected(true);
