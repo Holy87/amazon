@@ -160,9 +160,11 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         mNuovo = new javax.swing.JMenu();
         mUtente = new javax.swing.JMenuItem();
-        mLibro = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
         mEditore = new javax.swing.JMenuItem();
+        mLibro = new javax.swing.JMenuItem();
         mVenditore = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         mAcquisto = new javax.swing.JMenuItem();
@@ -245,14 +247,14 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mUtente);
 
-        mLibro.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mLibro.setText("Libro");
-        mLibro.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem6.setText("Autore");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mLibroActionPerformed(evt);
+                jMenuItem6ActionPerformed(evt);
             }
         });
-        mNuovo.add(mLibro);
+        mNuovo.add(jMenuItem6);
 
         mEditore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mEditore.setText("Editore");
@@ -263,6 +265,15 @@ public class MainWindow extends javax.swing.JFrame {
         });
         mNuovo.add(mEditore);
 
+        mLibro.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mLibro.setText("Libro");
+        mLibro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mLibroActionPerformed(evt);
+            }
+        });
+        mNuovo.add(mLibro);
+
         mVenditore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mVenditore.setText("Venditore");
         mVenditore.addActionListener(new java.awt.event.ActionListener() {
@@ -271,6 +282,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         mNuovo.add(mVenditore);
+
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem7.setText("Corriere");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        mNuovo.add(jMenuItem7);
 
         jMenu1.add(mNuovo);
 
@@ -451,6 +471,16 @@ public class MainWindow extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Progetto Amazon - GRUPPO 26:\nFrancesco Bosso 566/3086\nClaudio Renza N86/727\nGiuseppe Senese 566/2728", "Informazioni su...", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        FinestraAutore finestraAuthor = new FinestraAutore(this, true);
+        finestraAuthor.setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        FinestraCorriere finestraCourier = new FinestraCorriere(this, true);
+        finestraCourier.setVisible(true);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -535,6 +565,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPanel;
     private javax.swing.JLabel lUtente;

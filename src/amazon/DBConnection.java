@@ -1402,7 +1402,7 @@ public class DBConnection {
        int controllo = 0;
        String ricerca = "SELECT LIBRO_NOME, ISBN, FORMATO_NOME, PREZZOLISTINO FROM LIBRI NATURAL JOIN LISTINO_PREZZI NATURAL JOIN IMPOSTAZIONI WHERE ";
        if (!"".equals(query)) {
-           ricerca += "LIBRI.LIBRO_NOME LIKE ?";
+           ricerca += "UPPER(LIBRI.LIBRO_NOME) LIKE UPPER(?)";
            cercaParola = true;
        } else
            ricerca += "1=1";
