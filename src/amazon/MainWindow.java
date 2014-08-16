@@ -141,6 +141,7 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem4 = new javax.swing.JMenuItem();
         jTabbedPanel = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         tabUtenti = new amazon.TabOggetti();
@@ -170,6 +171,10 @@ public class MainWindow extends javax.swing.JFrame {
         mCarrello = new javax.swing.JMenuItem();
         mStrumenti = new javax.swing.JMenu();
         mCodici = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
+
+        jMenuItem4.setText("jMenuItem4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gruppo 26 - Amazon");
@@ -337,6 +342,18 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuBar1.add(mStrumenti);
 
+        jMenu2.setText("?");
+
+        jMenuItem5.setText("Informazioni su...");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem5);
+
+        jMenuBar1.add(jMenu2);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -430,6 +447,10 @@ public class MainWindow extends javax.swing.JFrame {
         finestraCodiciSconto.setVisible(true);
     }//GEN-LAST:event_mCodiciActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        JOptionPane.showMessageDialog(this, "Progetto Amazon - GRUPPO 26:\nFrancesco Bosso (Matricola Non Pervenuta)\nClaudio Renza N86/727\nGiuseppe Senese 566/2728", "Informazioni su...", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     /**
      * 
      * @param state true: attiva la connessione, disattiva l disconnessione e vicev
@@ -506,11 +527,14 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPanel;
     private javax.swing.JLabel lUtente;
