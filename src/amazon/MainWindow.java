@@ -448,7 +448,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_mCodiciActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        JOptionPane.showMessageDialog(this, "Progetto Amazon - GRUPPO 26:\nFrancesco Bosso (Matricola Non Pervenuta)\nClaudio Renza N86/727\nGiuseppe Senese 566/2728", "Informazioni su...", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Progetto Amazon - GRUPPO 26:\nFrancesco Bosso 566/3086\nClaudio Renza N86/727\nGiuseppe Senese 566/2728", "Informazioni su...", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     /**
