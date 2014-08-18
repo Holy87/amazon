@@ -9,6 +9,9 @@ package amazon;
 import amazon.exceptions.CodeNotValidException;
 import amazon.utility.Contatto;
 import amazon.utility.Scontotemp;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -247,6 +250,12 @@ public class DBConnection {
        return pstmt.executeQuery();
    }
    
+   /**
+    * Visualizza la spedizione riferita a un ordine di un utente
+    * @param idOrdine
+    * @return CORRIERE_NOME, DATACONSEGNA
+    * @throws SQLException 
+    */
    public static ResultSet visualizzaSpedizioneOrdine(int idOrdine) throws SQLException {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT CORRIERE_NOME, TO_CHAR(DATACONSEGNA, 'DD/MM/YY') FROM CORRIERI INNER JOIN SPEDIZIONI ON CORRIERI.CORRIERE_ID=SPEDIZIONI.CORRIERE_ID WHERE ORDINE_ID=?",
@@ -344,6 +353,12 @@ public class DBConnection {
        pstmt.close();
    }
    
+//   /**
+//    * Visualizza le modalità di pagamento che un utente ha a disposizione
+//    * @param utenteId
+//    * @return MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA
+//    * @throws SQLException 
+//    */
 //      public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
 //       //Esempio: UTENTE_ID = 423575;
 //       /*RISULTATO QUERY:
@@ -462,13 +477,6 @@ public class DBConnection {
        pstmt2.close();
        
    }
-   
-   /**
-    * Su un sottomenu a tendina compaiono le modalità di pagamento disponibili per l'utente attivo
-    * @param utenteId id dell'utente
-    * @return MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA
-    * @throws SQLException 
-    */
    
    /**
     * Si crea la recensione postata da un utente con un certo ID su un certo libro/venditore
@@ -599,6 +607,11 @@ public class DBConnection {
        return indirizzo;
    }
    
+   /**
+    * Rimuove un contatto dalla rubrica di un utente
+    * @param contactID
+    * @throws SQLException 
+    */
    public static void rimuoviIndirizzo(int contactID) throws SQLException {
         PreparedStatement pstmt;
         
@@ -671,7 +684,6 @@ public class DBConnection {
    }
    
    /**
-    * 
     * @param ordineID
     * @return Query con i seguenti campi: CONTACT_NOME, CONTACT_COGNOME, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE
     * @throws SQLException 
@@ -689,8 +701,7 @@ public class DBConnection {
    }
    
    /**
-    * 
-     * @param modPagamentoID
+    * @param modPagamentoID
     * @return Query con i seguenti campi: TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, INDIRIZZOR1, INDIRIZZOR2, CAP, città, PROVINCIA, PAESE
     * @throws SQLException 
     */
@@ -740,6 +751,12 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
+   /**
+    * Aggiunge un autore ad un libro appena creato o modificato
+    * @param autoreID
+    * @param isbn
+    * @throws SQLException 
+    */
    public static void aggiungiAutoreLibro(int autoreID, String isbn) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -749,7 +766,12 @@ public class DBConnection {
        
        pstmt.execute();
    }
-   
+    /**
+    * Aggiunge un editore ad un libro appena creato o modificato
+    * @param editoreID
+    * @param isbn
+    * @throws SQLException 
+    */
    public static void aggiungiEditoreLibro(int editoreID, String isbn) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -759,7 +781,6 @@ public class DBConnection {
        
        pstmt.execute();
    }
-   
    
    /**
     * Creazione di un libro nell'entità LIBRI
@@ -850,7 +871,15 @@ public class DBConnection {
                throw ex;
        }
    }
-   
+
+//    /**
+//    * Aggiunge una nuova tipologia per un libro, con prezzo annesso
+//    * @param isbn
+//    * @param prezzoFlessbile
+//    * @param prezzoRigida
+//    * @param prezzoKindle
+//    * @throws SQLException 
+//    */
 //   public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
 //       
 //       if ( prezzoFlessibile > 0) {
@@ -880,36 +909,36 @@ public class DBConnection {
 //           pstmt.executeUpdate();
 //       }
 //   }
-//   
-//   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) throws SQLException {
-//        
-//       if ( prezzoFlessibile > 0) {
-//           PreparedStatement pstmt;
-//           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
-//           pstmt.setDouble(1,prezzoFlessibile);
-//           pstmt.setString(2,isbn);
-//           
-//           pstmt.executeUpdate();
-//       }
-//       
-//       if ( prezzoRigida > 0) {
-//           PreparedStatement pstmt;
-//           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
-//           pstmt.setDouble(1,prezzoRigida);
-//           pstmt.setString(2,isbn);
-//           
-//           pstmt.executeUpdate();
-//       }
-//       
-//       if ( prezzoKindle > 0) {
-//           PreparedStatement pstmt;
-//           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
-//           pstmt.setDouble(1,prezzoKindle);
-//           pstmt.setString(2,isbn);
-//           
-//           pstmt.executeUpdate();
-//       }
-//   }
+ /*  
+   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) throws SQLException {
+       if ( prezzoFlessibile > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
+           pstmt.setDouble(1,prezzoFlessibile);
+           pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
+       }
+       
+       if ( prezzoRigida > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+           pstmt.setDouble(1,prezzoRigida);
+           pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
+       }
+       
+       if ( prezzoKindle > 0) {
+           PreparedStatement pstmt;
+           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
+           pstmt.setDouble(1,prezzoKindle);
+           pstmt.setString(2,isbn);
+           
+           pstmt.executeUpdate();
+       }
+   }
+   */
    
    /**
     * Modifica il listino della copertina flessibile per il libro
@@ -1025,7 +1054,11 @@ public class DBConnection {
        
        
    }
-   
+       /**
+    * Crea un nuovo editore per il DB
+    * @param nomeEditore
+    * @throws SQLException 
+    */
    public static void creaEditore(String nomeEditore) throws SQLException
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
@@ -1036,7 +1069,12 @@ public class DBConnection {
        
        pstmt.executeUpdate();
    }
-   
+          /**
+    * Aggiorna un editore già presente nel DB
+    * @param idEditore
+    * @param nomeEditore
+    * @throws SQLException 
+    */
    public static void aggiornaEditore(int idEditore, String nomeEditore) throws SQLException {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        
@@ -1046,7 +1084,12 @@ public class DBConnection {
        
        pstmt.executeUpdate();
    }
-   
+
+    /**
+    * Crea un nuovo corriere per il DB
+    * @param nomeCorriere
+    * @throws SQLException 
+    */
    public static int creaCorriere(String nomeCorriere) throws SQLException
    {
        PreparedStatement pstmt, pstmt2; //Statement inserimento nuova riga in ordini
@@ -1555,14 +1598,14 @@ public class DBConnection {
    /**
     * Aggiorna l'immagine della copertina di un libro
     * @param immagineID
-    * @param blobImmagine
+    * @param immagine File immagine
     * @throws SQLException 
     */
-   public static void aggiornaImmagineLibro(int immagineID, Blob blobImmagine) throws SQLException {
+   public static void aggiornaImmagineLibro(int immagineID, File immagine) throws SQLException, FileNotFoundException {
        PreparedStatement pstmt;
-       
        pstmt = conn.prepareStatement("UPDATE IMG_COPERTINA SET IMMAGINE=? WHERE IMMAGINE_ID=?");
-       pstmt.setBlob(1, blobImmagine);
+       FileInputStream fin = new FileInputStream(immagine);
+       pstmt.setBinaryStream(1,fin,(int)immagine.length());
        pstmt.setInt(2, immagineID);
        
        pstmt.executeUpdate();
@@ -1570,16 +1613,17 @@ public class DBConnection {
    
    /**
     * Aggiorna l'immagine della copertina di un libro
-    * @param blobImmagine
+    * @param immagine
     * @param isbn
     * @param fileNome
     * @throws SQLException 
     */
-   public static void inserisciImmagineLibro(String isbn, String fileNome, Blob blobImmagine) throws SQLException {
+   public static void inserisciImmagineLibro(String isbn, String fileNome, File immagine) throws SQLException, FileNotFoundException {
        PreparedStatement pstmt;
        
        pstmt = conn.prepareStatement("INSERT INTO IMG_COPERTINA (IMMAGINE, ISBN, FILE_NOME, MIMETYPE, IMMAGINE_DATA) VALUES (?, ?, ?, image/jpeg, SYSDATE");
-       pstmt.setBlob(1, blobImmagine);
+       FileInputStream fin = new FileInputStream(immagine);
+       pstmt.setBinaryStream(1,fin,(int)immagine.length());
        pstmt.setString(2, isbn);
        pstmt.setString(3, fileNome);
        
