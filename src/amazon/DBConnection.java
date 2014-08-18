@@ -355,7 +355,7 @@ public class DBConnection {
    public static double verificaSconto(String codice) throws SQLException, CodeNotValidException {
         ResultSet rs;
         PreparedStatement pstmt;
-        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE '?' AND ORDINE_ID IS NULL",
+        pstmt = conn.prepareStatement("SELECT SCONTO FROM SCONTO_CODICI WHERE CODPROMO LIKE ? AND ORDINE_ID IS NULL",
                      ResultSet.TYPE_SCROLL_INSENSITIVE,
                      ResultSet.CONCUR_READ_ONLY);
         pstmt.setString(1, codice);
@@ -931,6 +931,7 @@ public class DBConnection {
        }
        
        pstmt.executeUpdate();
+       pstmt.close();
        
    }
    
@@ -968,6 +969,7 @@ public class DBConnection {
        }
        
        pstmt.executeUpdate();
+       pstmt.close();
        
    }
    
@@ -1005,7 +1007,7 @@ public class DBConnection {
        }
        
        pstmt.executeUpdate();
-       
+       pstmt.close();
        
        
    }
