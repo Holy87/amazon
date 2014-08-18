@@ -58,6 +58,8 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private void initCustomComponents() {
         jTabbedPanel.setVisible(false);
+        jLabel1.setText("");
+        lUtente.setText("");
         finestraUtente = new FinestraUtente(this, true);
         tabUtenti.impostaInterfaccia("UTENTI", finestraUtente, this);
         finestraAutore = new FinestraAutore(this, true);
@@ -83,6 +85,8 @@ public class MainWindow extends javax.swing.JFrame {
         tabLibri.connectTable();
         tabVenditori.connectTable();
         tabCorrieri.connectTable();
+        jLabel1.setText("Utente attivo:");
+        lUtente.setText("Nessuno");
     }
     
     /**
@@ -145,8 +149,6 @@ public class MainWindow extends javax.swing.JFrame {
         jTabbedPanel = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         tabUtenti = new amazon.TabOggetti();
-        jLabel1 = new javax.swing.JLabel();
-        lUtente = new javax.swing.JLabel();
         tabAutori = new amazon.TabOggetti();
         tabEditori = new amazon.TabOggetti();
         tabLibri = new amazon.TabOggetti();
@@ -154,6 +156,8 @@ public class MainWindow extends javax.swing.JFrame {
         tabCorrieri = new amazon.TabOggetti();
         tabOggetti2 = new amazon.TabOggetti();
         tabOggetti3 = new amazon.TabOggetti();
+        jLabel1 = new javax.swing.JLabel();
+        lUtente = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -182,29 +186,15 @@ public class MainWindow extends javax.swing.JFrame {
         setTitle("Gruppo 26 - Amazon");
         setLocationByPlatform(true);
 
-        jLabel1.setText("Utente attivo:");
-
-        lUtente.setText("Nessuno");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lUtente, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(tabUtenti, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(lUtente)))
+            .addComponent(tabUtenti, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
         );
 
         jTabbedPanel.addTab("Utenti", jPanel1);
@@ -213,6 +203,10 @@ public class MainWindow extends javax.swing.JFrame {
         jTabbedPanel.addTab("Libri", tabLibri);
         jTabbedPanel.addTab("Venditori", tabVenditori);
         jTabbedPanel.addTab("Corrieri", tabCorrieri);
+
+        jLabel1.setText("Utente attivo:");
+
+        lUtente.setText("Nessuno");
 
         jMenu1.setText("File");
 
@@ -381,10 +375,20 @@ public class MainWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPanel)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lUtente, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPanel)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lUtente)))
         );
 
         jTabbedPanel.getAccessibleContext().setAccessibleName("utenti");
@@ -416,6 +420,7 @@ public class MainWindow extends javax.swing.JFrame {
                 DBConnection.CloseConnection();
                 checkState(false);
                 impostaUtente(0, null);
+                jLabel1.setText("");
             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(rootPane, "Errore nella disconnessione al database: " + e.toString(), null, ERROR_MESSAGE);
