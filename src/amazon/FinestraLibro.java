@@ -481,10 +481,14 @@ public class FinestraLibro extends EditForm {
                 finestraAutori.setVisible(true);
                 FinestraEditoriLibro finestraEditori = new FinestraEditoriLibro(this, true, tISBN.getText());
                 finestraEditori.setVisible(true);
+                if (nuovaCopertina != null)
+                    copertinaNuovoLibro();
             } else {
                 setVisible(false);
                 DBConnection.aggiornaLibro(oldISBN, tNomeLibro.getText(), Integer.parseInt(tNEdizione.getText()), tISBN.getText(), tDescrizione.getText(), tGenere.getText(), Integer.parseInt(tNPagine.getText()), Integer.parseInt(tPesoSped.getText()), tDataUscita.getText());
                 modificaEliminaFormatiLibri();
+                if (nuovaCopertina != null)
+                    aggiornaCopertinaLibro();
             }
             chiudiFinestra();
             //aggiornaListinoLibro();
@@ -494,6 +498,8 @@ public class FinestraLibro extends EditForm {
             setVisible(true);
         } catch (NoFormatSelectedException ex) {
             JOptionPane.showMessageDialog(this, "Devi selezionare almeno un formato", "Errore!", JOptionPane.ERROR_MESSAGE, null);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(FinestraLibro.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -624,11 +630,9 @@ public class FinestraLibro extends EditForm {
             try {
                 BufferedImage bim = ImageIO.read(file);
                 copertina = bim;
-                DBConnection.aggiornaImmagineLibro(immagineID, file);
+                impostaImmagineDaMostrare();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Errore nell'aprire il file "+ file.getAbsolutePath(), "Errore apertura file", JOptionPane.ERROR_MESSAGE);
-            } catch (SQLException ex) {
-                mostraErrore(ex);
             }
         }
     }
@@ -636,6 +640,12 @@ public class FinestraLibro extends EditForm {
     private void aggiornaCopertinaLibro() throws SQLException, FileNotFoundException {
         if (immagineID != 0)
             DBConnection.aggiornaImmagineLibro(immagineID, nuovaCopertina);
+        else
+            DBConnection.inserisciImmagineLibro(oldISBN, nuovaCopertina.getName(), nuovaCopertina);
+    }
+    
+    private void copertinaNuovoLibro() throws SQLException, FileNotFoundException {
+        DBConnection.inserisciImmagineLibro(tISBN.getText(), nuovaCopertina.getName(), nuovaCopertina);
     }
     
 }

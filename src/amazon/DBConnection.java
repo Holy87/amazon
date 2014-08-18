@@ -1573,16 +1573,17 @@ public class DBConnection {
    
    /**
     * Aggiorna l'immagine della copertina di un libro
-    * @param blobImmagine
+    * @param immagine
     * @param isbn
     * @param fileNome
     * @throws SQLException 
     */
-   public static void inserisciImmagineLibro(String isbn, String fileNome, Blob blobImmagine) throws SQLException {
+   public static void inserisciImmagineLibro(String isbn, String fileNome, File immagine) throws SQLException, FileNotFoundException {
        PreparedStatement pstmt;
        
        pstmt = conn.prepareStatement("INSERT INTO IMG_COPERTINA (IMMAGINE, ISBN, FILE_NOME, MIMETYPE, IMMAGINE_DATA) VALUES (?, ?, ?, image/jpeg, SYSDATE");
-       pstmt.setBlob(1, blobImmagine);
+       FileInputStream fin = new FileInputStream(immagine);
+       pstmt.setBinaryStream(1,fin,(int)immagine.length());
        pstmt.setString(2, isbn);
        pstmt.setString(3, fileNome);
        
