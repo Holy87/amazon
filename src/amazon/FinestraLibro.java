@@ -474,9 +474,9 @@ public class FinestraLibro extends EditForm {
         if (cRigida.isSelected())
             prezzoRigida = Double.parseDouble(tListinoRigida.getText().replace(',', '.'));
         if (cFlessibile.isSelected())
-            prezzoFlessibile = Double.parseDouble(tListinoFlessibile.getText().replace(',', '.'));
+            prezzoFlessibile = Double.parseDouble(tListinoFlessibile.getText().replace(",", "."));
         if (cKindle.isSelected())
-            prezzoKindle = Double.parseDouble(tListinoKindle.getText().replace(',', '.'));
+            prezzoKindle = Double.parseDouble(tListinoKindle.getText().replace(",", "."));
     }
     
     /**
