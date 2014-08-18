@@ -166,25 +166,25 @@ public class DBConnection {
        pstmt.executeUpdate();
    }
    
-   /**
-    * Ottiene l'ID del prdotto dal magazzino libri passando l'ISBN, venditore e formato
-    * @param isbn stringa, isbn dell'entità libri
-    * @param venditoreId intero id del venditore
-    * @param formatoId intero formato del libro
-    * @param tipoCondizione "Nuovo", "Usato" o "Ricondizionato"
-    * @return ID del prodotto PROD_ID
-    * @throws SQLException 
-    */
-   public static int ottieniIdProdotto(String isbn, int venditoreId, int formatoId, String tipoCondizione) throws SQLException {
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT PROD_ID FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ?, ISBN = ?, FORMATO_ID = ?, TIPOCONDIZIONE = ?");
-       pstmt.setInt(1, venditoreId);
-       pstmt.setString(2, isbn);
-       pstmt.setInt(3, formatoId);
-       pstmt.setString(4, tipoCondizione);
-       ResultSet rs = pstmt.executeQuery();
-       return Integer.parseInt(rs.getString(1));
-   }
+//   /**
+//    * Ottiene l'ID del prdotto dal magazzino libri passando l'ISBN, venditore e formato
+//    * @param isbn stringa, isbn dell'entità libri
+//    * @param venditoreId intero id del venditore
+//    * @param formatoId intero formato del libro
+//    * @param tipoCondizione "Nuovo", "Usato" o "Ricondizionato"
+//    * @return ID del prodotto PROD_ID
+//    * @throws SQLException 
+//    */
+////   public static int ottieniIdProdotto(String isbn, int venditoreId, int formatoId, String tipoCondizione) throws SQLException {
+////       PreparedStatement pstmt;
+////       pstmt = conn.prepareStatement("SELECT PROD_ID FROM MAGAZZINO_LIBRI WHERE VENDITORE_ID = ?, ISBN = ?, FORMATO_ID = ?, TIPOCONDIZIONE = ?");
+////       pstmt.setInt(1, venditoreId);
+////       pstmt.setString(2, isbn);
+////       pstmt.setInt(3, formatoId);
+////       pstmt.setString(4, tipoCondizione);
+////       ResultSet rs = pstmt.executeQuery();
+////       return Integer.parseInt(rs.getString(1));
+////   }
       
    /**
     * Visualizza l'attuale carrello dell'utente dato il suo ID
@@ -344,20 +344,20 @@ public class DBConnection {
        pstmt.close();
    }
    
-      public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
-       //Esempio: UTENTE_ID = 423575;
-       /*RISULTATO QUERY:
-                    TITOLARECARTA_NOME      TITOLARECARTA_COGNOME   TIPOCARTA   NUMEROCARTACREDITO      DATASCADENZA
-                    Roberto                 Di Carlo                Mastercard	4172836483428572	01-GEN-24
-       */
-       PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM RUBRICA_INDIRIZZI NATURAL JOIN MOD_PAGAMENTO WHERE UTENTE_ID=?",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-       pstmt.setInt(1, utenteId);
-       
-       return pstmt.executeQuery();
-   }
+//      public static ResultSet sceltaModPagamento (int utenteId) throws SQLException {
+//       //Esempio: UTENTE_ID = 423575;
+//       /*RISULTATO QUERY:
+//                    TITOLARECARTA_NOME      TITOLARECARTA_COGNOME   TIPOCARTA   NUMEROCARTACREDITO      DATASCADENZA
+//                    Roberto                 Di Carlo                Mastercard	4172836483428572	01-GEN-24
+//       */
+//       PreparedStatement pstmt;
+//       pstmt = conn.prepareStatement("SELECT MOD_PAGAMENTO_ID, TITOLARECARTA_NOME, TITOLARECARTA_COGNOME, TIPOCARTA, NUMEROCARTACREDITO, DATASCADENZA FROM RUBRICA_INDIRIZZI NATURAL JOIN MOD_PAGAMENTO WHERE UTENTE_ID=?",
+//                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+//                    ResultSet.CONCUR_READ_ONLY);
+//       pstmt.setInt(1, utenteId);
+//       
+//       return pstmt.executeQuery();
+//   }
    
    /**
     * Restituisce il valore di sconto del codice, lancia eccezione se non valido
@@ -770,7 +770,7 @@ public class DBConnection {
     * @param genere
     * @param nPagine
     * @param pesoSped
-    * @param dataUscita DD-MES-AAAA
+    * @param dataUscita DD/MM/AAAA
     * @throws SQLException 
     */
    public static void creaLibro(String nomeLibro, int nEdizione, String isbn, String descrizione, String genere, int nPagine, int pesoSped, String dataUscita) throws SQLException
@@ -802,7 +802,7 @@ public class DBConnection {
     * @param genere
     * @param nPagine
     * @param pesoSped
-    * @param dataUscita
+    * @param dataUscita DD/MM/AAAA
     * @throws SQLException 
     */
    public static void aggiornaLibro(String oldISBN, String nomeLibro, int nEdizione, String isbn, String descrizione, String genere, int nPagine, int pesoSped, String dataUscita) throws SQLException
@@ -851,65 +851,65 @@ public class DBConnection {
        }
    }
    
-   public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
-       
-       if ( prezzoFlessibile > 0) {
-           PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2001,?)");
-           pstmt.setString(1,isbn);
-           pstmt.setDouble(2,prezzoFlessibile);
-           
-           pstmt.executeUpdate();
-       }
-       
-       if ( prezzoRigida > 0) {
-           PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2002,?)");
-           pstmt.setString(1,isbn);
-           pstmt.setDouble(2,prezzoRigida);
-           
-           pstmt.executeUpdate();
-       }
-       
-       if ( prezzoKindle > 0) {
-           PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2003,?)");
-           pstmt.setString(1,isbn);
-           pstmt.setDouble(2,prezzoKindle);
-           
-           pstmt.executeUpdate();
-       }
-   }
-   
-   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) throws SQLException {
-        
-       if ( prezzoFlessibile > 0) {
-           PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
-           pstmt.setDouble(1,prezzoFlessibile);
-           pstmt.setString(2,isbn);
-           
-           pstmt.executeUpdate();
-       }
-       
-       if ( prezzoRigida > 0) {
-           PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
-           pstmt.setDouble(1,prezzoRigida);
-           pstmt.setString(2,isbn);
-           
-           pstmt.executeUpdate();
-       }
-       
-       if ( prezzoKindle > 0) {
-           PreparedStatement pstmt;
-           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
-           pstmt.setDouble(1,prezzoKindle);
-           pstmt.setString(2,isbn);
-           
-           pstmt.executeUpdate();
-       }
-   }
+//   public static void aggiungiListino(String isbn, double prezzoFlessibile, double prezzoRigida, double prezzoKindle) throws SQLException {
+//       
+//       if ( prezzoFlessibile > 0) {
+//           PreparedStatement pstmt;
+//           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2001,?)");
+//           pstmt.setString(1,isbn);
+//           pstmt.setDouble(2,prezzoFlessibile);
+//           
+//           pstmt.executeUpdate();
+//       }
+//       
+//       if ( prezzoRigida > 0) {
+//           PreparedStatement pstmt;
+//           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2002,?)");
+//           pstmt.setString(1,isbn);
+//           pstmt.setDouble(2,prezzoRigida);
+//           
+//           pstmt.executeUpdate();
+//       }
+//       
+//       if ( prezzoKindle > 0) {
+//           PreparedStatement pstmt;
+//           pstmt = conn.prepareStatement("INSERT INTO LISTINO_PREZZI VALUES(?,2003,?)");
+//           pstmt.setString(1,isbn);
+//           pstmt.setDouble(2,prezzoKindle);
+//           
+//           pstmt.executeUpdate();
+//       }
+//   }
+//   
+//   public static void aggiornaListino(String isbn, double prezzoRigida, double prezzoFlessibile, double prezzoKindle) throws SQLException {
+//        
+//       if ( prezzoFlessibile > 0) {
+//           PreparedStatement pstmt;
+//           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
+//           pstmt.setDouble(1,prezzoFlessibile);
+//           pstmt.setString(2,isbn);
+//           
+//           pstmt.executeUpdate();
+//       }
+//       
+//       if ( prezzoRigida > 0) {
+//           PreparedStatement pstmt;
+//           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
+//           pstmt.setDouble(1,prezzoRigida);
+//           pstmt.setString(2,isbn);
+//           
+//           pstmt.executeUpdate();
+//       }
+//       
+//       if ( prezzoKindle > 0) {
+//           PreparedStatement pstmt;
+//           pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
+//           pstmt.setDouble(1,prezzoKindle);
+//           pstmt.setString(2,isbn);
+//           
+//           pstmt.executeUpdate();
+//       }
+//   }
    
    /**
     * Modifica il listino della copertina flessibile per il libro
