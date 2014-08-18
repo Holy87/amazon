@@ -466,11 +466,11 @@ public class FinestraLibro extends EditForm {
     
     private void ottieniPrezziListini() throws IllegalArgumentException {
         if (cRigida.isSelected())
-            prezzoRigida = Double.parseDouble(tListinoRigida.getText());
+                prezzoRigida = Double.parseDouble(tListinoRigida.getText().replace(",", "."));
         if (cFlessibile.isSelected())
-            prezzoFlessibile = Double.parseDouble(tListinoFlessibile.getText());
+            prezzoFlessibile = Double.parseDouble(tListinoFlessibile.getText().replace(",", "."));
         if (cKindle.isSelected())
-            prezzoKindle = Double.parseDouble(tListinoKindle.getText());
+            prezzoKindle = Double.parseDouble(tListinoKindle.getText().replace(",", "."));
     }
     
     /**
@@ -482,7 +482,7 @@ public class FinestraLibro extends EditForm {
             throw new NoFormatSelectedException();
     }
     
-    private void aggiornaListinoLibro() throws SQLException {
+    /*private void aggiornaListinoLibro() throws SQLException {
         double rigida = ottieniTesto(tListinoRigida.getText());
         double flessibile = ottieniTesto(tListinoFlessibile.getText());
         double kindle = ottieniTesto(tListinoKindle.getText());
@@ -490,7 +490,7 @@ public class FinestraLibro extends EditForm {
             DBConnection.aggiornaListino(tISBN.getText(), rigida, flessibile, kindle);
         else
             DBConnection.aggiungiListino(tISBN.getText(), rigida, flessibile, kindle);
-    }
+    }*/
     
     private double ottieniTesto(String testo) {
         try {

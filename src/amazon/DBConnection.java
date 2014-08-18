@@ -916,8 +916,8 @@ public class DBConnection {
                break;
            case 2:
                pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
-               pstmt.setString(1,isbn);
-               pstmt.setDouble(2,prezzo);
+               pstmt.setString(2,isbn);
+               pstmt.setDouble(1,prezzo);
                break;
            case 3:
                pstmt = conn.prepareStatement("DELETE FROM LISTINO_PREZZI WHERE ISBN LIKE ? AND FORMATO_ID=2001");
@@ -925,8 +925,8 @@ public class DBConnection {
                break;
            default:
                pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2001");
-               pstmt.setString(1,isbn);
-               pstmt.setDouble(2,prezzo);
+               pstmt.setString(2,isbn);
+               pstmt.setDouble(1,prezzo);
                break;
        }
        
@@ -953,8 +953,8 @@ public class DBConnection {
                break;
            case 2:
                pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
-               pstmt.setString(1,isbn);
-               pstmt.setDouble(2,prezzo);
+               pstmt.setString(2,isbn);
+               pstmt.setDouble(1,prezzo);
                break;
            case 3:
                pstmt = conn.prepareStatement("DELETE FROM LISTINO_PREZZI WHERE ISBN LIKE ? AND FORMATO_ID=2002");
@@ -962,8 +962,8 @@ public class DBConnection {
                break;
            default:
                pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2002");
-               pstmt.setString(1,isbn);
-               pstmt.setDouble(2,prezzo);
+               pstmt.setString(2,isbn);
+               pstmt.setDouble(1,prezzo);
                break;
        }
        
@@ -990,8 +990,8 @@ public class DBConnection {
                break;
            case 2:
                pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
-               pstmt.setString(1,isbn);
-               pstmt.setDouble(2,prezzo);
+               pstmt.setString(2,isbn);
+               pstmt.setDouble(1,prezzo);
                break;
            case 3:
                pstmt = conn.prepareStatement("DELETE FROM LISTINO_PREZZI WHERE ISBN LIKE ? AND FORMATO_ID=2003");
@@ -999,12 +999,14 @@ public class DBConnection {
                break;
            default:
                pstmt = conn.prepareStatement("UPDATE LISTINO_PREZZI SET PREZZOLISTINO=? WHERE ISBN LIKE ? AND FORMATO_ID=2003");
-               pstmt.setString(1,isbn);
-               pstmt.setDouble(2,prezzo);
+               pstmt.setString(2,isbn);
+               pstmt.setDouble(1,prezzo);
                break;
        }
        
        pstmt.executeUpdate();
+       
+       
        
    }
    
