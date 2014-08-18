@@ -9,9 +9,17 @@ package amazon;
 import amazon.modelliTabelle.DBTableModel;
 import amazon.utility.ListaDesideri;
 import java.awt.Color;
+import java.awt.Image;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -134,10 +142,33 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             tAnno.setText("Data uscita: " + data);
             tVoto.setText("Voto medio: " + voto + "/5");
             tCodice.setText("ISBN: "+isbn);
+            inizializzaCopertina();
         } catch (SQLException ex) {
             mostraErrore(ex);
         }
         
+    }
+    
+    private void inizializzaCopertina() {
+        try {
+            immagineCopertina.setIcon(null);
+            immagineCopertina.setText("");
+            ResultSet bLob = DBConnection.visualizzaImmagineLibro(isbn);
+            bLob.first();
+            Blob imageBlob = bLob.getBlob(3);
+            InputStream binaryStream = imageBlob.getBinaryStream();
+            Image copertina = ImageIO.read(binaryStream);
+            impostaImmagineDaMostrare(copertina);
+        } catch (IOException ex) {
+            immagineCopertina.setText("Seleziona una immagine per il libro");
+        } catch (SQLException ex) {
+            Logger.getLogger(FinestraLibro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void impostaImmagineDaMostrare(Image copertina) {
+        Image immagine = copertina.getScaledInstance(75, 100, Image.SCALE_DEFAULT);
+        immagineCopertina.setIcon(new ImageIcon(immagine));
     }
     
     /**
@@ -422,7 +453,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         listeDesideri = new javax.swing.JComboBox();
         bAggiungi = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        immagineCopertina = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
@@ -528,7 +559,9 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             }
         });
 
-        jLabel5.setText("Nessuna copertina");
+        immagineCopertina.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        immagineCopertina.setText("Nessuna copertina");
+        immagineCopertina.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -571,8 +604,8 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(45, 45, 45)
+                                .addComponent(immagineCopertina, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(tTitolo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(tAutore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -618,7 +651,7 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
                             .addComponent(tDisponibile, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
                             .addComponent(tQuantita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(immagineCopertina, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -669,11 +702,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAggiungi;
     private javax.swing.JButton bCarrello;
+    private javax.swing.JLabel immagineCopertina;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
