@@ -76,7 +76,7 @@ public class FinestraListaRecensioniVenditori extends javax.swing.JDialog {
             rs = ottieniDati(); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts.
-            modelloTabella.setRS(rs);   //non credo serva, ma il prof lo mette..
+            modelloTabella.setRS(rs);
             rs.absolute(cursore);   //attiva la riga del cursore attuale
             mostraDati();           //imposta la selezione a riga singola
             tabella.getColumnModel().getColumn(0).setMinWidth(120);

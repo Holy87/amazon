@@ -92,7 +92,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
             rsStorico = ottieniDati(); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts.
-            modelloTabellaOrdini.setRS(rsStorico);   //non credo serva, ma il prof lo mette..
+            modelloTabellaOrdini.setRS(rsStorico);
             rsStorico.absolute(cursoreStorico);   //attiva la riga del cursore attuale
             if ( rsStorico.getRow() == 0 )
                 JOptionPane.showMessageDialog(this, "ERRORE: l'utente selezionato non ha ancora effettuato ordini", null, ERROR_MESSAGE);
@@ -115,7 +115,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
             rsArticoli = ottieniArticoli(idOrdine()); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
                                 //si può anche direttamente passare il reslts
-            modelloArticoli.setRS(rsArticoli);   //non credo serva, ma il prof lo mette..
+            modelloArticoli.setRS(rsArticoli);
             rsArticoli.absolute(cursoreArticoli);   //attiva la riga del cursore attuale
             mostraDatiArticoli();           //imposta la selezione a riga singola
             tabellaArticoli.getColumnModel().getColumn(4).setMinWidth(50);
