@@ -35,7 +35,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     }
     
     private final int utenteID;
-    private ResultSet rsStorico, rsArticoli, rsIndirizzo, rsFatturazione; //ResultSet su cui si basano i dati della tabella
+    private ResultSet rsStorico, rsArticoli, rsIndirizzo, rsFatturazione, rsSpedizione; //ResultSet su cui si basano i dati della tabella
     private DBTableModel modelloTabellaOrdini; //modello della tabella per i dati
     private DBTableModel modelloArticoli;
     private int cursoreStorico = 1; //memorizza la riga selezionata
@@ -111,6 +111,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
         try {
             rsIndirizzo = ottieniIndirizzo(idOrdine());
             rsFatturazione = ottieniFatturazione(idModPag());
+            rsSpedizione = ottieniSpedizione(idOrdine());
             aggiornaDatiOrdine();
             rsArticoli = ottieniArticoli(idOrdine()); //chiama il metodo in basso
                                 //non è proprio necessario chiamare un metodo
@@ -146,6 +147,10 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     
     private ResultSet ottieniFatturazione (int modPagID) throws SQLException {
         return DBConnection.ottieniFattSpedOrdine(modPagID);
+    }
+    
+        private ResultSet ottieniSpedizione(int idOrdine) throws SQLException {
+        return DBConnection.visualizzaSpedizioneOrdine(idOrdine);
     }
     
     private int idOrdine() {
@@ -235,8 +240,11 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     private void aggiornaDatiOrdine() {
         try {
             rsIndirizzo.first();
+            rsSpedizione.first();
             if ( rsIndirizzo.getString(4) != null ) {
                 tIndirizzo.setText("<html>"
+                    +"Corriere: "+rsSpedizione.getString(1)+"<br />"
+                    +"Data consegna prevista: "+rsSpedizione.getString(2)+"<br />"
                     +rsIndirizzo.getString(1)+" "
                     +rsIndirizzo.getString(2)+"<br />"
                     +rsIndirizzo.getString(3)+"<br />"
@@ -248,6 +256,8 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                     "</html>");
             } else {
                 tIndirizzo.setText("<html>"
+                    +"Corriere: "+rsSpedizione.getString(1)+"<br />"
+                    +"Data consegna prevista: "+rsSpedizione.getString(2)+"<br />"
                     +rsIndirizzo.getString(1)+" "
                     +rsIndirizzo.getString(2)+"<br />"
                     +rsIndirizzo.getString(3)+"<br />"
@@ -284,7 +294,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
             }
             tPrezzi.setText("<html>"
                 +"Prezzo netto: "+rsStorico.getFloat(4)+"€<br />"
-                +"Sconto complessivo: "+rsStorico.getFloat(5)+"€<br />"
+                +"Sconto complessivo: -"+rsStorico.getFloat(5)+"€<br />"
                 +"Costi di spedizione: "+rsStorico.getFloat(6)+"€<br />"
                 +"Prezzo totale: "+rsStorico.getFloat(3)+"€<html />");
         } catch (SQLException ex) {
@@ -413,7 +423,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tIndirizzo, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tIndirizzo, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -448,5 +458,6 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
     private javax.swing.JTable tabellaArticoli;
     private javax.swing.JTable tabellaStorico;
     // End of variables declaration//GEN-END:variables
+
 
 }

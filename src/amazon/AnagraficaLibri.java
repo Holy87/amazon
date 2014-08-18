@@ -146,11 +146,19 @@ public final class AnagraficaLibri extends javax.swing.JDialog {
     }
     
     private void apriLibro() {
-        FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(
-                this, true, 
-                modelloTabella.getValueAt(cursore-1, 1).toString(),
-                idUtente);
-        finestraDettagli.setVisible(true);
+        String isbn = modelloTabella.getValueAt(cursore-1, 1).toString();
+        try{
+            if(DBConnection.contaRigheResultSet(DBConnection.visualizzaInfoLibro(isbn)) != 0){
+                FinestraDettagliLibro finestraDettagli = new FinestraDettagliLibro(this, true, isbn, idUtente);
+                finestraDettagli.setVisible(true);
+            }
+            else
+                JOptionPane.showMessageDialog(this, "Attenzione! Libro non disponibile!", null, ERROR_MESSAGE);
+        }
+        catch (SQLException ex){
+            mostraErrore(ex);
+        }
+        
     }
     
     private double getPrezzoMinimo() {
