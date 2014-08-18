@@ -495,7 +495,10 @@ public class MainWindow extends javax.swing.JFrame {
             connettiTutto();
     }
     
-    private void checkState(){checkState(DBConnection.connected());}
+    private void checkState(){
+        System.out.println(DBConnection.connected());
+        checkState(DBConnection.connected());
+    }
     
     /**
      * @param args nome utente e password

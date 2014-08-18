@@ -6,7 +6,6 @@
 
 package amazon;
 
-import static amazon.DBConnection.verificaSconto;
 import amazon.exceptions.CodeAlreadyUsedException;
 import amazon.exceptions.CodeNotValidException;
 import amazon.exceptions.TooMuchDealsException;
@@ -100,8 +99,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
         codiceSconto.setText("");
         try {
             controllaSeGiaInserito(codice);
-            double sconto = verificaSconto(codice);
-            scontoCompl = sommaSconti();
+            double sconto = DBConnection.verificaSconto(codice);
+            scontoCompl = sommaSconti(sconto);
             sconti.add(new Scontotemp(codice, sconto));
             modelloTabellaSconti.setSconti(sconti);
             aggiornaTotale();
@@ -122,6 +121,13 @@ public class FinestraOrdine extends javax.swing.JDialog {
             scontoTotale += sconto.getSconto();
         }
         if (scontoTotale > netto())
+            throw new TooMuchDealsException();
+        return scontoTotale;
+    }
+    
+    private double sommaSconti(double nuovoSconto) throws TooMuchDealsException {
+        double scontoTotale = sommaSconti();
+        if (scontoTotale + nuovoSconto > netto())
             throw new TooMuchDealsException();
         return scontoTotale;
     }
