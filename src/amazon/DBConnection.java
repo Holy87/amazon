@@ -9,6 +9,7 @@ package amazon;
 import amazon.exceptions.CodeNotValidException;
 import amazon.utility.Contatto;
 import amazon.utility.Scontotemp;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1539,6 +1540,22 @@ public class DBConnection {
        /*VISUALIZZA (isbn = 9788807884245):
         9788807884245	52991	(BLOB)	i_racconti_di_nene.jpg	image/jpeg	18-AGO-14	I racconti di Nené		Con le sue storie Andrea Camilleri riesce sempre a creare una magia narrativa.	Giallo	133	159	09-LUG-14
        */
+   }
+   
+   /**
+    * Aggiorna l'immagine della copertina di un libro
+    * @param immagineID
+    * @param blobImmagine
+    * @throws SQLException 
+    */
+   public static void aggiornaImmagineLibro(int immagineID, Blob blobImmagine) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("UPDATE IMG_COPERTINA SET IMMAGINE=? WHERE IMMAGINE_ID=?");
+       pstmt.setBlob(1, blobImmagine);
+       pstmt.setInt(2, immagineID);
+       
+       pstmt.executeUpdate();
    }
    
    /**
