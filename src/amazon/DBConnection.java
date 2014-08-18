@@ -1492,7 +1492,7 @@ public class DBConnection {
       /**
     * Mostra una Query con l'immagine della copertina di un libro
     * @param isbn
-    * @return * FROM IMG_COPERTINA NATURAL JOIN LIBRI
+    * @return SELECT * FROM IMG_COPERTINA NATURAL JOIN LIBRI
     * @throws SQLException 
     */
    public static ResultSet visualizzaImmagineLibro(String isbn) throws SQLException {
@@ -1505,9 +1505,8 @@ public class DBConnection {
        
        return pstmt.executeQuery();
        
-       /*VISUALIZZA:
-        1234567	Roberto	Fasullo     Via Roma, 323       80100   Napoli  NA      Italia  5551029387
-        1234568	Marco   Carrozzo    Via Dei Sub, 41     80100	Napoli	NA	Italia	5559876543
+       /*VISUALIZZA (isbn = 9788807884245):
+        9788807884245	52991	(BLOB)	i_racconti_di_nene.jpg	image/jpeg	18-AGO-14	I racconti di Nené		Con le sue storie Andrea Camilleri riesce sempre a creare una magia narrativa.	Giallo	133	159	09-LUG-14
        */
    }
    
