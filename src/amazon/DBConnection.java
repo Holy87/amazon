@@ -76,7 +76,10 @@ public class DBConnection {
      * @throws SQLException 
      */
     public static void CloseConnection() throws SQLException {
-        if (conn != null) conn.close();
+        if (conn != null) {
+            conn.close();
+            conn = null;
+        }
     }
     
     /**
@@ -219,7 +222,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaOrdiniUtente(int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ? ORDER BY DATAORDINE DESC",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
@@ -387,7 +390,7 @@ public class DBConnection {
         for(Scontotemp preso : sconti)    {
             codPromo=preso.getcodPromo();
             
-            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO='?'");
+            pstmt = conn.prepareStatement("UPDATE SCONTO_CODICI SET ORDINE_ID=? WHERE CODPROMO LIKE ?");
             pstmt.setInt(1, ordineId);
             pstmt.setString(2, codPromo);
             
@@ -442,7 +445,7 @@ public class DBConnection {
        pstmt2.setInt(5, contactID);
        pstmt2.execute();
        
-       if ( sconti.isEmpty() ) //Verifica se l'array non è stato riempito
+       if ( !sconti.isEmpty() ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
        
        pstmt2.close();
@@ -1071,89 +1074,111 @@ public class DBConnection {
     * @param d3 se dispone della spedizione in 3-5 giorni
     * @throws SQLException 
     */
-   public static void aggiungiModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
+   public static void applicaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
    {
-       if(d1)   {
-            PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       
-            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
-            pstmt.setInt(1, idCorriere);
-
-            pstmt.executeUpdate();
-       }
-       
-       if(d2)   {
-       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       
-       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
-       pstmt.setInt(1, idCorriere);
-
-       pstmt.executeUpdate();
-       }
-       
-       if(d3)   {
-       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
-       
-       pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
-       pstmt.setInt(1, idCorriere);
-
-       pstmt.executeUpdate();
-       }
-
-   }
-   /**
-    * Modifica le modalità di spedizione che un corriere ha a disposizione
-    * @param idCorriere identificatore del corriere
-    * @param d1 se dispone della spedizione in un giorno
-    * @param d2 se dispone della spedizione in 2-3 giorni
-    * @param d3 se dispone della spedizione in 3-5 giorni
-    * @throws SQLException 
-    */
-      public static void aggiornaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
-   {   
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        if(d1)   {
             pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
             pstmt.setInt(1, idCorriere);
-
-            pstmt.executeUpdate();
-       }
-       else {
-            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=8");
-            pstmt.setInt(1, idCorriere);
-
-            pstmt.executeUpdate();
+            try {
+                pstmt.executeUpdate();
+            } catch (SQLException ex) {
+                pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
+                pstmt.setInt(1, idCorriere);
+                pstmt.executeUpdate();
+            }
+       } else {
+           pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=8");
+           pstmt.setInt(1, idCorriere);
+           pstmt.executeUpdate();
        }
        
        if(d2)   {
-            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
-            pstmt.setInt(1, idCorriere);
-
-            pstmt.executeUpdate();
-       }
-       else {
-       
+           pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
+           pstmt.setInt(1, idCorriere);
+           try {
+               pstmt.executeUpdate();
+           } catch (SQLException ex) {
+               pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
+               pstmt.setInt(1, idCorriere);
+               pstmt.executeUpdate();
+           }
+       } else {
             pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=4");
             pstmt.setInt(1, idCorriere);
-
             pstmt.executeUpdate();
        }
        
        if(d3)   {
-       
-            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
-            pstmt.setInt(1, idCorriere);
-
-            pstmt.executeUpdate();
-       }
-       else {
-       
+           pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
+           pstmt.setInt(1, idCorriere);
+           try {
+               pstmt.executeUpdate();
+           } catch (SQLException ex) {
+               pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
+               pstmt.setInt(1, idCorriere);
+               pstmt.executeUpdate();
+           }
+       } else {
             pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=0");
             pstmt.setInt(1, idCorriere);
-
             pstmt.executeUpdate();
        }
+
    }
+//   /**
+//    * Modifica le modalità di spedizione che un corriere ha a disposizione
+//    * @param idCorriere identificatore del corriere
+//    * @param d1 se dispone della spedizione in un giorno
+//    * @param d2 se dispone della spedizione in 2-3 giorni
+//    * @param d3 se dispone della spedizione in 3-5 giorni
+//    * @throws SQLException 
+//    */
+//      public static void aggiornaModSpedizione(int idCorriere, boolean d1, boolean d2, boolean d3) throws SQLException
+//   {   
+//       PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
+//       if(d1)   {
+//            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
+//            pstmt.setInt(1, idCorriere);
+//
+//            pstmt.executeUpdate();
+//       }
+//       else {
+//            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=8");
+//            pstmt.setInt(1, idCorriere);
+//
+//            pstmt.executeUpdate();
+//       }
+//       
+//       if(d2)   {
+//            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
+//            pstmt.setInt(1, idCorriere);
+//
+//            pstmt.executeUpdate();
+//       }
+//       else {
+//       
+//            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=4");
+//            pstmt.setInt(1, idCorriere);
+//
+//            pstmt.executeUpdate();
+//       }
+//       
+//       if(d3)   {
+//       
+//            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
+//            pstmt.setInt(1, idCorriere);
+//
+//            pstmt.executeUpdate();
+//       }
+//       else {
+//       
+//            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=0");
+//            pstmt.setInt(1, idCorriere);
+//
+//            pstmt.executeUpdate();
+//       }
+//   }
    
     public static ResultSet visualizzaModSpedizione(int corriereID) throws SQLException   {
         PreparedStatement pstmt;

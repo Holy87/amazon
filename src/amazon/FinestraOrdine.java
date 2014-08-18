@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -170,7 +172,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             public void valueChanged(ListSelectionEvent e) {
                 tableSelectionChangedSconti();
             }
-        } 
+        }
                 
         );
     }
@@ -313,13 +315,13 @@ public class FinestraOrdine extends javax.swing.JDialog {
         controlloAbilitazioneAcquisto();
     }
     
-    private void completaAcquisto() {
+    private void completaAcquisto() throws TooMuchDealsException {
         try {
             System.out.println(idUtente);
             System.out.println(costoSpedizione());
             System.out.println(metodoPagamentoSelezionato());
             System.out.println(indirizzoSelezionato());
-            DBConnection.creaOrdine(idUtente, (int)costoSpedizione(), scontoCompl, metodoPagamentoSelezionato(), indirizzoSelezionato(), sconti);
+            DBConnection.creaOrdine(idUtente, (int)costoSpedizione(), sommaSconti(), metodoPagamentoSelezionato(), indirizzoSelezionato(), sconti);
             setVisible(false);
             JOptionPane.showMessageDialog(this, "L'ordine è stato effettuato.");
             dispose();
@@ -800,7 +802,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }//GEN-LAST:event_cPagamentoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        completaAcquisto();
+        try {
+            completaAcquisto();
+        } catch (TooMuchDealsException ex) {
+            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tabellaArticoliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseClicked

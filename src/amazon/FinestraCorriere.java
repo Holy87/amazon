@@ -199,6 +199,7 @@ public class FinestraCorriere extends EditForm {
 
     @Override
     protected void fillContents() {
+        inizializzaCheckBox();
         try {
             tCorriere_ID.setText((String)dati.get(0));
             tCorriere_Nome.setText((String)dati.get(1));
@@ -207,25 +208,29 @@ public class FinestraCorriere extends EditForm {
             ResultSet spedizioni = DBConnection.visualizzaModSpedizione(corriereID);
             while(spedizioni.next())    {
                 if (spedizioni.getInt(1) == 8)  {
-                    System.out.println("Entra 8");
                     jCheckBox_d1.setSelected(true);
                 }
                 if (spedizioni.getInt(1) == 4)  {
-                    System.out.println("Entra 4");
                     jCheckBox_d2.setSelected(true);
                 }
                 if (spedizioni.getInt(1) == 0)  {
-                    System.out.println("Entra 0");
                     jCheckBox_d3.setSelected(true);
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(FinestraCorriere.class.getName()).log(Level.SEVERE, null, ex);
+            mostraErrore(ex);
         }
+    }
+    
+    private void inizializzaCheckBox() {
+        jCheckBox_d1.setSelected(false);
+        jCheckBox_d2.setSelected(false);
+        jCheckBox_d3.setSelected(false);
     }
 
     @Override
     protected void cleanContents() {
+        inizializzaCheckBox();
         tCorriere_ID.setText("");
         tCorriere_Nome.setText("");
     }
@@ -238,15 +243,14 @@ public class FinestraCorriere extends EditForm {
             setVisible(false);
             if (mode == ADDN)   {
                 corriereID = DBConnection.creaCorriere(tCorriere_Nome.getText());
-            System.out.println(d1);
-            System.out.println(d2);
-            System.out.println(d3);
-            System.out.println(corriereID);
+                
             }
-            else
-                DBConnection.aggiornaCorriere(Integer.parseInt(tCorriere_ID.getText()), tCorriere_Nome.getText());
+            else {
+                corriereID = Integer.parseInt(tCorriere_ID.getText());
+                DBConnection.aggiornaCorriere(corriereID, tCorriere_Nome.getText());
+            }
+            DBConnection.applicaModSpedizione(corriereID, d1, d2, d3);
             chiudiFinestra();
-            aggiornaModSped();
         }
         catch(SQLException ex){
             mostraErrore(ex);
@@ -254,13 +258,6 @@ public class FinestraCorriere extends EditForm {
         } catch (NoFormatSelectedException ex) {
             JOptionPane.showMessageDialog(this, "Devi selezionare almeno un formato", "Errore!", JOptionPane.ERROR_MESSAGE, null);
         }
-    }
-    
-    private void aggiornaModSped() throws SQLException {
-        if (mode == EDIT)
-            DBConnection.aggiornaModSpedizione(Integer.parseInt(tCorriere_ID.getText()), d1, d2, d3);
-        else
-            DBConnection.aggiungiModSpedizione(corriereID, d1, d2, d3);
     }
         
     /**
