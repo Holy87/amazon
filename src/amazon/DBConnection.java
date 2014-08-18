@@ -1078,50 +1078,56 @@ public class DBConnection {
    {
        PreparedStatement pstmt; //Statement inserimento nuova riga in ordini
        if(d1)   {
-            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
+            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, ?, ?)");
             pstmt.setInt(1, idCorriere);
+            pstmt.setString(2, "1_Giorno");
+            pstmt.setInt(3, 8);
             try {
                 pstmt.executeUpdate();
             } catch (SQLException ex) {
-                pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '1_Giorno', 8)");
-                pstmt.setInt(1, idCorriere);
-                pstmt.executeUpdate();
+                if (ex.getErrorCode() != 1)
+                    throw ex;
             }
        } else {
-           pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=8");
+           pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=?");
            pstmt.setInt(1, idCorriere);
+           pstmt.setInt(2, 8);
            pstmt.executeUpdate();
        }
        
        if(d2)   {
-           pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
+           pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, ?, ?)");
            pstmt.setInt(1, idCorriere);
+           pstmt.setString(2, "2-3_Giorni");
+           pstmt.setInt(3, 4);
            try {
                pstmt.executeUpdate();
            } catch (SQLException ex) {
-               pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '2-3_Giorni', 4)");
-               pstmt.setInt(1, idCorriere);
-               pstmt.executeUpdate();
+               if (ex.getErrorCode() != 1)
+                    throw ex;
            }
        } else {
-            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=4");
+            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=?");
             pstmt.setInt(1, idCorriere);
+            pstmt.setInt(2, 4);
             pstmt.executeUpdate();
        }
        
        if(d3)   {
-           pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
+           pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, ?, ?)");
            pstmt.setInt(1, idCorriere);
+           pstmt.setString(2, "3_5_Giorni");
+           pstmt.setInt(3, 0);
            try {
                pstmt.executeUpdate();
            } catch (SQLException ex) {
-               pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, '3-5_Giorni', 0)");
-               pstmt.setInt(1, idCorriere);
-               pstmt.executeUpdate();
+               if (ex.getErrorCode() != 1)
+                    throw ex;
            }
        } else {
-            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=0");
+            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=?");
             pstmt.setInt(1, idCorriere);
+            pstmt.setInt(2, 0);
             pstmt.executeUpdate();
        }
 
