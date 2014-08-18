@@ -496,7 +496,6 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     private void checkState(){
-        System.out.println(DBConnection.connected());
         checkState(DBConnection.connected());
     }
     
