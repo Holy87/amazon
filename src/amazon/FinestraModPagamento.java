@@ -182,6 +182,7 @@ public class FinestraModPagamento extends javax.swing.JDialog {
         bModifica = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocationByPlatform(true);
 
         tabella.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

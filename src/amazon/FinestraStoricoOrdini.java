@@ -284,7 +284,7 @@ public class FinestraStoricoOrdini extends javax.swing.JDialog {
             }
             tPrezzi.setText("<html>"
                 +"Prezzo netto: "+rsStorico.getFloat(4)+"€<br />"
-                +"Sconto complessivo: "+rsStorico.getFloat(5)+"€<br />"
+                +"Sconto complessivo: -"+rsStorico.getFloat(5)+"€<br />"
                 +"Costi di spedizione: "+rsStorico.getFloat(6)+"€<br />"
                 +"Prezzo totale: "+rsStorico.getFloat(3)+"€<html />");
         } catch (SQLException ex) {

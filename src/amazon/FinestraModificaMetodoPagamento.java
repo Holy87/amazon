@@ -69,6 +69,7 @@ public class FinestraModificaMetodoPagamento extends EditForm {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Aggiungi Metodo di Pagamento");
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(470, 310));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
