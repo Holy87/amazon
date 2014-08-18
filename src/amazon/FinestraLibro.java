@@ -447,6 +447,7 @@ public class FinestraLibro extends EditForm {
             immagineID = 0;
             nuovaCopertina = null;
             copertina = null;
+            immagineCopertina.setIcon(null);
             immagineCopertina.setText("");
             ResultSet bLob = DBConnection.visualizzaImmagineLibro(oldISBN);
             bLob.first();
