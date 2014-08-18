@@ -1514,6 +1514,26 @@ public class DBConnection {
        return pstmt.executeQuery();
        
    }
+      /**
+    * Mostra una Query con l'immagine della copertina di un libro
+    * @param isbn
+    * @return SELECT * FROM IMG_COPERTINA NATURAL JOIN LIBRI
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaImmagineLibro(String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT * FROM IMG_COPERTINA NATURAL JOIN LIBRI WHERE ISBN=?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       
+       return pstmt.executeQuery();
+       
+       /*VISUALIZZA (isbn = 9788807884245):
+        9788807884245	52991	(BLOB)	i_racconti_di_nene.jpg	image/jpeg	18-AGO-14	I racconti di Nené		Con le sue storie Andrea Camilleri riesce sempre a creare una magia narrativa.	Giallo	133	159	09-LUG-14
+       */
+   }
    
    /**
     * In questo campo compaiono i venditori che hanno a disposizione il libro scelto, qualsiasi formato abbiano.
