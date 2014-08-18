@@ -1166,7 +1166,7 @@ public class DBConnection {
        if(d3)   {
            pstmt = conn.prepareStatement("INSERT INTO MOD_SPEDIZIONE VALUES(?, ?, ?)");
            pstmt.setInt(1, idCorriere);
-           pstmt.setString(2, "3_5_Giorni");
+           pstmt.setString(2, "3-5_Giorni");
            pstmt.setInt(3, 0);
            try {
                pstmt.executeUpdate();
