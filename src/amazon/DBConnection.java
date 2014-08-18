@@ -1099,8 +1099,6 @@ public class DBConnection {
             try {
                 pstmt.executeUpdate();
             } catch (SQLException ex) {
-                if (ex.getErrorCode() != 1)
-                    throw ex;
             }
        } else {
            pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=?");
@@ -1117,8 +1115,6 @@ public class DBConnection {
            try {
                pstmt.executeUpdate();
            } catch (SQLException ex) {
-               if (ex.getErrorCode() != 1)
-                    throw ex;
            }
        } else {
             pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=?");
@@ -1135,8 +1131,6 @@ public class DBConnection {
            try {
                pstmt.executeUpdate();
            } catch (SQLException ex) {
-               if (ex.getErrorCode() != 1)
-                    throw ex;
            }
        } else {
             pstmt = conn.prepareStatement("DELETE FROM MOD_SPEDIZIONE WHERE CORRIERE_ID=? AND COSTOSPED=?");

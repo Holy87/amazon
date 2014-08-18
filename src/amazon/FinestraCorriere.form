@@ -45,11 +45,11 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jCheckBox_d1" min="-2" max="-2" attributes="0"/>
+                          <Component id="cRap" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jCheckBox_d2" min="-2" max="-2" attributes="0"/>
+                          <Component id="cMed" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jCheckBox_d3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cStand" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -75,9 +75,9 @@
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jCheckBox_d1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBox_d2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBox_d3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cRap" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cMed" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cStand" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -126,28 +126,28 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bOkActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="jCheckBox_d1">
+    <Component class="javax.swing.JCheckBox" name="cRap">
       <Properties>
         <Property name="text" type="java.lang.String" value="1 Giorno"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox_d1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cRapActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="jCheckBox_d2">
+    <Component class="javax.swing.JCheckBox" name="cMed">
       <Properties>
         <Property name="text" type="java.lang.String" value="2-3 Giorni"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox_d2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cMedActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="jCheckBox_d3">
+    <Component class="javax.swing.JCheckBox" name="cStand">
       <Properties>
         <Property name="text" type="java.lang.String" value="3-5 Giorni"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox_d3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cStandActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
