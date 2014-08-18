@@ -10,6 +10,7 @@ import amazon.exceptions.NoFormatSelectedException;
 import amazon.utility.FiltroImmagini;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,7 +52,8 @@ public class FinestraLibro extends EditForm {
     private double prezzoRigida, prezzoFlessibile, prezzoKindle;
     private boolean selRigida, selFlessibile, selKindle;
     private Image copertina;
-    private int immagineID;
+    private int immagineID = 0;
+    private File nuovaCopertina;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -437,10 +439,12 @@ public class FinestraLibro extends EditForm {
         tListinoFlessibile.setText("");
         tListinoRigida.setText("");
         tListinoKindle.setText("");
+        immagineCopertina.setText("Seleziona una immagine per il libro");
     }
     
     private void inizializzaCopertina() {
         try {
+            immagineCopertina.setText("");
             ResultSet bLob = DBConnection.visualizzaImmagineLibro(oldISBN);
             immagineID = bLob.getInt(2);
             bLob.first();Blob imageBlob = bLob.getBlob(3);
@@ -448,7 +452,7 @@ public class FinestraLibro extends EditForm {
             copertina = ImageIO.read(binaryStream);
             impostaImmagineDaMostrare();
         } catch (IOException ex) {
-            //niente
+            immagineCopertina.setText("Seleziona una immagine per il libro");
         } catch (SQLException ex) {
             Logger.getLogger(FinestraLibro.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -616,13 +620,22 @@ public class FinestraLibro extends EditForm {
         int response = filePicker.showOpenDialog(this);
         if (response == JFileChooser.APPROVE_OPTION) {
             File file = filePicker.getSelectedFile();
+            nuovaCopertina = file;
             try {
-                FileInputStream nuovaImmagine = new FileInputStream(file);
-                DBConnection.aggiornaImmagineLibro(immagineID, nuovaImmagine);
-                
+                BufferedImage bim = ImageIO.read(file);
+                copertina = bim;
+                DBConnection.aggiornaImmagineLibro(immagineID, file);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Errore nell'aprire il file "+ file.getAbsolutePath(), "Errore apertura file", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                mostraErrore(ex);
             }
         }
     }
+    
+    private void aggiornaCopertinaLibro() throws SQLException, FileNotFoundException {
+        if (immagineID != 0)
+            DBConnection.aggiornaImmagineLibro(immagineID, nuovaCopertina);
+    }
+    
 }

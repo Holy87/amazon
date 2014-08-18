@@ -9,6 +9,9 @@ package amazon;
 import amazon.exceptions.CodeNotValidException;
 import amazon.utility.Contatto;
 import amazon.utility.Scontotemp;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1555,14 +1558,14 @@ public class DBConnection {
    /**
     * Aggiorna l'immagine della copertina di un libro
     * @param immagineID
-    * @param blobImmagine
+    * @param immagine File immagine
     * @throws SQLException 
     */
-   public static void aggiornaImmagineLibro(int immagineID, Blob blobImmagine) throws SQLException {
+   public static void aggiornaImmagineLibro(int immagineID, File immagine) throws SQLException, FileNotFoundException {
        PreparedStatement pstmt;
-       
        pstmt = conn.prepareStatement("UPDATE IMG_COPERTINA SET IMMAGINE=? WHERE IMMAGINE_ID=?");
-       pstmt.setBlob(1, blobImmagine);
+       FileInputStream fin = new FileInputStream(immagine);
+       pstmt.setBinaryStream(1,fin,(int)immagine.length());
        pstmt.setInt(2, immagineID);
        
        pstmt.executeUpdate();
