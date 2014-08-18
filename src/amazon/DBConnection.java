@@ -1489,6 +1489,27 @@ public class DBConnection {
        return pstmt.executeQuery();
        
    }
+      /**
+    * Mostra una Query con l'immagine della copertina di un libro
+    * @param isbn
+    * @return * FROM IMG_COPERTINA NATURAL JOIN LIBRI
+    * @throws SQLException 
+    */
+   public static ResultSet visualizzaImmagineLibro(String isbn) throws SQLException {
+       PreparedStatement pstmt;
+       
+       pstmt = conn.prepareStatement("SELECT * FROM IMG_COPERTINA NATURAL JOIN LIBRI WHERE ISBN=?",
+               ResultSet.TYPE_SCROLL_INSENSITIVE,
+               ResultSet.CONCUR_READ_ONLY);
+       pstmt.setString(1, isbn);
+       
+       return pstmt.executeQuery();
+       
+       /*VISUALIZZA:
+        1234567	Roberto	Fasullo     Via Roma, 323       80100   Napoli  NA      Italia  5551029387
+        1234568	Marco   Carrozzo    Via Dei Sub, 41     80100	Napoli	NA	Italia	5559876543
+       */
+   }
    
    /**
     * In questo campo compaiono i venditori che hanno a disposizione il libro scelto, qualsiasi formato abbiano.
