@@ -9,8 +9,6 @@ package amazon;
 import amazon.exceptions.NoFormatSelectedException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -209,12 +207,15 @@ public class FinestraCorriere extends EditForm {
             while(spedizioni.next())    {
                 if (spedizioni.getInt(1) == 8)  {
                     jCheckBox_d1.setSelected(true);
+                    d1 = true;
                 }
                 if (spedizioni.getInt(1) == 4)  {
                     jCheckBox_d2.setSelected(true);
+                    d2 = true;
                 }
                 if (spedizioni.getInt(1) == 0)  {
                     jCheckBox_d3.setSelected(true);
+                    d3 = true;
                 }
             }
         } catch (SQLException ex) {
@@ -226,6 +227,9 @@ public class FinestraCorriere extends EditForm {
         jCheckBox_d1.setSelected(false);
         jCheckBox_d2.setSelected(false);
         jCheckBox_d3.setSelected(false);
+        d1 = false;
+        d2 = false;
+        d3 = false;
     }
 
     @Override
