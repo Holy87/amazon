@@ -222,7 +222,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaOrdiniUtente(int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ? ORDER BY DATAORDINE DESC",
+       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, TO_CHAR(DATAORDINE, 'DD/MM/YY HH24:MM:SS') AS DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ? ORDER BY DATAORDINE DESC",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
@@ -239,6 +239,16 @@ public class DBConnection {
    public static ResultSet visualizzaArticoliOrdine(int idOrdine) throws SQLException {
        PreparedStatement pstmt;
        pstmt = conn.prepareStatement("SELECT DISTINCT VIEW_INFO.LIBRO_NOME, VIEW_INFO.FORMATO_NOME, VIEW_INFO.VENDITORE_NOME, VIEW_INFO.TIPOCONDIZIONE, COMPARTICOLI.QUANTITÀ, COMPARTICOLI.PREZZOVENDITA FROM COMPARTICOLI JOIN VIEW_INFO ON VIEW_INFO.PROD_ID = COMPARTICOLI.PROD_ID WHERE ORDINE_ID=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+       pstmt.setInt(1, idOrdine);
+       
+       return pstmt.executeQuery();
+   }
+   
+   public static ResultSet visualizzaSpedizioneOrdine(int idOrdine) throws SQLException {
+       PreparedStatement pstmt;
+       pstmt = conn.prepareStatement("SELECT CORRIERE_NOME, TO_CHAR(DATACONSEGNA, 'DD/MM/YY') FROM CORRIERI INNER JOIN SPEDIZIONI ON CORRIERI.CORRIERE_ID=SPEDIZIONI.CORRIERE_ID WHERE ORDINE_ID=?",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idOrdine);
