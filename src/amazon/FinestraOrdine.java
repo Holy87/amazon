@@ -15,6 +15,7 @@ import amazon.utility.BoxUtility;
 import amazon.utility.Contatto;
 import amazon.utility.ModPagamento;
 import amazon.utility.Scontotemp;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -210,8 +211,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
             totale += costoSpedizione();
             tSpedizione.setText(costoSpedizione()+"€");
             totale -= sommaSconti();
+            BigDecimal bd = new BigDecimal(totale);
+            bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+            totale=bd.doubleValue();
             tSconto.setText("-"+sommaSconti()+"€");
-            tTotale.setText(totale + "€");
+            tTotale.setText(totale + "€");   
         } catch (TooMuchDealsException ex) {
             System.out.println(ex.toString());
         }
