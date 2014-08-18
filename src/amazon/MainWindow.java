@@ -58,6 +58,8 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private void initCustomComponents() {
         jTabbedPanel.setVisible(false);
+        jMenu3.setVisible(false);
+        mStrumenti.setVisible(false);
         jLabel1.setText("");
         lUtente.setText("");
         finestraUtente = new FinestraUtente(this, true);
@@ -87,6 +89,8 @@ public class MainWindow extends javax.swing.JFrame {
         tabCorrieri.connectTable();
         jLabel1.setText("Utente attivo:");
         lUtente.setText("Nessuno");
+        jMenu3.setVisible(true);
+        mStrumenti.setVisible(true);
     }
     
     /**
@@ -421,6 +425,8 @@ public class MainWindow extends javax.swing.JFrame {
                 checkState(false);
                 impostaUtente(0, null);
                 jLabel1.setText("");
+                jMenu3.setVisible(false);
+                mStrumenti.setVisible(false);
             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(rootPane, "Errore nella disconnessione al database: " + e.toString(), null, ERROR_MESSAGE);
