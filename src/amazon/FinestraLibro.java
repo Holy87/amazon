@@ -444,10 +444,14 @@ public class FinestraLibro extends EditForm {
     
     private void inizializzaCopertina() {
         try {
+            immagineID = 0;
+            nuovaCopertina = null;
+            copertina = null;
             immagineCopertina.setText("");
             ResultSet bLob = DBConnection.visualizzaImmagineLibro(oldISBN);
+            bLob.first();
             immagineID = bLob.getInt(2);
-            bLob.first();Blob imageBlob = bLob.getBlob(3);
+            Blob imageBlob = bLob.getBlob(3);
             InputStream binaryStream = imageBlob.getBinaryStream();
             copertina = ImageIO.read(binaryStream);
             impostaImmagineDaMostrare();
