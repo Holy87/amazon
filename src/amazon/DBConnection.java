@@ -222,7 +222,7 @@ public class DBConnection {
     */
    public static ResultSet visualizzaOrdiniUtente(int idUtente) throws SQLException {
        PreparedStatement pstmt;
-       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ?",
+       pstmt = conn.prepareStatement("SELECT ORDINI.ORDINE_ID, DATAORDINE, PREZZOTOTALE, ORDINI.PREZZONETTO, ORDINI.SCONTOCOMPL, COSTOSPED, MOD_PAGAMENTO_ID, CONTACT_ID, CORRIERE_ID FROM ORDINI JOIN SPEDIZIONI ON ORDINI.ORDINE_ID=SPEDIZIONI.ORDINE_ID WHERE UTENTE_ID = ? ORDER BY DATAORDINE DESC",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
        pstmt.setInt(1, idUtente);
@@ -390,7 +390,7 @@ public class DBConnection {
         for(Scontotemp preso : sconti)    {
             codPromo=preso.getcodPromo();
             
-            pstmt = conn.prepareStatement("UPDATE CODICI_SCONTO SET ORDINE_ID=? WHERE CODPROMO='?'");
+            pstmt = conn.prepareStatement("UPDATE SCONTO_CODICI SET ORDINE_ID=? WHERE CODPROMO LIKE ?");
             pstmt.setInt(1, ordineId);
             pstmt.setString(2, codPromo);
             
@@ -445,7 +445,7 @@ public class DBConnection {
        pstmt2.setInt(5, contactID);
        pstmt2.execute();
        
-       if ( sconti.isEmpty() ) //Verifica se l'array non è stato riempito
+       if ( !sconti.isEmpty() ) //Verifica se l'array non è stato riempito
            applicaScontoOrdine(sconti, idOrder);
        
        pstmt2.close();

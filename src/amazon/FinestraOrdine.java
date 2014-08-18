@@ -15,9 +15,12 @@ import amazon.utility.BoxUtility;
 import amazon.utility.Contatto;
 import amazon.utility.ModPagamento;
 import amazon.utility.Scontotemp;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
@@ -169,7 +172,7 @@ public class FinestraOrdine extends javax.swing.JDialog {
             public void valueChanged(ListSelectionEvent e) {
                 tableSelectionChangedSconti();
             }
-        } 
+        }
                 
         );
     }
@@ -210,8 +213,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
             totale += costoSpedizione();
             tSpedizione.setText(costoSpedizione()+"€");
             totale -= sommaSconti();
+            BigDecimal bd = new BigDecimal(totale);
+            bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+            totale=bd.doubleValue();
             tSconto.setText("-"+sommaSconti()+"€");
-            tTotale.setText(totale + "€");
+            tTotale.setText(totale + "€");   
         } catch (TooMuchDealsException ex) {
             System.out.println(ex.toString());
         }
@@ -309,13 +315,13 @@ public class FinestraOrdine extends javax.swing.JDialog {
         controlloAbilitazioneAcquisto();
     }
     
-    private void completaAcquisto() {
+    private void completaAcquisto() throws TooMuchDealsException {
         try {
             System.out.println(idUtente);
             System.out.println(costoSpedizione());
             System.out.println(metodoPagamentoSelezionato());
             System.out.println(indirizzoSelezionato());
-            DBConnection.creaOrdine(idUtente, (int)costoSpedizione(), scontoCompl, metodoPagamentoSelezionato(), indirizzoSelezionato(), sconti);
+            DBConnection.creaOrdine(idUtente, (int)costoSpedizione(), sommaSconti(), metodoPagamentoSelezionato(), indirizzoSelezionato(), sconti);
             setVisible(false);
             JOptionPane.showMessageDialog(this, "L'ordine è stato effettuato.");
             dispose();
@@ -796,7 +802,11 @@ public class FinestraOrdine extends javax.swing.JDialog {
     }//GEN-LAST:event_cPagamentoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        completaAcquisto();
+        try {
+            completaAcquisto();
+        } catch (TooMuchDealsException ex) {
+            Logger.getLogger(FinestraOrdine.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tabellaArticoliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabellaArticoliMouseClicked
