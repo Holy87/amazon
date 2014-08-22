@@ -156,9 +156,11 @@ public class FinestraDettagliLibro extends javax.swing.JDialog {
             ResultSet bLob = DBConnection.visualizzaImmagineLibro(isbn);
             bLob.first();
             Blob imageBlob = bLob.getBlob(3);
-            InputStream binaryStream = imageBlob.getBinaryStream();
-            Image copertina = ImageIO.read(binaryStream);
-            impostaImmagineDaMostrare(copertina);
+            if (imageBlob != null) {
+                InputStream binaryStream = imageBlob.getBinaryStream();
+                Image copertina = ImageIO.read(binaryStream);
+                impostaImmagineDaMostrare(copertina);
+            }
         } catch (IOException ex) {
             immagineCopertina.setText("Seleziona una immagine per il libro");
         } catch (SQLException ex) {
