@@ -452,9 +452,7 @@ public class FinestraLibro extends EditForm {
             ResultSet bLob = DBConnection.visualizzaImmagineLibro(oldISBN);
             bLob.first();
             immagineID = bLob.getInt(2);
-            System.out.println("Controllo blob");
             Blob imageBlob = bLob.getBlob(3);
-            System.out.println("Blob completato");
             if (imageBlob != null) {
                 InputStream binaryStream = imageBlob.getBinaryStream();
                 copertina = ImageIO.read(binaryStream);
