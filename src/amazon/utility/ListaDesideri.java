@@ -11,8 +11,8 @@ package amazon.utility;
  * @author Francesco Bosso <fr.bosso at outlook.it>
  */
 public class ListaDesideri {
-    private int idLista;
-    private String nomeLista;
+    private final int idLista;
+    private final String nomeLista;
     
     public ListaDesideri(int id, String nome) {
         idLista = id;

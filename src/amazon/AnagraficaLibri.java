@@ -16,7 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author frbos_000
+ * @author Francesco Bosso <fr.bosso@outlook.it>
  */
 public final class AnagraficaLibri extends javax.swing.JDialog {
 

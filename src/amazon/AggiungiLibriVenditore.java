@@ -7,16 +7,11 @@
 package amazon;
 
 import amazon.modelliTabelle.DBTableModel;
-import java.awt.Window;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 
 /**
@@ -27,6 +22,9 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
 
     /**
      * Creates new form AggiungiLibriVenditore
+     * @param parent
+     * @param modal
+     * @param idVenditore
      */
     public AggiungiLibriVenditore(java.awt.Frame parent, boolean modal, int idVenditore) {
         super(parent, modal);
@@ -44,7 +42,7 @@ public class AggiungiLibriVenditore extends javax.swing.JDialog {
     private final int RIGID = 2002;
     private final int FLESS = 2001;
     private final int KINDL = 2003;
-    private int idVenditore;
+    private final int idVenditore;
     
     @SuppressWarnings("Convert2Lambda")
     public final void impostaTabella() {

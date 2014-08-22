@@ -558,6 +558,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 if (args.length == 2)
                     new MainWindow(args[0], args[1]).setVisible(true);

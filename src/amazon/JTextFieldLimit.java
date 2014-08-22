@@ -12,9 +12,9 @@ import  javax.swing.text.*;
  * @author pixel89
  */
 public class JTextFieldLimit extends PlainDocument {
-  private int limit;
+  private final int limit;
   // optional uppercase conversion
-  private boolean toUppercase = false;
+  private final boolean toUppercase = false;
   
   JTextFieldLimit(int limit) {
    super();

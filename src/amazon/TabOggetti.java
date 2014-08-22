@@ -284,7 +284,7 @@ public final class TabOggetti extends javax.swing.JPanel {
     public void aggiornaTabella()
     {
         try {
-            if (getTableName() != "LIBRI")
+            if (!"LIBRI".equals(getTableName()))
                 rs = DBConnection.eseguiQuery("SELECT * FROM " + getTableName());
             else
                 rs = DBConnection.eseguiQuery("SELECT LIBRO_NOME, EDIZIONE_N, ISBN, DESCRIZIONE, GENERE, PAGINE_N, PESOSPED, TO_CHAR(DATAUSCITA, 'DD/MM/YYYY') AS DATA_USCITA FROM LIBRI");
@@ -479,7 +479,6 @@ public final class TabOggetti extends javax.swing.JPanel {
         errore += "\nCodice: " + ex.getErrorCode();
         errore += "\nMessaggio: " + ex.getMessage();
         errore += "\n\n" + ex.getSQLState();
-        errore += "\n" + ex.getCause();
         JOptionPane.showMessageDialog(mainWindow, "Errore: " + errore, null, ERROR_MESSAGE);
     }
     

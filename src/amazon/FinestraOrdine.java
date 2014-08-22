@@ -61,7 +61,8 @@ public class FinestraOrdine extends javax.swing.JDialog {
     private int indirizzoSelezionato, pagamentoSelezionato;
     private LinkedList<Scontotemp> sconti = new LinkedList();
     
-    private int idUtente, prodID, prodNum;
+    private final int idUtente;
+    private int prodID, prodNum;
     private double totale = 0;
     static double scontoCompl = 0;
     

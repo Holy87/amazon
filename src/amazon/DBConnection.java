@@ -1594,6 +1594,7 @@ public class DBConnection {
     * @param immagineID
     * @param immagine File immagine
     * @throws SQLException 
+    * @throws java.io.FileNotFoundException 
     */
    public static void aggiornaImmagineLibro(int immagineID, File immagine) throws SQLException, FileNotFoundException {
        PreparedStatement pstmt;
@@ -1611,15 +1612,17 @@ public class DBConnection {
     * @param isbn
     * @param fileNome
     * @throws SQLException 
+    * @throws java.io.FileNotFoundException 
     */
    public static void inserisciImmagineLibro(String isbn, String fileNome, File immagine) throws SQLException, FileNotFoundException {
        PreparedStatement pstmt;
        
-       pstmt = conn.prepareStatement("INSERT INTO IMG_COPERTINA (IMMAGINE, ISBN, FILE_NOME, MIMETYPE, IMMAGINE_DATA) VALUES (?, ?, ?, image/jpeg, SYSDATE");
+       pstmt = conn.prepareStatement("INSERT INTO IMG_COPERTINA (IMMAGINE, ISBN, FILE_NOME, MIMETYPE) VALUES (?, ?, ?, ?)");
        FileInputStream fin = new FileInputStream(immagine);
        pstmt.setBinaryStream(1,fin,(int)immagine.length());
        pstmt.setString(2, isbn);
        pstmt.setString(3, fileNome);
+       pstmt.setString(4, "image/jpeg");
               
        pstmt.executeUpdate();
    }
@@ -1936,6 +1939,7 @@ public class DBConnection {
     * @param resultSet
     * @return intero, numero di righe
     */
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
    public static int contaRigheResultSet(ResultSet resultSet) {
        int size;
     try {
