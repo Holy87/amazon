@@ -316,7 +316,7 @@ public class FinestraLibro extends EditForm {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cKindle)
                     .addComponent(tListinoKindle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bOk)
                     .addComponent(bEsc))
@@ -439,7 +439,7 @@ public class FinestraLibro extends EditForm {
         tListinoFlessibile.setText("");
         tListinoRigida.setText("");
         tListinoKindle.setText("");
-        immagineCopertina.setText("Seleziona una immagine per il libro");
+        immagineCopertina.setText("");
     }
     
     private void inizializzaCopertina() {
@@ -460,6 +460,7 @@ public class FinestraLibro extends EditForm {
                 copertina = ImageIO.read(binaryStream);
                 impostaImmagineDaMostrare();
             }
+            //immagineCopertina.setText("");
         } catch (IOException ex) {
             immagineCopertina.setText("Seleziona una immagine per il libro");
         } catch (SQLException ex) {
@@ -640,6 +641,7 @@ public class FinestraLibro extends EditForm {
                 BufferedImage bim = ImageIO.read(file);
                 copertina = bim;
                 impostaImmagineDaMostrare();
+                //immagineCopertina.setText("");
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Errore nell'aprire il file "+ file.getAbsolutePath(), "Errore apertura file", JOptionPane.ERROR_MESSAGE);
             }

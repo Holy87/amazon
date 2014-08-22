@@ -1620,7 +1620,7 @@ public class DBConnection {
        pstmt.setBinaryStream(1,fin,(int)immagine.length());
        pstmt.setString(2, isbn);
        pstmt.setString(3, fileNome);
-       
+              
        pstmt.executeUpdate();
    }
    
