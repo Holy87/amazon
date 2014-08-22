@@ -12,7 +12,6 @@ import amazon.utility.Scontotemp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1088,6 +1087,7 @@ public class DBConnection {
     /**
     * Crea un nuovo corriere per il DB
     * @param nomeCorriere
+     * @return 
     * @throws SQLException 
     */
    public static int creaCorriere(String nomeCorriere) throws SQLException
