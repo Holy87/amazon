@@ -452,10 +452,14 @@ public class FinestraLibro extends EditForm {
             ResultSet bLob = DBConnection.visualizzaImmagineLibro(oldISBN);
             bLob.first();
             immagineID = bLob.getInt(2);
+            System.out.println("Controllo blob");
             Blob imageBlob = bLob.getBlob(3);
-            InputStream binaryStream = imageBlob.getBinaryStream();
-            copertina = ImageIO.read(binaryStream);
-            impostaImmagineDaMostrare();
+            System.out.println("Blob completato");
+            if (imageBlob != null) {
+                InputStream binaryStream = imageBlob.getBinaryStream();
+                copertina = ImageIO.read(binaryStream);
+                impostaImmagineDaMostrare();
+            }
         } catch (IOException ex) {
             immagineCopertina.setText("Seleziona una immagine per il libro");
         } catch (SQLException ex) {
